@@ -12,8 +12,9 @@ import React, {
     TabBarIOS
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons';
-
 import Color from '../Common/Color';
+
+import Home from './TabView/Home.js';
 
 export default class Main extends Component {
     constructor(props) {
@@ -24,7 +25,7 @@ export default class Main extends Component {
     }
 
     _renderContent() {
-        return <View><Text>hello</Text></View>;
+        return <Home />;
     }
 
     render() {
@@ -32,6 +33,7 @@ export default class Main extends Component {
             <TabBarIOS
                 tintColor={Color.tabBarColor.tabColor}
                 barTintColor={Color.tabBarColor.tabBgColor}
+                style={{backgroundColor:'#F6F6F6'}}
                 >
                 <Icon.TabBarItem
                     name="home"

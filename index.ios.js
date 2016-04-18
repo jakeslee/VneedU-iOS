@@ -1,7 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- */
 'use strict';
 
 import React, {
@@ -17,19 +13,24 @@ import SplashScreen from './App/View/SplashScreen';
 import Main from './App/View/Main';
 
 class vneedu extends Component {
+    
     constructor() {
         super();
         this.state = {
-            splashed: false,
+            splashed: true,
         }
     }
     
     componentDidMount() {
-        setTimeout(()=>{
+        this.timer = setTimeout(()=>{
             this.setState({
                 splashed: true,
             });
         }, 2000);
+    }
+    
+    componentWillUnmount() {
+        clearTimeout(this.timer);
     }
     
     renderScene(route, navigator) {
