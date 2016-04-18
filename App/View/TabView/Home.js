@@ -67,6 +67,25 @@ export default class Home extends Component {
                             </TouchableOpacity>
                         </View>
                     </View>
+                    
+                    {/* Ads area start */}
+                    <View style={[styles.contentArea, styles.adsArea]}>
+                        <View style={[styles.adsItem, styles.adsItemRBorder]}>
+                            <View style={styles.adsItemDetail}>
+                                <Text style={styles.adsItemTitle}>注册奖励</Text>
+                                <Text style={styles.adsItemSubtitle}>新用户注册即送积分</Text>
+                            </View>
+                            <Image style={{flex: 1, width: 47, height: 47}} source={require('../../Resources/Images/ads/ads-2.png')} />
+                        </View>
+                        <View style={styles.adsItem}>
+                            <View style={styles.adsItemDetail}>
+                                <Text style={styles.adsItemTitle}>邀请福利</Text>
+                                <Text style={styles.adsItemSubtitle}>邀请帮手提升排名</Text>
+                            </View>
+                            <Image style={{flex: 1, width: 47, height: 47}} source={require('../../Resources/Images/ads/ads-1.png')} />
+                        </View>
+                    </View>
+                    {/* Ads area end */}
                 </ScrollView>
                 
             </View>
@@ -101,5 +120,34 @@ const styles = StyleSheet.create({
     btnText: {
         textAlign: 'center',
         fontSize: 12,
-    }
+    },
+    // Ads area
+    adsArea: {
+        marginTop: 4, 
+        flexDirection: 'row', 
+        padding: 0,
+    },
+    adsItem: {
+        flexDirection: 'row', 
+        flex: 1, 
+        padding: 10, 
+        alignItems: 'center',
+    },
+    adsItemRBorder: {
+        borderRightColor: '#BDBDBD', 
+        borderRightWidth: 0.5
+    },
+    adsItemDetail: {
+        flexDirection: 'column', 
+        flex: 2,
+    },
+    adsItemTitle: {
+        color: '#037AFF', 
+        fontSize: 17
+    },
+    adsItemSubtitle: {
+        color: '#929292', 
+        fontSize: 12, 
+        marginTop: 8
+    },
 });

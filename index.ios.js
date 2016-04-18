@@ -17,7 +17,7 @@ class vneedu extends Component {
     constructor() {
         super();
         this.state = {
-            splashed: true,
+            splashed: false,
         }
     }
     
