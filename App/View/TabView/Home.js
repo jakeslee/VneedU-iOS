@@ -4,16 +4,57 @@ import React, {
     Component,
     StyleSheet,
     ScrollView,
+    ListView,
     TouchableOpacity,
     View,
     Text,
     Image,
 } from 'react-native';
 
-import Icon from 'react-native-vector-icons/Ionicons';
-
+import RequirementItem from '../../Component/RequirementItem';
 
 export default class Home extends Component {
+    constructor(props) {
+        super(props);
+        var dataSource = new ListView.DataSource({
+            rowHasChanged: (r1, r2) => r1 !== r2,
+        });
+        
+        var test = [];
+        for (var i = 0; i < 3 ; ++i)
+            test.push({
+                title: '帮忙搬家具',
+                description: '最近新购入了一些家具，但是厂家不提供搬家服务，得自己搬。家具有点多，希望请些人来帮忙。',
+                publisher: {
+                    id: '[UUID]',
+                    name: 'Jakes Lee',
+                    avatar: require('../../Resources/Images/avatar.png'),
+                },
+                category: {
+                    id: '[UUID]',
+                    name: '施工',
+                    type: 'build',
+                },
+                area: '贵阳',
+                price: '10000',
+                payMethod: 2,
+                image: null,
+                nice: 9,
+                datetime: '2016-4-21 9:00',
+                images: [],
+                comments: 0,
+            });
+        
+        this.state = {
+            dataSource: dataSource.cloneWithRows(test),
+        }
+    }
+    
+    _renderRow(rowData) {
+        return (
+            <RequirementItem {...rowData} />
+        )
+    }
     
     render() {
         return (
@@ -21,53 +62,54 @@ export default class Home extends Component {
                 <ScrollView style={styles.contentContainer} 
                             contentContainerStyle={{paddingVertical: 8}} 
                             automaticallyAdjustContentInsets={false} >
+                    {/* Category area start */}
                     <View style={styles.contentArea}>
                         <View style={{flexDirection: 'row'}}>
                             <TouchableOpacity style={styles.typeBtn}>
                                 <Image style={[styles.btnIcon, ]} 
-                                source={require('../../../App/Resources/Images/category-icons/under-const.png')} />
+                                source={require('../../Resources/Images/category-icons/under-const.png')} />
                                 <Text style={styles.btnText}>施工</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.typeBtn}>
                                 <Image style={[styles.btnIcon, ]} 
-                                    source={require('../../../App/Resources/Images/category-icons/edu.png')} />
+                                    source={require('../../Resources/Images/category-icons/edu.png')} />
                                 <Text style={styles.btnText}>家教</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.typeBtn}>
                                 <Image style={[styles.btnIcon, ]} 
-                                    source={require('../../../App/Resources/Images/category-icons/clock.png')} />
+                                    source={require('../../Resources/Images/category-icons/clock.png')} />
                                 <Text style={styles.btnText}>钟点工</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.typeBtn}>
                                 <Image style={[styles.btnIcon, ]} 
-                                    source={require('../../../App/Resources/Images/category-icons/car.png')} />
+                                    source={require('../../Resources/Images/category-icons/car.png')} />
                                 <Text style={styles.btnText}>代驾</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={{flexDirection: 'row', marginTop: 10}}>
                             <TouchableOpacity style={styles.typeBtn}>
                                 <Image style={[styles.btnIcon, ]} 
-                                source={require('../../../App/Resources/Images/category-icons/shop-cart.png')} />
+                                source={require('../../Resources/Images/category-icons/shop-cart.png')} />
                                 <Text style={styles.btnText}>代购</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.typeBtn}>
                                 <Image style={[styles.btnIcon, ]} 
-                                    source={require('../../../App/Resources/Images/category-icons/MedCar.png')} />
+                                    source={require('../../Resources/Images/category-icons/MedCar.png')} />
                                 <Text style={styles.btnText}>送药上门</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.typeBtn}>
                                 <Image style={[styles.btnIcon, ]} 
-                                    source={require('../../../App/Resources/Images/category-icons/gift.png')} />
+                                    source={require('../../Resources/Images/category-icons/gift.png')} />
                                 <Text style={styles.btnText}>送礼</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.typeBtn}>
                                 <Image style={[styles.btnIcon, ]} 
-                                    source={require('../../../App/Resources/Images/category-icons/working.png')} />
+                                    source={require('../../Resources/Images/category-icons/working.png')} />
                                 <Text style={styles.btnText}>代班</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
-                    
+                    {/* Category area end */}
                     {/* Ads area start */}
                     <View style={[styles.contentArea, styles.adsArea]}>
                         <View style={[styles.adsItem, styles.adsItemRBorder]}>
@@ -86,6 +128,16 @@ export default class Home extends Component {
                         </View>
                     </View>
                     {/* Ads area end */}
+                    {/* Requirements area start */}
+                    <View style={styles.requirementArea}>
+                        <Text style={styles.rqAreaTitle}>
+                            最新需求
+                        </Text>
+                        <ListView 
+                        dataSource={this.state.dataSource}
+                        renderRow={this._renderRow} />
+                    </View>
+                    {/* Requirements area end */}
                 </ScrollView>
                 
             </View>
@@ -96,6 +148,7 @@ export default class Home extends Component {
 const styles = StyleSheet.create({
     contentContainer: {
         flexDirection: 'column',
+        marginBottom: 48,
     },
     contentArea: {
         backgroundColor: '#FFF',
@@ -149,5 +202,19 @@ const styles = StyleSheet.create({
         color: '#929292', 
         fontSize: 12, 
         marginTop: 8
+    },
+    // Requirements area
+    requirementArea: {
+        borderTopColor: '#d8d8d8', 
+        borderTopWidth: 0.5, 
+        marginTop: 4,
+    },
+    rqAreaTitle: {
+        backgroundColor:'#FFF', 
+        color: '#4A4A4A', 
+        paddingLeft: 10, 
+        paddingTop: 7, 
+        paddingBottom: 7, 
+        fontSize: 12,
     },
 });
