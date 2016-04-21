@@ -14,7 +14,8 @@ import React, {
 import Icon from 'react-native-vector-icons/Ionicons';
 import Color from '../Common/Color';
 import HeaderBar from '../Component/HeaderBar';
-import Home from './TabView/Home.js';
+import Home from './TabView/Home';
+import Order from './TabView/Order';
 
 export default class Main extends Component {
     constructor(props) {
@@ -26,7 +27,14 @@ export default class Main extends Component {
     }
 
     _renderContent() {
-        return <Home />;
+        switch(this.state.selectedTab) {
+            case 'home':
+                return <Home />;
+            case 'order':
+                return <Order />;
+            default:
+                return <Home />;
+        }
     }
 
     render() {
