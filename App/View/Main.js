@@ -3,14 +3,13 @@
  */
  'use strict';
 
-
 import React, {
     Component,
     StyleSheet,
     View,
     Text,
     TabBarIOS
-} from 'react-native'
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Color from '../Common/Color';
 import HeaderBar from '../Component/HeaderBar';

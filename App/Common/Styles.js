@@ -19,3 +19,20 @@ export const BorderStyles = StyleSheet.create({
     bottom: bottomBorderStyle,
     topAndBottom: Object.assign({}, topBorderStyle, bottomBorderStyle),
 });
+
+export const ButtonStyles = StyleSheet.create({
+    itemBtnArea: {
+        marginTop: 10, 
+        flexDirection: 'row', 
+        justifyContent: 'center'
+    },
+    primaryBtn: {
+        backgroundColor: '#6AD072', 
+        borderRadius: 2, 
+        paddingVertical: 10
+    },
+    primaryBtnText: {
+        textAlign: 'center', 
+        color: '#FFF',
+    },
+});

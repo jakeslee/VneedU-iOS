@@ -11,7 +11,7 @@ import React, {
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { BorderStyles } from '../../Common/Styles';
+import { BorderStyles, ButtonStyles } from '../../Common/Styles';
 import Base from '../../Common/Base';
 
 export default class Me extends Component {
@@ -117,9 +117,9 @@ export default class Me extends Component {
                         </View>
                     </View>
                     {/* user security end */}
-                    <View style={[styles.itemBtnArea, {marginBottom: 15}]}>
-                        <TouchableOpacity style={[styles.primaryBtn, {width: Base.width * 0.9, }]}>
-                            <Text style={styles.primaryBtnText}>退出登录</Text>
+                    <View style={[ButtonStyles.itemBtnArea, {marginBottom: 15}]}>
+                        <TouchableOpacity style={[ButtonStyles.primaryBtn, {width: Base.width * 0.9, }]}>
+                            <Text style={ButtonStyles.primaryBtnText}>退出登录</Text>
                         </TouchableOpacity>
                     </View>
                 </ScrollView>
@@ -129,20 +129,6 @@ export default class Me extends Component {
 }
 
 const styles = StyleSheet.create({
-    itemBtnArea: {
-        marginTop: 10, 
-        flexDirection: 'row', 
-        justifyContent: 'center'
-    },
-    primaryBtn: {
-        backgroundColor: '#6AD072', 
-        borderRadius: 2, 
-        paddingVertical: 10
-    },
-    primaryBtnText: {
-        textAlign: 'center', 
-        color: '#FFF',
-    },
     userInfo: {
         flexDirection: 'row', 
         marginTop: 10, 
