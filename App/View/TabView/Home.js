@@ -87,7 +87,11 @@ export default class Home extends Component {
                             </TouchableOpacity>
                         </View>
                         <View style={{flexDirection: 'row', marginTop: 10}}>
-                            <TouchableOpacity style={styles.typeBtn}>
+                            <TouchableOpacity style={styles.typeBtn} onPress={(e)=>{
+                                this.props.navigator.push({
+                                    name: 'login',
+                                })
+                            }}>
                                 <Image style={[styles.btnIcon, ]} 
                                 source={require('../../Resources/Images/category-icons/shop-cart.png')} />
                                 <Text style={styles.btnText}>代购</Text>

@@ -21,8 +21,11 @@ export default class Login extends Component {
         return (
             <View style={{flex: 1}}>
                 <Image source={require('../Resources/Images/bgImg/Header.png')} style={styles.logoImg}>
-                    <Icon name='chevron-left' color='#FFF' size={20} />
+                    <TouchableOpacity onPress={()=> this.props.navigator.pop()}>
+                        <Icon name='chevron-left' color='#FFF' size={20} />
+                    </TouchableOpacity>
                 </Image>
+                
                 <View style={{backgroundColor: '#F6F6F6', flex: 1, paddingTop: 10}}>
                     <TextInput style={styles.input} 
                         placeholder='手机号' placeholderTextColor='#4D4D4D'/>
