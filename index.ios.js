@@ -13,9 +13,10 @@ import SplashScreen from './App/View/SplashScreen';
 import Main from './App/View/Main';
 import Login from './App/View/Login';
 import Register from './App/View/Register';
+import About from './App/View/About';
+import Setting from './App/View/Setting';
 
 class vneedu extends Component {
-    
     constructor() {
         super();
         this.state = {
@@ -37,12 +38,16 @@ class vneedu extends Component {
     
     renderScene(route, navigator) {
         switch (route.name) {
+            case 'about':
+                return <About navigator={navigator} />;
             case 'main': 
                 return <Main navigator={navigator} />;
             case 'login':
                 return <Login navigator={navigator} />;
             case 'register':
                 return <Register navigator={navigator} />;
+            case 'setting':
+                return <Setting navigator={navigator} />;  
             // This should have StoryScreen
             default:
                 return <SplashScreen />;
@@ -53,7 +58,7 @@ class vneedu extends Component {
         if (this.state.splashed){
             return (
                 <Navigator
-                    initialRoute={{name: 'main'}}
+                    initialRoute={{name: 'setting'}}
                     renderScene={this.renderScene}
                     configureScene={(route) => Navigator.SceneConfigs.FloatFromRight} />
             );
