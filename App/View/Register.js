@@ -11,7 +11,7 @@ import React, {
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import Base from '../Common/Base';
-import { navigatorColor } from '../Common/Color';
+import NavigatorBar from '../Component/NavigatorBar';
 import { BorderStyles, ButtonStyles } from '../Common/Styles';
 
 export default class Register extends Component {
@@ -22,12 +22,7 @@ export default class Register extends Component {
     render() {
         return (
             <View style={{flex: 1}}>
-                <View style={styles.navigatorBar}>
-                    <TouchableOpacity onPress={()=> this.props.navigator.pop()} style={{flexDirection: 'row'}}>
-                        <Icon name='chevron-left' color='#FFF' size={20} />
-                        <Text style={{color: '#FFF', fontSize: 18, marginLeft: 10, }}>注册</Text>
-                    </TouchableOpacity>
-                </View>
+                <NavigatorBar title='注册' />
                 <View style={{flex: 1, backgroundColor: '#F6F6F6', paddingTop: 10}}>
                     <TextInput style={styles.input} 
                         placeholder='手机号' placeholderTextColor='#4D4D4D'/>
@@ -48,14 +43,6 @@ export default class Register extends Component {
 }
 
 const styles = StyleSheet.create({
-    navigatorBar: {
-        backgroundColor: navigatorColor.backgroundColor, 
-        paddingTop: 30, 
-        paddingLeft: 20, 
-        paddingBottom: 10, 
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
     input: {
         height: 48, 
         backgroundColor: '#FFF', 

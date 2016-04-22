@@ -3,6 +3,7 @@ import {
 } from 'react-native';
 
 import { border } from './Variables';
+import { navigatorColor } from './Color';
 
 const topBorderStyle = {
     borderTopColor: '#d8d8d8', 
@@ -35,4 +36,15 @@ export const ButtonStyles = StyleSheet.create({
         textAlign: 'center', 
         color: '#FFF',
     },
+});
+
+export const NavigatorStyles = StyleSheet.create({
+    navigatorBar: {
+        backgroundColor: navigatorColor.backgroundColor, 
+        paddingTop: 30, 
+        paddingLeft: 20, 
+        paddingBottom: 10, 
+        flexDirection: 'row',
+        alignItems: 'center',
+    }
 });
