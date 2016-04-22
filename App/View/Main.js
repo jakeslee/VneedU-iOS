@@ -6,6 +6,7 @@
 import React, {
     Component,
     StyleSheet,
+    StatusBar,
     View,
     Text,
     TabBarIOS
@@ -29,13 +30,13 @@ export default class Main extends Component {
     _renderContent() {
         switch(this.state.selectedTab) {
             case 'home':
-                return <Home />;
+                return <Home {...this.props} />;
             case 'order':
-                return <Order />;
+                return <Order {...this.props} />;
             case 'me':
-                return <Me />;
+                return <Me {...this.props} />;
             default:
-                return <Home />;
+                return <Home {...this.props} />;
         }
     }
 
@@ -58,6 +59,7 @@ export default class Main extends Component {
                                 selectedTab: 'home',
                                 showTopBar: true,
                             });
+                            StatusBar.setBarStyle('default', true);
                         }} >
                         {this._renderContent()}
                     </Icon.TabBarItem>
@@ -68,6 +70,7 @@ export default class Main extends Component {
                         selectedIconName="ios-list"
                         selected={this.state.selectedTab === 'order'}
                         onPress={()=> {
+                            StatusBar.setBarStyle('default', true);
                             this.setState({
                                 selectedTab: 'order',
                                 showTopBar: true,
@@ -82,6 +85,7 @@ export default class Main extends Component {
                         selectedIconName="ios-person"
                         selected={this.state.selectedTab === 'me'}
                         onPress={()=> {
+                            StatusBar.setBarStyle('light-content', true);
                             this.setState({
                                 selectedTab: 'me',
                                 showTopBar: false,

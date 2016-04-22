@@ -1,7 +1,6 @@
 import React, {
     Component,
     StyleSheet,
-    StatusBar,
     ScrollView,
     TouchableOpacity,
     View,
@@ -20,7 +19,6 @@ export default class Me extends Component {
     }
     
     render() {
-        StatusBar.setBarStyle('light-content', true);
         return (
             <View style={{flex: 1}}>
                 <View style={{backgroundColor: '#36D17D', paddingTop: 30,}}>

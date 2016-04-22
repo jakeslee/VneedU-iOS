@@ -2,7 +2,6 @@ import React, {
     Component,
     StyleSheet,
     ScrollView,
-    StatusBar,
     ListView,
     TouchableOpacity,
     View,
@@ -90,7 +89,6 @@ export default class Order extends Component {
     }
     
     render() {
-        StatusBar.setBarStyle('default', true);
         return (
             <View style={{flex: 1}}>
                 <ListView 
