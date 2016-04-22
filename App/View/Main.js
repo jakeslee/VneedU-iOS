@@ -12,7 +12,7 @@ import React, {
     TabBarIOS
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Color from '../Common/Color';
+import * as Color from '../Common/Color';
 import HeaderBar from '../Component/HeaderBar';
 import Home from './TabView/Home';
 import Order from './TabView/Order';

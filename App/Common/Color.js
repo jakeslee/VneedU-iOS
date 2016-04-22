@@ -4,6 +4,8 @@ var tabColor = {
     tabBgColor: '#FFF',
 };
 
-module.exports = {
-    tabBarColor: tabColor,
-};
+export const tabBarColor = tabColor;
+
+export const navigatorColor = {
+    backgroundColor: '#36D17D',
+}
