@@ -11,6 +11,7 @@ import React, {
 
 import SplashScreen from './App/View/SplashScreen';
 import Main from './App/View/Main';
+import Login from './App/View/Login';
 
 class vneedu extends Component {
     
@@ -37,6 +38,8 @@ class vneedu extends Component {
         switch (route.name) {
             case 'main': 
                 return <Main navigator={navigator} />;
+            case 'login':
+                return <Login navigator={navigator} />;
             // This should have StoryScreen
             default:
                 return <SplashScreen />;
