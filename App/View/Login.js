@@ -2,6 +2,7 @@ import React, {
     Component,
     StyleSheet,
     TextInput,
+    StatusBar,
     TouchableOpacity,
     Image,
     View,
@@ -18,6 +19,7 @@ export default class Login extends Component {
     }
     
     render() {
+        StatusBar.setBarStyle('light-content', true);
         return (
             <View style={{flex: 1}}>
                 <Image source={require('../Resources/Images/bgImg/Header.png')} style={styles.logoImg}>

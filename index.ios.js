@@ -3,7 +3,6 @@
 import React, {
     AppRegistry,
     Component,
-    StatusBar,
     StyleSheet,
     Text,
     View,
@@ -43,7 +42,6 @@ class vneedu extends Component {
             case 'login':
                 return <Login navigator={navigator} />;
             case 'register':
-                StatusBar.setBarStyle('light-content', true);
                 return <Register navigator={navigator} />;
             // This should have StoryScreen
             default:
