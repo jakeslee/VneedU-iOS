@@ -3,6 +3,7 @@
 import React, {
     AppRegistry,
     Component,
+    StatusBar,
     StyleSheet,
     Text,
     View,
@@ -12,6 +13,7 @@ import React, {
 import SplashScreen from './App/View/SplashScreen';
 import Main from './App/View/Main';
 import Login from './App/View/Login';
+import Register from './App/View/Register';
 
 class vneedu extends Component {
     
@@ -40,6 +42,9 @@ class vneedu extends Component {
                 return <Main navigator={navigator} />;
             case 'login':
                 return <Login navigator={navigator} />;
+            case 'register':
+                StatusBar.setBarStyle('light-content', true);
+                return <Register navigator={navigator} />;
             // This should have StoryScreen
             default:
                 return <SplashScreen />;

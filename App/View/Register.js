@@ -2,6 +2,7 @@ import React, {
     Component,
     StyleSheet,
     TextInput,
+    StatusBar,
     TouchableOpacity,
     Image,
     View,
@@ -10,23 +11,24 @@ import React, {
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import Base from '../Common/Base';
+import { navigatorColor } from '../Common/Color';
 import { BorderStyles, ButtonStyles } from '../Common/Styles';
 
-export default class Login extends Component {
-    constructor(props) {
-        super(props);
+export default class Register extends Component {
+    constructor(pros) {
+        super(pros);
     }
     
     render() {
         return (
             <View style={{flex: 1}}>
-                <Image source={require('../Resources/Images/bgImg/Header.png')} style={styles.logoImg}>
-                    <TouchableOpacity onPress={()=> this.props.navigator.pop()}>
+                <View style={styles.navigatorBar}>
+                    <TouchableOpacity onPress={()=> this.props.navigator.pop()} style={{flexDirection: 'row'}}>
                         <Icon name='chevron-left' color='#FFF' size={20} />
+                        <Text style={{color: '#FFF', fontSize: 18, marginLeft: 10, }}>注册</Text>
                     </TouchableOpacity>
-                </Image>
-                
-                <View style={{backgroundColor: '#F6F6F6', flex: 1, paddingTop: 10}}>
+                </View>
+                <View style={{flex: 1, backgroundColor: '#F6F6F6', paddingTop: 10}}>
                     <TextInput style={styles.input} 
                         placeholder='手机号' placeholderTextColor='#4D4D4D'/>
                     <View style={BorderStyles.top}>
@@ -35,15 +37,10 @@ export default class Login extends Component {
                     </View>
                     <View style={[ButtonStyles.itemBtnArea, {marginBottom: 15}]}>
                         <TouchableOpacity style={[ButtonStyles.primaryBtn, {width: Base.width * 0.9, }]}>
-                            <Text style={ButtonStyles.primaryBtnText}>登录</Text>
+                            <Text style={ButtonStyles.primaryBtnText}>注册</Text>
                         </TouchableOpacity>
                     </View>
-                    <View style={{flexDirection: 'row', paddingHorizontal: 15}}>
-                        <Text style={{color: '#3D8EFA', flex: 1}}>忘记密码</Text>
-                        <TouchableOpacity onPress={()=> this.props.navigator.push({name: 'register'})}>
-                            <Text style={{color: '#3D8EFA'}}>注册</Text>
-                        </TouchableOpacity>
-                    </View>
+                    <Text style={{textAlign: 'center', color: '#8F8F8F'}}>注册代表同意<Text style={{color: '#6069CF'}}>《用户服务协议》</Text></Text>
                 </View>
             </View>
         )
@@ -51,10 +48,13 @@ export default class Login extends Component {
 }
 
 const styles = StyleSheet.create({
-    logoImg: {
-        width: Base.width, 
+    navigatorBar: {
+        backgroundColor: navigatorColor.backgroundColor, 
         paddingTop: 30, 
-        paddingLeft: 20
+        paddingLeft: 20, 
+        paddingBottom: 10, 
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     input: {
         height: 48, 
