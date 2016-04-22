@@ -2,6 +2,7 @@ import React, {
     Component,
     StyleSheet,
     ScrollView,
+    StatusBar,
     ListView,
     TouchableOpacity,
     View,
@@ -74,7 +75,7 @@ export default class Order extends Component {
                 <View style={{flexDirection: 'row', marginTop: 10,}}>
                     <Image style={{height: 37, width: 37}} source={rowData.creator.avatar} />
                     <View style={{marginLeft: 10, }}>
-                        <Text style={}>{rowData.creator.name}</Text>
+                        <Text style={styles.rqUserTitle}>{rowData.creator.name}</Text>
                         <Text style={{fontSize: 13, fontWeight: '400'}}>{rowData.title}</Text>
                     </View>
                 </View>
@@ -89,6 +90,7 @@ export default class Order extends Component {
     }
     
     render() {
+        StatusBar.setBarStyle('default', true);
         return (
             <View style={{flex: 1}}>
                 <ListView 
@@ -110,7 +112,7 @@ const styles = StyleSheet.create({
         borderBottomColor: '#d8d8d8', 
         borderBottomWidth: 0.5,
     },
-    rqTitle: {
+    rqUserTitle: {
         fontSize: 15, 
         marginBottom: 4, 
         color: '#037AFF'

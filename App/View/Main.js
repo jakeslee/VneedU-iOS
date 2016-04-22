@@ -16,6 +16,7 @@ import Color from '../Common/Color';
 import HeaderBar from '../Component/HeaderBar';
 import Home from './TabView/Home';
 import Order from './TabView/Order';
+import Me from './TabView/Me';
 
 export default class Main extends Component {
     constructor(props) {
@@ -32,6 +33,8 @@ export default class Main extends Component {
                 return <Home />;
             case 'order':
                 return <Order />;
+            case 'me':
+                return <Me />;
             default:
                 return <Home />;
         }
