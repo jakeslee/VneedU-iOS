@@ -79,7 +79,9 @@ export default class Me extends Component {
                             <Text style={{color: '#313131', flex: 1}}>
                                 用户未补充
                             </Text>
-                            <Text style={{color: '#7C69E0'}}>修改</Text>
+                            <TouchableOpacity onPress={()=> this.props.navigator.push({name: 'info_modify'})} >
+                                <Text style={{color: '#7C69E0'}}>修改</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                     {/* user info end */}
