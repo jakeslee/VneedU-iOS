@@ -17,6 +17,7 @@ import About from './App/View/About';
 import Setting from './App/View/Setting';
 import PasswordReset from './App/View/PasswordReset';
 import InfoModify from './App/View/InfoModify';
+import CategoryFilter from './App/View/CategoryFilter';
 
 class vneedu extends Component {
     constructor() {
@@ -44,6 +45,8 @@ class vneedu extends Component {
                 return <About navigator={navigator} />;
             case 'main': 
                 return <Main navigator={navigator} />;
+            case 'category_filter': 
+                return <CategoryFilter navigator={navigator} />;
             case 'login':
                 return <Login navigator={navigator} />;
             case 'register':

@@ -67,7 +67,7 @@ export default class Home extends Component {
                     {/* Category area start */}
                     <View style={styles.contentArea}>
                         <View style={{flexDirection: 'row'}}>
-                            <TouchableOpacity style={styles.typeBtn}>
+                            <TouchableOpacity style={styles.typeBtn} onPress={()=> this.props.navigator.push({name: 'category_filter'})}>
                                 <Image style={[styles.btnIcon, ]} 
                                 source={require('../../Resources/Images/category-icons/under-const.png')} />
                                 <Text style={styles.btnText}>施工</Text>
