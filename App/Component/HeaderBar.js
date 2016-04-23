@@ -58,7 +58,7 @@ export default class HeaderBar extends Component {
                     <TouchableOpacity>
                         <Icon style={styles.btnIcon} name="ios-plus-outline" color="#929292" />
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={()=> this.props.navigator.push({name: 'setting'})}>
                         <Icon style={styles.btnIcon} name="gear-a" color="#929292" />
                     </TouchableOpacity>
                 </View>

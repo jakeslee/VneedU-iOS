@@ -58,7 +58,7 @@ class vneedu extends Component {
         if (this.state.splashed){
             return (
                 <Navigator
-                    initialRoute={{name: 'setting'}}
+                    initialRoute={{name: 'main'}}
                     renderScene={this.renderScene}
                     configureScene={(route) => Navigator.SceneConfigs.FloatFromRight} />
             );

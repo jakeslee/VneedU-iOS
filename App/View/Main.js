@@ -96,7 +96,7 @@ export default class Main extends Component {
                 </TabBarIOS>
                 {(()=> {
                     if (this.state.showTopBar) {
-                        return <HeaderBar style={styles.topBar} />;
+                        return <HeaderBar style={styles.topBar} {...this.props}/>;
                     }
                 })()}
             </View>
