@@ -80,8 +80,9 @@ export default class Order extends Component {
                 </View>
                 {os != '订单待评价' ? null : 
                 <View style={styles.itemBtnArea} >
-                    <TouchableOpacity style={[styles.primaryBtn, {width: 70, }]}>
-                        <Text style={styles.primaryBtnText}>评论</Text>
+                    <TouchableOpacity style={[styles.primaryBtn, {width: 70, }]}
+                        onPress={()=> this.props.navigator.push({name: 'judgement'})}>
+                        <Text style={styles.primaryBtnText}>评价</Text>
                     </TouchableOpacity>
                 </View>}
             </View>

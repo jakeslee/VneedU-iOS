@@ -18,6 +18,7 @@ import Setting from './App/View/Setting';
 import PasswordReset from './App/View/PasswordReset';
 import InfoModify from './App/View/InfoModify';
 import CategoryFilter from './App/View/CategoryFilter';
+import Judgement from './App/View/Judgement';
 
 class vneedu extends Component {
     constructor() {
@@ -57,6 +58,8 @@ class vneedu extends Component {
                 return <PasswordReset navigator={navigator} />;
             case 'info_modify':
                 return <InfoModify navigator={navigator} />;
+            case 'judgement':
+                return <Judgement navigator={navigator} />;
             // This should have StoryScreen
             default:
                 return <SplashScreen />;
