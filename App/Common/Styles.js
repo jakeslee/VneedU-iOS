@@ -38,6 +38,14 @@ export const ButtonStyles = StyleSheet.create({
     },
 });
 
+export const InputStyles = StyleSheet.create({
+    input: {
+        height: 48, 
+        backgroundColor: '#FFF', 
+        paddingLeft: 20
+    },
+});
+
 export const NavigatorStyles = StyleSheet.create({
     navigatorBar: {
         backgroundColor: navigatorColor.backgroundColor, 

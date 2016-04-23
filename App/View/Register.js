@@ -8,11 +8,10 @@ import React, {
     View,
     Text,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 import Base from '../Common/Base';
 import NavigatorBar from '../Component/NavigatorBar';
-import { BorderStyles, ButtonStyles } from '../Common/Styles';
+import { BorderStyles, ButtonStyles, InputStyles } from '../Common/Styles';
 
 export default class Register extends Component {
     constructor(pros) {
@@ -24,10 +23,10 @@ export default class Register extends Component {
             <View style={{flex: 1}}>
                 <NavigatorBar title='注册' />
                 <View style={{flex: 1, backgroundColor: '#F6F6F6', paddingTop: 10}}>
-                    <TextInput style={styles.input} 
+                    <TextInput style={InputStyles.input} 
                         placeholder='手机号' placeholderTextColor='#4D4D4D'/>
                     <View style={BorderStyles.top}>
-                        <TextInput style={styles.input}
+                        <TextInput style={InputStyles.input}
                             placeholder='密码' placeholderTextColor='#4D4D4D' secureTextEntry={true}/>
                     </View>
                     <View style={[ButtonStyles.itemBtnArea, {marginBottom: 15}]}>
@@ -41,11 +40,3 @@ export default class Register extends Component {
         )
     }
 }
-
-const styles = StyleSheet.create({
-    input: {
-        height: 48, 
-        backgroundColor: '#FFF', 
-        paddingLeft: 20
-    },
-});
