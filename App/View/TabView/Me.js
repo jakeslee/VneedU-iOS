@@ -113,7 +113,9 @@ export default class Me extends Component {
                             <Text style={{color: '#313131', flex: 1}}>
                                 登录密码
                             </Text>
-                            <Text style={{color: '#7C69E0'}}>修改</Text>
+                            <TouchableOpacity onPress={()=> this.props.navigator.push({name: 'password_reset'})} >
+                                <Text style={{color: '#7C69E0'}}>修改</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                     {/* user security end */}

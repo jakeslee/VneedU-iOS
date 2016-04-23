@@ -15,6 +15,7 @@ import Login from './App/View/Login';
 import Register from './App/View/Register';
 import About from './App/View/About';
 import Setting from './App/View/Setting';
+import PasswordReset from './App/View/PasswordReset';
 
 class vneedu extends Component {
     constructor() {
@@ -47,7 +48,9 @@ class vneedu extends Component {
             case 'register':
                 return <Register navigator={navigator} />;
             case 'setting':
-                return <Setting navigator={navigator} />;  
+                return <Setting navigator={navigator} />;
+            case 'password_reset':
+                return <PasswordReset navigator={navigator} />;
             // This should have StoryScreen
             default:
                 return <SplashScreen />;
