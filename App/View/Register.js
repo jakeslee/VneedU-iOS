@@ -21,7 +21,7 @@ export default class Register extends Component {
     render() {
         return (
             <View style={{flex: 1}}>
-                <NavigatorBar title='注册' />
+                <NavigatorBar title='注册' {...this.props} />
                 <View style={{flex: 1, backgroundColor: '#F6F6F6', paddingTop: 10}}>
                     <TextInput style={InputStyles.input} 
                         placeholder='手机号' placeholderTextColor='#4D4D4D'/>
