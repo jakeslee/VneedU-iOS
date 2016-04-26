@@ -71,13 +71,15 @@ export default class Order extends Component {
                     <Text style={{fontSize: 12, color: '#454545', flex: 1}} >{os} - {rowData.datetime}</Text>
                     <Icon name='trash' size={20} color='#454545' />
                 </View>
-                <View style={{flexDirection: 'row', marginTop: 10,}}>
-                    <Image style={{height: 37, width: 37}} source={rowData.creator.avatar} />
-                    <View style={{marginLeft: 10, }}>
-                        <Text style={styles.rqUserTitle}>{rowData.creator.name}</Text>
-                        <Text style={{fontSize: 13, fontWeight: '400'}}>{rowData.title}</Text>
+                <TouchableOpacity style={{marginTop: 10, }} onPress={()=> this.props.navigator.push({name: 'order_detail'})} >
+                    <View style={{flexDirection: 'row', }}>
+                        <Image style={{height: 37, width: 37}} source={rowData.creator.avatar} />
+                        <View style={{marginLeft: 10, }}>
+                            <Text style={styles.rqUserTitle}>{rowData.creator.name}</Text>
+                            <Text style={{fontSize: 13, fontWeight: '400'}}>{rowData.title}</Text>
+                        </View>
                     </View>
-                </View>
+                </TouchableOpacity>
                 {os != '订单待评价' ? null : 
                 <View style={styles.itemBtnArea} >
                     <TouchableOpacity style={[styles.primaryBtn, {width: 70, }]}

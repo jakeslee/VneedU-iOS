@@ -20,6 +20,7 @@ import InfoModify from './App/View/InfoModify';
 import CategoryFilter from './App/View/CategoryFilter';
 import Judgement from './App/View/Judgement';
 import Search from './App/View/Search';
+import OrderDetail from './App/View/OrderDetail';
 
 class vneedu extends Component {
     constructor() {
@@ -63,6 +64,8 @@ class vneedu extends Component {
                 return <Judgement navigator={navigator} />;
             case 'search':
                 return <Search navigator={navigator} />;
+            case 'order_detail':
+                return <OrderDetail navigator={navigator} />;
                 
             // This should have StoryScreen
             default:
