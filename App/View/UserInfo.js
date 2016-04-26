@@ -14,7 +14,7 @@ import Base from '../Common/Base';
 import CommentItem from '../Component/CommentItem';
 import RequirementItem from '../Component/RequirementItem';
 import NavigatorBar from '../Component/NavigatorBar';
-import { BorderStyles, ButtonStyles } from '../Common/Styles';
+import { BorderStyles, ImageStyles } from '../Common/Styles';
 import { navigatorColor } from '../Common/Color';
 
 export default class UserInfo extends Component {
@@ -90,7 +90,7 @@ export default class UserInfo extends Component {
                     <ScrollView bounces={false} automaticallyAdjustContentInsets={false} style={{flex: 1}}>
                         {/* head start */}
                         <View style={styles.headStyle}>
-                            <View style={[styles.avatarRound, {marginBottom: 10}]}>
+                            <View style={[ImageStyles.avatarRound(56), {marginBottom: 10}]}>
                                 <Image style={{width: 54, height: 54}} source={require('../Resources/Images/avatar.png')}/>
                             </View>
                             <Text style={{color: '#FFF', fontSize: 16}}>
@@ -158,14 +158,6 @@ const styles = StyleSheet.create({
         alignItems: 'center', 
         justifyContent: 'center',
         paddingBottom: 20,
-    },
-    avatarRound: {
-        width: 56, 
-        height: 56, 
-        borderRadius: 56/2, 
-        alignItems: 'center', 
-        justifyContent: 'center', 
-        backgroundColor: '#FFF'
     },
     userInfoLevelText: {
         textAlign: 'center', 

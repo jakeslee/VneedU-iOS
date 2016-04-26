@@ -46,7 +46,24 @@ export const InputStyles = StyleSheet.create({
     },
 });
 
+export const ImageStyles = {
+    avatarRound: (radius) => {
+        return {
+            width: radius, 
+            height: radius, 
+            borderRadius: radius/2, 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            backgroundColor: '#FFF',
+        }
+    },
+};
+
 export const NavigatorStyles = StyleSheet.create({
+    navigatorContainer: {
+        flex: 1, 
+        backgroundColor: navigatorColor.containerBackground,
+    },
     navigatorBar: {
         backgroundColor: navigatorColor.backgroundColor, 
         paddingTop: 30, 
@@ -55,4 +72,23 @@ export const NavigatorStyles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     }
+});
+
+export const ContentStyles = StyleSheet.create({
+    propertyArea: {
+        backgroundColor: '#FFF', 
+        marginTop: 4, 
+        flexDirection: 'column',
+    },
+    propertyTitle: {
+        padding: 12, 
+        fontSize: 14, 
+        color: '#5D5D5D'
+    },
+    propertyItem: {
+        flexDirection: 'row', 
+        paddingHorizontal: 14, 
+        paddingVertical: 8, 
+        alignItems: 'center'
+    },
 });
