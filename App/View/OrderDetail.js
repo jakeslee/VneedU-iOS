@@ -11,7 +11,7 @@ import React, {
 import Icon from 'react-native-vector-icons/Ionicons';
 import Base from '../Common/Base';
 import NavigatorBar from '../Component/NavigatorBar';
-import { BorderStyles, ButtonStyles } from '../Common/Styles';
+import { BorderStyles, ButtonStyles, NavigatorStyles } from '../Common/Styles';
 
 let aa = Base.width/6;
 
@@ -41,7 +41,7 @@ export default class OrderDetail extends Component {
     
     render() {
         return (
-            <View style={{flex: 1, backgroundColor: '#F6F6F6'}}>
+            <View style={NavigatorStyles.navigatorContainer}>
                 <NavigatorBar title='订单详情' {...this.props}/>
                 <View style={{flex: 1}}>
                     <ScrollView bounces={false} automaticallyAdjustContentInsets={false} style={{paddingTop: 5}}>
