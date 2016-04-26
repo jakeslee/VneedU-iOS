@@ -18,12 +18,14 @@ moment.locale('zh-cn', localeZh);
 export default class RequirementItem extends Component {
     render() {
         return (
-            <View style={styles.rqItemArea}>
+            <View style={[styles.rqItemArea, this.props.style && this.props.style]}>
                 <View style={styles.rqItemHeader}>
                     <Image style={styles.rqItemHeaderAvatar} source={this.props.publisher.avatar} />
                     <View style={styles.rqItemHeaderUser}>
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                            <Text style={{color: '#3584F0',}}>{this.props.publisher.name}</Text>
+                            <TouchableOpacity onPress={()=> this.props.navigator.push({name: 'user_info'})}>
+                                <Text style={{color: '#3584F0',}}>{this.props.publisher.name}</Text>
+                            </TouchableOpacity>
                             <Text style={{fontSize: 13,}}>
                                 发布了<Text style={{color: '#3584F0',}}>{this.props.category.name}</Text>需求
                             </Text>

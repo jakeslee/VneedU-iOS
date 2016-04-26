@@ -53,7 +53,7 @@ export default class Home extends Component {
     
     _renderRow(rowData) {
         return (
-            <RequirementItem {...rowData} />
+            <RequirementItem {...rowData} navigator={this.props.navigator}/>
         )
     }
     
@@ -140,8 +140,8 @@ export default class Home extends Component {
                             最新需求
                         </Text>
                         <ListView 
-                        dataSource={this.state.dataSource}
-                        renderRow={this._renderRow} />
+                            dataSource={this.state.dataSource}
+                            renderRow={this._renderRow.bind(this)} />
                     </View>
                     {/* Requirements area end */}
                 </ScrollView>
