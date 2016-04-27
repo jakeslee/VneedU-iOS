@@ -32,7 +32,7 @@ export default class HeaderBar extends Component {
                             <View style={{width: 37}}>
                                 <Image source={require('../../App/Resources/Images/avatar.png')} />
                             </View>
-                            <View style={{flex:2, marginLeft: 4, marginTop: 10, flexDirection: 'row'}}>
+                            <View style={{flex:2, marginLeft: 4, marginTop: 10, marginBottom: 10, flexDirection: 'row'}}>
                                 <Text>
                                     Jakes Lee
                                 </Text>
