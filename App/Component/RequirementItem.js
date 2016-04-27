@@ -35,10 +35,12 @@ export default class RequirementItem extends Component {
                     <Text style={styles.rqItemHeaderPrice}>￥{this.props.price}</Text>
                 </View>
                 <View style={styles.rqItemContent}>
-                    <Text style={styles.rqItemTitle}>{this.props.title}</Text>
-                    <Text style={{fontSize: 13,}}>
-                        {this.props.description}
-                    </Text>
+                    <TouchableOpacity onPress={()=> this.props.navigator.push({name: 'requirement_detail'})}>
+                        <Text style={styles.rqItemTitle}>{this.props.title}</Text>
+                        <Text style={{fontSize: 13,}}>
+                            {this.props.description}
+                        </Text>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.rqItemFooter}>
                     <Icon name="location" color='#9489E2' size={20} />

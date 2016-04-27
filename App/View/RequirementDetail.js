@@ -6,6 +6,7 @@ import React, {
     ScrollView,
     TouchableOpacity,
     Image,
+    Modal,
     View,
     Text,
 } from 'react-native';
@@ -14,6 +15,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/FontAwesome';
 
 import Base from '../Common/Base';
+import CommentItem from '../Component/CommentItem';
 import NavigatorBar from '../Component/NavigatorBar';
 import { BorderStyles, ButtonStyles, NavigatorStyles, ImageStyles, ContentStyles } from '../Common/Styles';
 
@@ -25,6 +27,18 @@ export default class RequirementDetail extends Component {
             rowHasChanged: (r1, r2) => r1 !== r2,
         });
         
+        var test_comments = [];
+        for (var i = 0;i < 2;++i) {
+            test_comments.push({
+                id: "456tygf56",
+                content: "好",
+                area: "贵阳",
+                score: 5,
+                avatar: require('../Resources/Images/avatar.png'),
+                datetime: '2016-4-11 20:11',
+            });
+        }
+        
         this.state = {
             dataSource: dataSource,
             keywords: dataSource.cloneWithRows(['写代码', '威神']),
@@ -35,6 +49,7 @@ export default class RequirementDetail extends Component {
                 require('../Resources/Images/bgImg/test-3.png'),
                 require('../Resources/Images/bgImg/test-3.png'),
             ]),
+            commonts: dataSource.cloneWithRows(test_comments),
         }
     }
     
@@ -54,6 +69,10 @@ export default class RequirementDetail extends Component {
                 <Image style={styles.images} source={rowData} />
             </View>
         )
+    }
+    
+    _renderComments(rowData) {
+        return <CommentItem rowData={rowData} />;
     }
     
     render() {
@@ -138,6 +157,14 @@ export default class RequirementDetail extends Component {
                             </View>
                         </View>
                         {/* 交易详情 end */}
+                        {/* 评价列表 start */}
+                        <View style={[BorderStyles.topAndBottom, ContentStyles.propertyArea, {marginBottom: 10}]}>
+                            <Text style={ContentStyles.propertyTitle}>评论</Text>
+                            <ListView 
+                                dataSource={this.state.commonts}
+                                renderRow={this._renderComments}/>
+                        </View>
+                        {/* 评价列表 end */}
                     </ScrollView>
                 </View>
             </View>
