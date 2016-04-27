@@ -23,6 +23,7 @@ import Search from './App/View/Search';
 import OrderDetail from './App/View/OrderDetail';
 import UserInfo from './App/View/UserInfo';
 import RequirementDetail from './App/View/RequirementDetail';
+import AddRequirement from './App/View/AddRequirement';
 
 class vneedu extends Component {
     constructor() {
@@ -72,6 +73,8 @@ class vneedu extends Component {
                 return <UserInfo navigator={navigator} />;
             case 'requirement_detail':
                 return <RequirementDetail navigator={navigator} />;
+            case 'add_requirement':
+                return <AddRequirement navigator={navigator} />;
             // This should have StoryScreen
             default:
                 return <SplashScreen />;

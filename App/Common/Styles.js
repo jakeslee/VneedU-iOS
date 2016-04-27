@@ -19,6 +19,10 @@ export const BorderStyles = StyleSheet.create({
     top: topBorderStyle,
     bottom: bottomBorderStyle,
     topAndBottom: Object.assign({}, topBorderStyle, bottomBorderStyle),
+    imageAround: {
+        borderWidth: 0.5, 
+        borderColor: '#E1E1E1'
+    },
 });
 
 export const ButtonStyles = StyleSheet.create({

@@ -55,7 +55,7 @@ export default class HeaderBar extends Component {
                     <TouchableOpacity onPress={()=> this.props.navigator.push({name: 'search'})}>
                         <Icon style={styles.btnIcon} name="ios-search" color="#929292" />
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={()=> this.props.navigator.push({name: 'add_requirement'})}>
                         <Icon style={styles.btnIcon} name="ios-plus-outline" color="#929292" />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={()=> this.props.navigator.push({name: 'setting'})}>
