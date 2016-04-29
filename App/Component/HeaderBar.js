@@ -1,4 +1,5 @@
 import React, {
+    StatusBar,
     Component,
     StyleSheet,
     TouchableOpacity,
@@ -6,42 +7,66 @@ import React, {
     Text,
     Image,
 } from 'react-native';
-
+import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import Base from '../Common/Base';
+import { ImageStyles } from '../Common/Styles';
+import API from '../Constants/API';
+import {
+    set_tabbar
+} from '../Redux/Actions/AppAction';
 
 export default class HeaderBar extends Component {
     static defaultProps = {
         title: '首页',
-    };
-    static propTypes = {
-        title: React.PropTypes.string,
     };
     
     constructor(props) {
         super(props);
     }
     
+    componentDidMount() {
+        StatusBar.setBarStyle('default', true);
+    }
+    
+    turnToMe(logined = false) {
+        if (!logined) {
+            Actions.login();
+        } else {
+            this.props.dispatch(set_tabbar('me', false));
+        }
+    }
+    
     render() {
+        var avatar = require('../../App/Resources/Images/defaultAvatar.jpg');
+        let logined = this.props.entity.currentUser.user.hasOwnProperty('id');
+        if (logined && this.props.entity.currentUser.user.avatar) {
+            if (this.props.app.cdn_root) {
+                avatar = `${this.props.app.cdn_root}/${this.props.entity.currentUser.user.avatar}`;
+            }
+            avatar = `${API.API_ROOT}/static/${this.props.entity.currentUser.user.avatar}`;
+        }
+        
         return (
             <View style={styles.barContainer}>
                 <View style={[styles.barItem, {flex: 3,  marginLeft: 5}]}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={this.turnToMe.bind(this, logined)}>
                         <View style={{flexDirection: 'row'}}>
-                            <View style={{width: 37}}>
-                                <Image source={require('../../App/Resources/Images/avatar.png')} />
+                            <View style={[ImageStyles.avatarRound(37), {width: 37}]}>
+                                <Image source={avatar} style={ImageStyles.avatarRound(37)}/>
                             </View>
                             <View style={{flex:2, marginLeft: 4, marginTop: 10, marginBottom: 10, flexDirection: 'row'}}>
                                 <Text>
-                                    Jakes Lee
+                                    {logined ? this.props.entity.currentUser.user.name : '未登录'}
                                 </Text>
+                                {logined &&
                                 <View style={{marginLeft: 4, flexDirection: 'row'}}>
                                     <Image source={require('../../App/Resources/Images/Lv.png')} />
                                     <Text style={styles.levelText}>
                                         17
                                     </Text>
-                                </View>
+                                </View>}
                             </View>
                         </View>
                     </TouchableOpacity>
@@ -55,10 +80,10 @@ export default class HeaderBar extends Component {
                     <TouchableOpacity onPress={()=> this.props.navigator.push({name: 'search'})}>
                         <Icon style={styles.btnIcon} name="ios-search" color="#929292" />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={()=> this.props.navigator.push({name: 'add_requirement'})}>
+                    <TouchableOpacity onPress={() => logined ? Actions.add_requirement() : Actions.login()}>
                         <Icon style={styles.btnIcon} name="ios-plus-outline" color="#929292" />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={()=> this.props.navigator.push({name: 'setting'})}>
+                    <TouchableOpacity onPress={() => Actions.setting()}>
                         <Icon style={styles.btnIcon} name="gear-a" color="#929292" />
                     </TouchableOpacity>
                 </View>

@@ -3,11 +3,25 @@
 import React, {
     AppRegistry,
     Component,
-    StyleSheet,
-    Text,
-    View,
-    Navigator,
 } from 'react-native';
+
+import {
+    createStore,
+    applyMiddleware,
+    compose,
+} from 'redux';
+import { Provider } from 'react-redux';
+import thunkMiddleware from 'redux-thunk';
+import { Scene } from 'react-native-router-flux';
+
+import App from './App/Redux/App';
+import redusers from './App/Redux/Reducers';
+
+const Middlewares = [thunkMiddleware];
+
+const store = compose(
+    applyMiddleware(...Middlewares)
+)(createStore)(redusers);
 
 import SplashScreen from './App/View/SplashScreen';
 import Main from './App/View/Main';
@@ -26,82 +40,30 @@ import RequirementDetail from './App/View/RequirementDetail';
 import AddRequirement from './App/View/AddRequirement';
 
 class vneedu extends Component {
-    constructor() {
-        super();
-        this.state = {
-            splashed: true,
-        }
-    }
-    
-    componentDidMount() {
-        this.timer = setTimeout(()=>{
-            this.setState({
-                splashed: true,
-            });
-        }, 2000);
-    }
-    
-    componentWillUnmount() {
-        clearTimeout(this.timer);
-    }
-    
-    renderScene(route, navigator) {
-        switch (route.name) {
-            case 'about':
-                return <About navigator={navigator} />;
-            case 'main': 
-                return <Main navigator={navigator} />;
-            case 'category_filter': 
-                return <CategoryFilter navigator={navigator} />;
-            case 'login':
-                return <Login navigator={navigator} />;
-            case 'register':
-                return <Register navigator={navigator} />;
-            case 'setting':
-                return <Setting navigator={navigator} />;
-            case 'password_reset':
-                return <PasswordReset navigator={navigator} />;
-            case 'info_modify':
-                return <InfoModify navigator={navigator} />;
-            case 'judgement':
-                return <Judgement navigator={navigator} />;
-            case 'search':
-                return <Search navigator={navigator} />;
-            case 'order_detail':
-                return <OrderDetail navigator={navigator} />;
-            case 'user_info':
-                return <UserInfo navigator={navigator} />;
-            case 'requirement_detail':
-                return <RequirementDetail navigator={navigator} />;
-            case 'add_requirement':
-                return <AddRequirement navigator={navigator} />;
-            // This should have StoryScreen
-            default:
-                return <SplashScreen />;
-        }
-    }
-    
     render() {
-        if (this.state.splashed){
-            return (
-                <Navigator
-                    initialRoute={{name: 'main'}}
-                    renderScene={this.renderScene}
-                    configureScene={(route) => Navigator.SceneConfigs.FloatFromRight} />
-            );
-        } else {
-            return <SplashScreen />;
-        }
+        return (
+            <Provider store={store}>
+                <App>
+                    <Scene key='root' hideNavBar={true}>
+                        <Scene key='main' component={Main} title='首页' initial={true}/>
+                        <Scene key='login' component={Login} title='登录'/>
+                        <Scene key='register' component={Register} title='注册'/>
+                        <Scene key='about' component={About} title='关于'/>
+                        <Scene key='setting' component={Setting} title='设置'/>
+                        <Scene key='password_reset' component={PasswordReset} title='重设密码'/>
+                        <Scene key='info_modify' component={InfoModify} title='信息修改'/>
+                        <Scene key='category_filter' component={CategoryFilter} title='分类检索'/>
+                        <Scene key='judgement' component={Judgement} title='评价'/>
+                        <Scene key='search' component={Search} title='搜索'/>
+                        <Scene key='order_detail' component={OrderDetail} title='订单信息'/>
+                        <Scene key='user_info' component={UserInfo} title='用户信息'/>
+                        <Scene key='requirement_detail' component={RequirementDetail} title='需求详情'/>
+                        <Scene key='add_requirement' component={AddRequirement} title='增加需求'/>
+                    </Scene>
+                </App>
+            </Provider>
+        );
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-    },
-});
 
 AppRegistry.registerComponent('vneedu', () => vneedu);

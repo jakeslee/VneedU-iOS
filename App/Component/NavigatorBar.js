@@ -8,6 +8,8 @@ import React, {
     View,
     Text,
 } from 'react-native';
+import { Actions } from 'react-native-router-flux';
+
 import Icon from 'react-native-vector-icons/Ionicons';
 import { NavigatorStyles } from '../Common/Styles';
 
@@ -26,15 +28,15 @@ export default class NavigatorBar extends Component {
         onSubmit: PropTypes.func,
     }
     
-    constructor(props) {
-        super(props);
+    shouldComponentUpdate(nextProps, nextState) {
+        return nextProps.title !== this.props.title;
     }
     
     render() {
         StatusBar.setBarStyle('light-content', true);
         return (
             <View style={[NavigatorStyles.navigatorBar, {flexDirection: 'row'}]}>
-                <TouchableOpacity onPress={()=> this.props.navigator.pop()} style={{flexDirection: 'row'}}>
+                <TouchableOpacity onPress={()=> {Actions.pop(); Actions.refresh(); }} style={{flexDirection: 'row'}}>
                     <Icon name='chevron-left' color='#FFF' size={20} style={{paddingRight: 10}} />
                     {this.props.enableSearchBar ? null :
                     <Text style={{color: '#FFF', fontSize: 18, }}>{this.props.title}</Text>}

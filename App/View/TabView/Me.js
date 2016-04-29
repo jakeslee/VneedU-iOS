@@ -1,4 +1,5 @@
 import React, {
+    StatusBar,
     Component,
     StyleSheet,
     ScrollView,
@@ -7,18 +8,16 @@ import React, {
     Text,
     Image,
 } from 'react-native';
-
+import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import { BorderStyles, ButtonStyles } from '../../Common/Styles';
 import Base from '../../Common/Base';
+import { user_logout } from '../../Redux/Actions/UserAction';
 
 export default class Me extends Component {
-    constructor(props) {
-        super(props);
-    }
-    
     render() {
+        StatusBar.setBarStyle('light-content', true);
         return (
             <View style={{flex: 1}}>
                 <View style={{backgroundColor: '#36D17D', paddingTop: 30,}}>
@@ -26,7 +25,7 @@ export default class Me extends Component {
                         <Text style={{color: '#FFF', fontSize: 18, flex: 1}}>我的</Text>
                         <View style={{flexDirection: 'row'}}>
                             <Icon name='ios-bell' size={25} color='#FFF'/>
-                            <TouchableOpacity onPress={()=> this.props.navigator.push({name: 'setting'})}  style={{marginLeft: 10}}>
+                            <TouchableOpacity onPress={()=> Actions.setting()}  style={{marginLeft: 10}}>
                                 <Icon name='gear-a' size={25} color='#FFF'/>
                             </TouchableOpacity>
                         </View>
@@ -122,7 +121,8 @@ export default class Me extends Component {
                     </View>
                     {/* user security end */}
                     <View style={[ButtonStyles.itemBtnArea, {marginBottom: 15}]}>
-                        <TouchableOpacity style={[ButtonStyles.primaryBtn, {width: Base.width * 0.9, }]}>
+                        <TouchableOpacity style={[ButtonStyles.primaryBtn, {width: Base.width * 0.9, }]}
+                            onPress={()=> this.props.dispatch(user_logout())}>
                             <Text style={ButtonStyles.primaryBtnText}>退出登录</Text>
                         </TouchableOpacity>
                     </View>

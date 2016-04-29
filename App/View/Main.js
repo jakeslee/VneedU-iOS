@@ -11,6 +11,8 @@ import React, {
     Text,
     TabBarIOS
 } from 'react-native';
+import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as Color from '../Common/Color';
 import HeaderBar from '../Component/HeaderBar';
@@ -18,20 +20,34 @@ import Home from './TabView/Home';
 import Order from './TabView/Order';
 import Me from './TabView/Me';
 
-export default class Main extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            selectedTab: 'home',
-            showTopBar: true,
+import {
+    set_tabbar
+} from '../Redux/Actions/AppAction';
+
+import {
+    loadUserFromStorage
+} from '../Redux/Actions/UserAction';
+
+class Main extends Component {
+    componentDidMount() {
+        this.props.dispatch(loadUserFromStorage());
+    }
+    
+    turnToMe(logined = false) {
+        if (!logined) {
+            Actions.login();
+        } else {
+            this.props.dispatch(set_tabbar('me', false));
         }
     }
 
     _renderContent() {
-        switch(this.state.selectedTab) {
+        switch(this.props.app.selectedTab) {
             case 'home':
+                StatusBar.setBarStyle('default', true);
                 return <Home {...this.props} />;
             case 'order':
+                StatusBar.setBarStyle('default', true);
                 return <Order {...this.props} />;
             case 'me':
                 return <Me {...this.props} />;
@@ -41,25 +57,22 @@ export default class Main extends Component {
     }
 
     render() {
+        let logined = this.props.entity.currentUser.user.hasOwnProperty('id');
+        
         return (
-            <View style={{flex: 1, flexDirection: 'column'}}>  
+            <View style={{flex: 1, flexDirection: 'column'}}>
                 <TabBarIOS
                     tintColor={Color.tabBarColor.tabColor}
                     barTintColor={Color.tabBarColor.tabBgColor}
-                    style={[styles.tabContainer, {top: this.state.showTopBar ? 56 : 0}]}
-                    >
+                    style={[styles.tabContainer, {top: this.props.app.showTopBar ? 56 : 0}]}>
                     <Icon.TabBarItem
                         name="home"
                         title="首页"
                         iconName="ios-home-outline"
                         selectedIconName="ios-home"
-                        selected={this.state.selectedTab === 'home'}
+                        selected={this.props.app.selectedTab === 'home'}
                         onPress={()=> {
-                            this.setState({
-                                selectedTab: 'home',
-                                showTopBar: true,
-                            });
-                            StatusBar.setBarStyle('default', true);
+                            this.props.dispatch(set_tabbar('home', true));
                         }} >
                         {this._renderContent()}
                     </Icon.TabBarItem>
@@ -68,13 +81,9 @@ export default class Main extends Component {
                         title="订单"
                         iconName="ios-list-outline"
                         selectedIconName="ios-list"
-                        selected={this.state.selectedTab === 'order'}
+                        selected={this.props.app.selectedTab === 'order'}
                         onPress={()=> {
-                            StatusBar.setBarStyle('default', true);
-                            this.setState({
-                                selectedTab: 'order',
-                                showTopBar: true,
-                            });
+                            this.props.dispatch(set_tabbar('order', true));
                         }}>
                         {this._renderContent()}
                     </Icon.TabBarItem>
@@ -83,19 +92,13 @@ export default class Main extends Component {
                         title="我"
                         iconName="ios-person-outline"
                         selectedIconName="ios-person"
-                        selected={this.state.selectedTab === 'me'}
-                        onPress={()=> {
-                            StatusBar.setBarStyle('light-content', true);
-                            this.setState({
-                                selectedTab: 'me',
-                                showTopBar: false,
-                            });
-                        }}>
+                        selected={this.props.app.selectedTab === 'me'}
+                        onPress={this.turnToMe.bind(this, logined)}>
                         {this._renderContent()}
                     </Icon.TabBarItem>
                 </TabBarIOS>
                 {(()=> {
-                    if (this.state.showTopBar) {
+                    if (this.props.app.showTopBar) {
                         return <HeaderBar style={styles.topBar} {...this.props}/>;
                     }
                 })()}
@@ -118,3 +121,28 @@ const styles = StyleSheet.create({
         right: 0,
     },
 });
+
+export default connect((state)=>{
+    let {
+        app,
+        currentUser,
+        user,
+        orders,
+        requirement,
+        comments,
+        order,
+    } = state;
+    
+    return {
+        app,
+        list: {
+            orders,
+            comments,
+        },
+        entity: {
+            currentUser,
+            user,
+            order,
+        }
+    }
+})(Main);

@@ -12,12 +12,11 @@ import React, {
 import Base from '../Common/Base';
 import { BorderStyles, ButtonStyles } from '../Common/Styles';
 import NavigatorBar from '../Component/NavigatorBar';
+import { set_pushstatus } from '../Redux/Actions/AppAction';
+import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
 
-export default class About extends Component {
-    state = {
-        pushIsOn: true,
-    }
-    
+class Setting extends Component {
     render() {
         return (
             <View style={{flex: 1, backgroundColor: '#F6F6F6'}}>
@@ -27,7 +26,7 @@ export default class About extends Component {
                         <Text style={{color: 'rgba(0,0,0, .69)', flex: 1}}>
                             推送通知
                         </Text>
-                        <Switch value={this.state.pushIsOn} onValueChange={(v)=> this.setState({pushIsOn: v})}/>
+                        <Switch value={this.props.app.pushIsOn} onValueChange={(v)=> this.props.dispatch(set_pushstatus(v))}/>
                     </View>
                     <View style={[{flexDirection: 'row', padding: 12}, BorderStyles.top]}>
                         <Text style={{color: 'rgba(0,0,0, .69)', flex: 1}}>
@@ -37,7 +36,7 @@ export default class About extends Component {
                     </View>
                 </View>
                 <View style={[BorderStyles.topAndBottom, {marginTop: 10, backgroundColor: '#FFF'}]}>
-                    <TouchableOpacity onPress={()=> this.props.navigator.push({name: 'about'})}>
+                    <TouchableOpacity onPress={()=> Actions.about()}>
                         <Text style={{color: 'rgba(0,0,0, .69)', padding: 12}}>
                             关于威尼优
                         </Text>
@@ -47,3 +46,5 @@ export default class About extends Component {
         )
     }
 }
+
+export default connect(({app})=>({app}))(Setting);
