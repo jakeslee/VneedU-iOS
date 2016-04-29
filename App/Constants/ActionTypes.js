@@ -1,0 +1,18 @@
+export default {
+    // App
+    SET_CDN: 'SET_CDN',
+    SET_PUSHSTATUS: 'SET_PUSHSTATUS',
+    
+    // TabBar
+    SET_TABBAR: 'SET_TABBAR',
+    
+    // 授权
+    REQUEST_LOGIN: 'REQUEST_LOGIN',
+    RECV_LOGIN: 'RECV_LOGIN',
+    LOGOUT: 'LOGOUT',
+    SET_AUTHORIZATION: 'SET_AUTHORIZATION',
+    
+    // 注册
+    REQUEST_SIGNUP: 'REQUEST_SIGNUP',
+    RECV_SIGNUP: 'RECV_SIGNUP',
+};
