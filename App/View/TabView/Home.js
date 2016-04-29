@@ -58,7 +58,6 @@ export default class Home extends Component {
     }
     
     render() {
-        StatusBar.setBarStyle('default', true);
         return (
             <View style={{flex: 1,}}>
                 <ScrollView style={styles.contentContainer} 

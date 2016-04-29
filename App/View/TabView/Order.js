@@ -10,6 +10,7 @@ import React, {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/EvilIcons';
+import { BorderStyles, ButtonStyles, ImageStyles } from '../../Common/Styles';
 
 const ORDER_STATUS = ['订单已提交', '订单已确定', '订单已完成'];
 
@@ -73,7 +74,9 @@ export default class Order extends Component {
                 </View>
                 <TouchableOpacity style={{marginTop: 10, }} onPress={()=> this.props.navigator.push({name: 'order_detail'})} >
                     <View style={{flexDirection: 'row', }}>
-                        <Image style={{height: 37, width: 37}} source={rowData.creator.avatar} />
+                        <View style={ImageStyles.avatarRound(37)}>
+                            <Image style={{height: 37, width: 37}} source={rowData.creator.avatar} />
+                        </View>
                         <View style={{marginLeft: 10, }}>
                             <Text style={styles.rqUserTitle}>{rowData.creator.name}</Text>
                             <Text style={{fontSize: 13, fontWeight: '400'}}>{rowData.title}</Text>

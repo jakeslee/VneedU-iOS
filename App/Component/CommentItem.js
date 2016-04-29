@@ -10,7 +10,7 @@ import React, {
 
 import moment from 'moment';
 import localeZh from 'moment/locale/zh-cn';
-import { BorderStyles, } from '../Common/Styles';
+import { BorderStyles, ImageStyles } from '../Common/Styles';
 
 moment.locale('zh-cn', localeZh);
 
@@ -37,7 +37,9 @@ export default class CommentItem extends Component {
                         : this.props.rowData.datetime;
         return (
             <View style={[BorderStyles.top, {flexDirection: 'row', padding: 10, alignItems: 'center'}]}>
-                <Image style={{width: 31, height: 31}} source={this.props.rowData.avatar}/>
+                <View style={ImageStyles.avatarRound(31)}>
+                    <Image style={{width: 31, height: 31}} source={this.props.rowData.avatar}/>
+                </View>
                 <View style={{marginLeft: 10, flex: 1}}>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                         <Text style={{flex: 1, color: '#323231'}}>

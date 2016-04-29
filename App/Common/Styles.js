@@ -21,7 +21,8 @@ export const BorderStyles = StyleSheet.create({
     topAndBottom: Object.assign({}, topBorderStyle, bottomBorderStyle),
     imageAround: {
         borderWidth: 0.5, 
-        borderColor: '#E1E1E1'
+        borderColor: '#E1E1E1',
+        overflow: 'hidden',
     },
 });
 
@@ -59,6 +60,7 @@ export const ImageStyles = {
             alignItems: 'center', 
             justifyContent: 'center', 
             backgroundColor: '#FFF',
+            overflow: 'hidden',
         }
     },
 };

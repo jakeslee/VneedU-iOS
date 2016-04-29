@@ -91,7 +91,9 @@ export default class UserInfo extends Component {
                         {/* head start */}
                         <View style={styles.headStyle}>
                             <View style={[ImageStyles.avatarRound(56), {marginBottom: 10}]}>
-                                <Image style={{width: 54, height: 54}} source={require('../Resources/Images/avatar.png')}/>
+                                <View style={ImageStyles.avatarRound(54)}>
+                                    <Image style={{width: 54, height: 54}} source={require('../Resources/Images/avatar.png')}/>
+                                </View>
                             </View>
                             <Text style={{color: '#FFF', fontSize: 16}}>
                                 Jakes Lee
