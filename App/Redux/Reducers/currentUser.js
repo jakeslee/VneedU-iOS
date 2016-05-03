@@ -13,7 +13,7 @@ export default function reducer(state = initialState, action = {}) {
             return {
                 ...state,
                 user: Object.assign({}, state.user, action.user),
-            }
+            };
         case Types.REQUEST_LOGIN:
             return {
                 ...state,

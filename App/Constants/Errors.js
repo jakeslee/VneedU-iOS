@@ -41,7 +41,6 @@ const AUTH_ERRORS = {
 };
 
 export function getErrorsMessage(code) {
-    console.log(code, code/1000)
     switch (parseInt(code/1000)) {
         default:
         case 1: return COMMON_ERRORS[code];

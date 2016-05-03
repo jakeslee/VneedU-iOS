@@ -32,20 +32,10 @@ import {
 class Main extends Component {
     constructor(props) {
         super(props);
-        
-        this.timer = setInterval(() => {
-            let logined = (this.props.entity.currentUser.user || {}).hasOwnProperty('id');
-            if (logined)
-                this.props.dispatch(refresh_user(this.props.entity.currentUser.user.token));
-        }, 10000);
     }
 
     componentDidMount() {
         this.props.dispatch(loadUserFromStorage());
-    }
-    
-    componentWillUnmount() {
-        clearInterval(this.timer);
     }
     
     turnToMe(logined = false) {
@@ -53,6 +43,7 @@ class Main extends Component {
             Actions.login();
         } else {
             this.props.dispatch(set_tabbar('me', false));
+            this.props.dispatch(refresh_user(this.props.entity.currentUser.user));
         }
     }
 
@@ -100,6 +91,7 @@ class Main extends Component {
                         onPress={()=> {
                             if (logined) {
                                 this.props.dispatch(set_tabbar('order', true));
+                                this.props.dispatch(refresh_user(this.props.entity.currentUser.user));
                             } else {
                                 Actions.login();
                             }

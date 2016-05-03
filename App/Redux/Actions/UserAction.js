@@ -67,19 +67,19 @@ export function loadUserFromStorage() {
                 if (value) {
                     value = JSON.parse(value);
                     dispatch(set_authorization(value));
-                    dispatch(refresh_user(value.token));
+                    dispatch(refresh_user(value));
                 }
             })
     }
 }
 
-export function refresh_user(token) {
+export function refresh_user(old_user) {
     return (dispatch) => {
-        return getUser(token)
+        return getUser(old_user.token)
             .then((response) => response.json())
             .then((json) => {
                 if (json.error === 0) {
-                    saveToStorage('user', JSON.stringify(json.retData.user)).then(()=> {
+                    saveToStorage('user', JSON.stringify(Object.assign({}, old_user, json.retData.user))).then(()=> {
                         dispatch(set_authorization(json.retData.user));
                     }).done();
                 } else {
@@ -104,7 +104,6 @@ export function user_login(username, password) {
                     }).done();
                 } else {
                     AlertIOS.alert('错误', getErrorsMessage(json.error));
-                    dispatch(user_logout());
                 }
             });
     }
