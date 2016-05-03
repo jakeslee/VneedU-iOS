@@ -1,16 +1,10 @@
 
-/* @flow */
-function makeParams(params) {
-    var formData = new FormData();
-    
-    for (var k in params) {
-        formData.append(k, params[k]);
-    }
-    return formData;
+function makeParams(params = {}) {
+    return Object.keys(params).map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(params[key])).join('&');
 }
 
 export function get(url, params = {}, headers = {}) {
-    let queries = Object.keys(params).map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(params[key])).join('&');
+    let queries = makeParams(params);
     
     return fetch(`${url}?${queries}`, {
         method: 'GET',
@@ -21,7 +15,9 @@ export function get(url, params = {}, headers = {}) {
 export function post(url, params, headers = {}) {
     return fetch(url, {
         method: 'POST',
-        headers: headers,
+        headers: Object.assign({}, headers, {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }),
         body: makeParams(params),
     });
 }
@@ -29,7 +25,9 @@ export function post(url, params, headers = {}) {
 export function put(url, params, headers = {}) {
     return fetch(url, {
         method: 'PUT',
-        headers: headers,
+        headers: Object.assign({}, headers, {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }),
         body: makeParams(params),
     });
 }
@@ -37,7 +35,9 @@ export function put(url, params, headers = {}) {
 export function Delete(url, { params, headers } = {}) {
     return fetch(url, {
         method: 'DELETE',
-        headers: headers || {},
+        headers: Object.assign({}, headers, {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }),
         body: makeParams(params || {}),
     });
 }
