@@ -6,7 +6,7 @@ export default function reducer(state = {
     pushIsOn: true,
     selectedTab: 'home',
     showTopBar: true,
-    cdn_root: null,
+    cdn_config: {cdn_enable: false},
 }, action = {}) {
 
     switch(action.type) {
@@ -18,7 +18,7 @@ export default function reducer(state = {
         case Types.SET_CDN:
             return {
                 ...state,
-                cdn_root: action.cdn_root,
+                cdn_config: Object.assign({}, state.cdn_config, action.cdn_config),
             }
         case Types.SET_PUSHSTATUS:
             return {

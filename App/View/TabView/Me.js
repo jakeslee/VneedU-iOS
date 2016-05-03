@@ -18,7 +18,7 @@ import { user_logout } from '../../Redux/Actions/UserAction';
 export default class Me extends Component {
     render() {
         StatusBar.setBarStyle('light-content', true);
-        let avatar = avatar_process(this.props.entity.currentUser.user.avatar, this.props.app.cdn_root);
+        let avatar = avatar_process(this.props.entity.currentUser.user.avatar, this.props.app.cdn_config);
         return (
             <View style={{flex: 1}}>
                 <View style={{backgroundColor: '#36D17D', paddingTop: 30,}}>

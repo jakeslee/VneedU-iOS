@@ -11,13 +11,34 @@ export const Base = {
     height,
 }
 
-export function avatar_process(avatar, cdnRoot) {
+export function cdn_process(cdn_config, url = '') {
+    let matches = url.match(/(.+):\//);
+
+    if (!matches) {
+        console.warn('URL is illegal!');
+        return url;
+    }
+    
+    let proto = matches[0],
+        bucket = matches[1];
+    let baseUrl = `http://${cdn_config[bucket]}`;
+
+    if (typeof baseUrl === 'array') {
+        baseUrl = baseUrl[parseInt((Math.random() * 10) % baseUrl.length)];
+    }
+    return url.replace(proto, baseUrl);
+}
+
+export function avatar_process(avatar, cdn_config) {
     var avatar_tmp = require('../Resources/Images/defaultAvatar.jpg');
     if (avatar) {
-        if (cdnRoot) {
-            avatar_tmp = `${cdnRoot}/${avatar}`;
+        if (cdn_config.cdn_enable) {
+            avatar_tmp = { uri: cdn_process(cdn_config, avatar) };
+        } else {
+            let av = avatar.replace(/.*:\//, '');
+            avatar_tmp = { uri: `${API.API_ROOT}/static${av}` };
         }
-        avatar_tmp = `${API.API_ROOT}/static/${avatar}`;
+            
     }
     return avatar_tmp;
 }

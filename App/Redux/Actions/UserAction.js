@@ -1,11 +1,11 @@
 import {
     AlertIOS
 } from 'react-native';
-
+import { compose } from 'redux';
 import { Actions } from 'react-native-router-flux';
 import Types from '../../Constants/ActionTypes';
 
-import { set_tabbar } from './AppAction';
+import { set_tabbar, set_cdn } from './AppAction';
 
 import {
     loadFromStorage,
@@ -79,9 +79,12 @@ export function refresh_user(old_user) {
             .then((response) => response.json())
             .then((json) => {
                 if (json.error === 0) {
-                    saveToStorage('user', JSON.stringify(Object.assign({}, old_user, json.retData.user))).then(()=> {
-                        dispatch(set_authorization(json.retData.user));
-                    }).done();
+                    compose(
+                        saveToStorage('user', JSON.stringify(Object.assign({}, old_user, json.retData.user)))
+                            .then(()=> dispatch(set_authorization(json.retData.user))).done(),
+                        saveToStorage('cdn_config', JSON.stringify(json.retData.cdn))
+                            .then(()=> dispatch(set_cdn(json.retData.cdn)))
+                    );
                 } else {
                     AlertIOS.alert('错误', getErrorsMessage(json.error));
                     dispatch(user_logout());

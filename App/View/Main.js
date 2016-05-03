@@ -21,7 +21,8 @@ import Order from './TabView/Order';
 import Me from './TabView/Me';
 
 import {
-    set_tabbar
+    set_tabbar,
+    load_config,
 } from '../Redux/Actions/AppAction';
 
 import {
@@ -35,6 +36,7 @@ class Main extends Component {
     }
 
     componentDidMount() {
+        this.props.dispatch(load_config());
         this.props.dispatch(loadUserFromStorage());
     }
     

@@ -35,7 +35,7 @@ export default class HeaderBar extends Component {
     }
     
     render() {
-        let avatar = avatar_process(this.props.entity.currentUser.user.avatar, this.props.app.cdn_root);
+        let avatar = avatar_process(this.props.entity.currentUser.user.avatar, this.props.app.cdn_config);
         let logined = (this.props.entity.currentUser.user || {}).hasOwnProperty('id');
         return (
             <View style={styles.barContainer}>
