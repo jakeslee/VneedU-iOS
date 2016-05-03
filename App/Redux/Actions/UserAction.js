@@ -17,6 +17,7 @@ import {
     login,
     signup,
     getUser,
+    set_profile,
 } from '../../Services/UserService';
 
 import { getErrorsMessage } from '../../Constants/Errors';
@@ -130,7 +131,6 @@ export function user_register(username, password) {
             password,
         }).then((response) => response.json())
         .then((json) => {
-            console.log(json, getErrorsMessage(json.error))
             if (json.error === 0) {
                 dispatch(recv_register(json));
                 saveToStorage('user', JSON.stringify(json.retData.user)).then(()=> {
@@ -141,6 +141,26 @@ export function user_register(username, password) {
                 AlertIOS.alert('错误', getErrorsMessage(json.error));
             }
         })
+    }
+}
+
+export function modify_user(current_user, params = {}) {
+    return (dispatch) => {
+        return set_profile(current_user.token, params)
+            .then((response)=> response.json())
+            .then((json) => {
+                if (json.error === 0) {
+                    let new_user = Object.assign({}, current_user, params);
+                    dispatch(set_authorization(new_user));
+                    AlertIOS.alert('提示', '帐号更新成功保存', [{
+                        text: '确定', 
+                        onPress: () => saveToStorage('user', JSON.stringify(new_user)).then(()=> {
+                            Actions.pop();
+                        }).done()},
+                    ]);
+                    
+                }
+            });
     }
 }
 
