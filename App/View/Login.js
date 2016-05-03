@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import Base from '../Common/Base';
+import { Base } from '../Common/Base';
 import { BorderStyles, ButtonStyles } from '../Common/Styles';
 
 import {
@@ -25,7 +25,7 @@ class Login extends Component {
         
         this.state = {
             username: props.username || '13221061445',
-            password: props.password || '4321',
+            password: props.password || '1234',
         }
     }
     

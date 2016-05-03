@@ -9,7 +9,7 @@ import React, {
     View,
     Text,
 } from 'react-native';
-import Base from '../Common/Base';
+import { Base } from '../Common/Base';
 import { BorderStyles, ButtonStyles } from '../Common/Styles';
 import NavigatorBar from '../Component/NavigatorBar';
 import { set_pushstatus } from '../Redux/Actions/AppAction';

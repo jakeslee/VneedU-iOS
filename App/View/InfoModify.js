@@ -10,7 +10,7 @@ import React, {
 } from 'react-native';
 import dismissKeyboard from 'dismissKeyboard';
 
-import Base from '../Common/Base';
+import { Base } from '../Common/Base';
 import NavigatorBar from '../Component/NavigatorBar';
 import { BorderStyles, ButtonStyles, InputStyles } from '../Common/Styles';
 

@@ -14,7 +14,7 @@ import React, {
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/FontAwesome';
 
-import Base from '../Common/Base';
+import { Base } from '../Common/Base';
 import CommentItem from '../Component/CommentItem';
 import NavigatorBar from '../Component/NavigatorBar';
 import { BorderStyles, ButtonStyles, NavigatorStyles, ImageStyles, ContentStyles } from '../Common/Styles';

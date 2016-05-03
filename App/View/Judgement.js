@@ -9,7 +9,7 @@ import React, {
 } from 'react-native';
 import StarRating from 'react-native-star-rating';
 
-import Base from '../Common/Base';
+import { Base } from '../Common/Base';
 import NavigatorBar from '../Component/NavigatorBar';
 import { BorderStyles, ButtonStyles, InputStyles } from '../Common/Styles';
 

@@ -13,7 +13,7 @@ import React, {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
-import Base from '../Common/Base';
+import { Base } from '../Common/Base';
 import CommentItem from '../Component/CommentItem';
 import NavigatorBar from '../Component/NavigatorBar';
 import { BorderStyles, ButtonStyles, NavigatorStyles, ImageStyles, ContentStyles } from '../Common/Styles';

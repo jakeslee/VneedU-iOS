@@ -10,7 +10,7 @@ import React, {
     Text,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Base from '../Common/Base';
+import { Base } from '../Common/Base';
 import CommentItem from '../Component/CommentItem';
 import RequirementItem from '../Component/RequirementItem';
 import NavigatorBar from '../Component/NavigatorBar';

@@ -10,7 +10,7 @@ import React, {
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import Base from '../Common/Base';
+import { Base, avatar_process } from '../Common/Base';
 import { ImageStyles } from '../Common/Styles';
 import API from '../Constants/API';
 import {
@@ -35,15 +35,8 @@ export default class HeaderBar extends Component {
     }
     
     render() {
-        var avatar = require('../../App/Resources/Images/defaultAvatar.jpg');
+        let avatar = avatar_process(this.props.entity.currentUser.user.avatar, this.props.app.cdn_root);
         let logined = (this.props.entity.currentUser.user || {}).hasOwnProperty('id');
-        if (logined && this.props.entity.currentUser.user.avatar) {
-            if (this.props.app.cdn_root) {
-                avatar = `${this.props.app.cdn_root}/${this.props.entity.currentUser.user.avatar}`;
-            }
-            avatar = `${API.API_ROOT}/static/${this.props.entity.currentUser.user.avatar}`;
-        }
-        
         return (
             <View style={styles.barContainer}>
                 <View style={[styles.barItem, {flex: 3,  marginLeft: 5}]}>

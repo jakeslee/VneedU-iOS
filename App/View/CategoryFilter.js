@@ -8,7 +8,7 @@ import React, {
     View,
     Text,
 } from 'react-native';
-import Base from '../Common/Base';
+import { Base } from '../Common/Base';
 import NavigatorBar from '../Component/NavigatorBar';
 import RequirementItem from '../Component/RequirementItem';
 

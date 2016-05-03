@@ -11,13 +11,14 @@ import React, {
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { BorderStyles, ButtonStyles } from '../../Common/Styles';
-import Base from '../../Common/Base';
+import { BorderStyles, ButtonStyles, ImageStyles } from '../../Common/Styles';
+import { Base, avatar_process } from '../../Common/Base';
 import { user_logout } from '../../Redux/Actions/UserAction';
 
 export default class Me extends Component {
     render() {
         StatusBar.setBarStyle('light-content', true);
+        let avatar = avatar_process(this.props.entity.currentUser.user.avatar, this.props.app.cdn_root);
         return (
             <View style={{flex: 1}}>
                 <View style={{backgroundColor: '#36D17D', paddingTop: 30,}}>
@@ -35,16 +36,19 @@ export default class Me extends Component {
                     {/* Head start */}
                     <View style={{backgroundColor: '#36D17D', paddingBottom: 30}}>
                         <View style={styles.userInfo}>
-                            <Image style={{width: 54, height: 54, marginRight: 20, }} source={require('../../Resources/Images/avatar.png')} />
+                            <View style={[ImageStyles.avatarRound(55), {marginRight: 20}]}>
+                                <Image style={ImageStyles.avatarRound(54)} source={avatar} />
+                            </View>
+                            
                             <View style={{flexDirection: 'column', flex: 1}}>
                                 <Text style={{color: '#FFF', fontSize: 18, fontWeight: '500'}}>
-                                    Jakes Lee
+                                    {this.props.entity.currentUser.user.name}
                                 </Text>
                                 <Text style={{color: '#FFF', marginVertical: 3,}}>
-                                    @jakeslee
+                                    @{this.props.entity.currentUser.user.atId}
                                 </Text>
                                 <Text style={{color: '#FFF'}}>
-                                    13221061445
+                                    {this.props.entity.currentUser.user.phone}
                                 </Text>
                             </View>
                         </View>
@@ -55,7 +59,7 @@ export default class Me extends Component {
                         <View style={{paddingVertical: 15, flex: 1}}>
                             <View style={{flexDirection: 'row', justifyContent: 'center',}}>
                                 <Image style={{width: 18}} source={require('../../Resources/Images/Lv.png')}/>
-                                <Text style={{color: '#F5A623'}}>14</Text>
+                                <Text style={{color: '#F5A623'}}>{this.props.entity.currentUser.user.level || 0}</Text>
                             </View>
                             <Text style={styles.userInfoLevelText}>
                                 我的等级
@@ -63,7 +67,7 @@ export default class Me extends Component {
                         </View>
                         <View style={{paddingVertical: 15, flex: 1,borderLeftColor: '#BDBDBD', borderLeftWidth: 0.5, }}>
                             <Text style={{textAlign: 'center', color: '#F17C30', fontSize: 16}}>
-                                1200<Text style={{fontSize: 13}}>分</Text>
+                                {this.props.entity.currentUser.user.score || 0}<Text style={{fontSize: 13}}>分</Text>
                             </Text>
                             <Text style={styles.userInfoLevelText}>
                                 我的积分
@@ -76,9 +80,9 @@ export default class Me extends Component {
                         <Text style={styles.areaTitle}>用户简介</Text>
                         <View style={[{flexDirection: 'row', padding: 12}, BorderStyles.top]}>
                             <Text style={{color: '#313131', flex: 1}}>
-                                用户未补充
+                                {this.props.entity.currentUser.user.profile || '用户未补充'}
                             </Text>
-                            <TouchableOpacity onPress={()=> this.props.navigator.push({name: 'info_modify'})} >
+                            <TouchableOpacity onPress={()=> Actions.info_modify(...this.props)} >
                                 <Text style={{color: '#7C69E0'}}>修改</Text>
                             </TouchableOpacity>
                         </View>
@@ -94,7 +98,7 @@ export default class Me extends Component {
                             <Text style={styles.propertyItemText}>
                                 手机
                             </Text>
-                            <Text style={{color: '#5F5F5F'}}>13221061445</Text>
+                            <Text style={{color: '#5F5F5F'}}>{this.props.entity.currentUser.user.phone || '未绑定'}</Text>
                         </View>
                         <View style={[styles.propertyItem, BorderStyles.top]}>
                             <Text style={styles.propertyItemIcon}>
@@ -103,7 +107,7 @@ export default class Me extends Component {
                             <Text style={styles.propertyItemText}>
                                 邮箱
                             </Text>
-                            <Text style={{color: '#5F5F5F'}}>jakeslee66@gmail.com</Text>
+                            <Text style={{color: '#5F5F5F'}}>{this.props.entity.currentUser.user.email || '未绑定'}</Text>
                         </View>
                     </View>
                     {/* user related end */}
@@ -114,7 +118,7 @@ export default class Me extends Component {
                             <Text style={{color: '#313131', flex: 1}}>
                                 登录密码
                             </Text>
-                            <TouchableOpacity onPress={()=> this.props.navigator.push({name: 'password_reset'})} >
+                            <TouchableOpacity onPress={()=> Actions.password_reset(...this.props)} >
                                 <Text style={{color: '#7C69E0'}}>修改</Text>
                             </TouchableOpacity>
                         </View>
