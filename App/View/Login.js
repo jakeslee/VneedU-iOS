@@ -8,6 +8,7 @@ import React, {
     View,
     Text,
 } from 'react-native';
+import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -18,7 +19,7 @@ import {
     user_login
 } from '../Redux/Actions/UserAction';
 
-export default class Login extends Component {
+class Login extends Component {
     constructor(props) {
         super(props);
         
@@ -62,7 +63,7 @@ export default class Login extends Component {
                     </View>
                     <View style={{flexDirection: 'row', paddingHorizontal: 15}}>
                         <Text style={{color: '#3D8EFA', flex: 1}}>忘记密码</Text>
-                        <TouchableOpacity onPress={()=> this.props.navigator.push({name: 'register'})}>
+                        <TouchableOpacity onPress={Actions.register}>
                             <Text style={{color: '#3D8EFA'}}>注册</Text>
                         </TouchableOpacity>
                     </View>
@@ -84,3 +85,5 @@ const styles = StyleSheet.create({
         paddingLeft: 20
     },
 });
+
+export default connect(({currentUser})=>({currentUser}))(Login);

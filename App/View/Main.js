@@ -25,12 +25,27 @@ import {
 } from '../Redux/Actions/AppAction';
 
 import {
-    loadUserFromStorage
+    loadUserFromStorage,
+    refresh_user,
 } from '../Redux/Actions/UserAction';
 
 class Main extends Component {
+    constructor(props) {
+        super(props);
+        
+        this.timer = setInterval(() => {
+            let logined = (this.props.entity.currentUser.user || {}).hasOwnProperty('id');
+            if (logined)
+                this.props.dispatch(refresh_user(this.props.entity.currentUser.user.token));
+        }, 10000);
+    }
+
     componentDidMount() {
         this.props.dispatch(loadUserFromStorage());
+    }
+    
+    componentWillUnmount() {
+        clearInterval(this.timer);
     }
     
     turnToMe(logined = false) {
@@ -57,7 +72,7 @@ class Main extends Component {
     }
 
     render() {
-        let logined = this.props.entity.currentUser.user.hasOwnProperty('id');
+        let logined = (this.props.entity.currentUser.user || {}).hasOwnProperty('id');
         
         return (
             <View style={{flex: 1, flexDirection: 'column'}}>
@@ -83,7 +98,11 @@ class Main extends Component {
                         selectedIconName="ios-list"
                         selected={this.props.app.selectedTab === 'order'}
                         onPress={()=> {
-                            this.props.dispatch(set_tabbar('order', true));
+                            if (logined) {
+                                this.props.dispatch(set_tabbar('order', true));
+                            } else {
+                                Actions.login();
+                            }
                         }}>
                         {this._renderContent()}
                     </Icon.TabBarItem>
@@ -99,7 +118,7 @@ class Main extends Component {
                 </TabBarIOS>
                 {(()=> {
                     if (this.props.app.showTopBar) {
-                        return <HeaderBar style={styles.topBar} {...this.props}/>;
+                        return <HeaderBar style={styles.topBar} {...this.props} title=''/>;
                     }
                 })()}
             </View>
