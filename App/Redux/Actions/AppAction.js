@@ -36,6 +36,20 @@ export function load_config() {
                 dispatch(set_cdn(JSON.parse(v)));
                 console.log(v, '--- loading settings ----');
             }).done(),
+            loadFromStorage('opts_config').then((v) => {
+                dispatch(set_pushstatus( v ? JSON.parse(v).pushIsOn : false));
+                console.log(v, '--- loaded settings ----');
+            })
+        );
+    }
+}
+
+export function save_settings({ pushIsOn } = { pushIsOn: false }) {
+    return (dispatch) => {
+        return compose(
+            saveToStorage('opts_config', JSON.stringify({pushIsOn,})).then(()=>{
+                dispatch(set_pushstatus(pushIsOn));
+            }),
         );
     }
 }

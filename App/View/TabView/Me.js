@@ -26,7 +26,7 @@ export default class Me extends Component {
                         <Text style={{color: '#FFF', fontSize: 18, flex: 1}}>我的</Text>
                         <View style={{flexDirection: 'row'}}>
                             <Icon name='ios-bell' size={25} color='#FFF'/>
-                            <TouchableOpacity onPress={()=> Actions.setting()}  style={{marginLeft: 10}}>
+                            <TouchableOpacity onPress={()=> Actions.setting({app: this.props.app})}  style={{marginLeft: 10}}>
                                 <Icon name='gear-a' size={25} color='#FFF'/>
                             </TouchableOpacity>
                         </View>

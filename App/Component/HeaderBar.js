@@ -72,7 +72,7 @@ export default class HeaderBar extends Component {
                     <TouchableOpacity onPress={() => logined ? Actions.add_requirement() : Actions.login()}>
                         <Icon style={styles.btnIcon} name="ios-plus-outline" color="#929292" />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => Actions.setting()}>
+                    <TouchableOpacity onPress={() => Actions.setting({app: this.props.app})}>
                         <Icon style={styles.btnIcon} name="gear-a" color="#929292" />
                     </TouchableOpacity>
                 </View>

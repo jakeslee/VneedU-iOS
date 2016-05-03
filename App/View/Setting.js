@@ -12,11 +12,21 @@ import React, {
 import { Base } from '../Common/Base';
 import { BorderStyles, ButtonStyles } from '../Common/Styles';
 import NavigatorBar from '../Component/NavigatorBar';
-import { set_pushstatus } from '../Redux/Actions/AppAction';
+import { set_pushstatus, save_settings } from '../Redux/Actions/AppAction';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 
-class Setting extends Component {
+export default class Setting extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = this.props.app
+    }
+    
+    componentWillUnmount() {
+        this.props.dispatch(save_settings({...this.state}));
+    }
+    
     render() {
         return (
             <View style={{flex: 1, backgroundColor: '#F6F6F6'}}>
@@ -26,7 +36,7 @@ class Setting extends Component {
                         <Text style={{color: 'rgba(0,0,0, .69)', flex: 1}}>
                             推送通知
                         </Text>
-                        <Switch value={this.props.app.pushIsOn} onValueChange={(v)=> this.props.dispatch(set_pushstatus(v))}/>
+                        <Switch value={this.state.pushIsOn} onValueChange={(v)=> this.setState({pushIsOn: v})}/>
                     </View>
                     <View style={[{flexDirection: 'row', padding: 12}, BorderStyles.top]}>
                         <Text style={{color: 'rgba(0,0,0, .69)', flex: 1}}>
@@ -46,5 +56,3 @@ class Setting extends Component {
         )
     }
 }
-
-export default connect(({app})=>({app}))(Setting);
