@@ -13,12 +13,12 @@ import dismissKeyboard from 'dismissKeyboard';
 import { Base } from '../Common/Base';
 import NavigatorBar from '../Component/NavigatorBar';
 import { BorderStyles, ButtonStyles, InputStyles } from '../Common/Styles';
+import { modify_user } from '../Redux/Actions/UserAction';
 
 export default class InfoModify extends Component {
-    state = {
-        atId: 'jakeslee',
-        name: 'Jakes Lee',
-        description: '用户未补充',
+    constructor(props) {
+        super(props);
+        this.state = this.props.currentUser.user;
     }
     
     render() {
@@ -38,7 +38,10 @@ export default class InfoModify extends Component {
                             placeholder='用户描述' placeholderTextColor='#4D4D4D' value={this.state.description} onEndEditing={dismissKeyboard}/>
                     </View>
                     <View style={[ButtonStyles.itemBtnArea, {marginBottom: 15}]}>
-                        <TouchableOpacity style={[ButtonStyles.primaryBtn, {width: Base.width * 0.9, }]}>
+                        <TouchableOpacity style={[ButtonStyles.primaryBtn, {width: Base.width * 0.9, }]}
+                            onPress={()=> {
+                                this.props.dispatch(modify_user(this.props.currentUser.user, this.state));
+                            }}>
                             <Text style={ButtonStyles.primaryBtnText}>确认修改</Text>
                         </TouchableOpacity>
                     </View>

@@ -82,7 +82,7 @@ export default class Me extends Component {
                             <Text style={{color: '#313131', flex: 1}}>
                                 {this.props.entity.currentUser.user.profile || '用户未补充'}
                             </Text>
-                            <TouchableOpacity onPress={()=> Actions.info_modify(...this.props)} >
+                            <TouchableOpacity onPress={()=> Actions.info_modify({ currentUser: this.props.entity.currentUser})} >
                                 <Text style={{color: '#7C69E0'}}>修改</Text>
                             </TouchableOpacity>
                         </View>
