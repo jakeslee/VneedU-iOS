@@ -12,7 +12,7 @@ export default function reducer(state = initialState, action = {}) {
         case Types.SET_AUTHORIZATION:
             return {
                 ...state,
-                user: action.user,
+                user: Object.assign({}, state.user, action.user),
             }
         case Types.REQUEST_LOGIN:
             return {
@@ -23,7 +23,7 @@ export default function reducer(state = initialState, action = {}) {
                 result: null,
             }
         case Types.RECV_LOGIN:
-            console.log(action.data.retData)
+        case Types.RECV_SIGNUP:
             return {
                 ...state,
                 isFetching: false,

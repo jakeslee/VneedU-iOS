@@ -18,10 +18,6 @@ import {
 } from '../Redux/Actions/AppAction';
 
 export default class HeaderBar extends Component {
-    static defaultProps = {
-        title: '首页',
-    };
-    
     constructor(props) {
         super(props);
     }
@@ -40,7 +36,7 @@ export default class HeaderBar extends Component {
     
     render() {
         var avatar = require('../../App/Resources/Images/defaultAvatar.jpg');
-        let logined = this.props.entity.currentUser.user.hasOwnProperty('id');
+        let logined = (this.props.entity.currentUser.user || {}).hasOwnProperty('id');
         if (logined && this.props.entity.currentUser.user.avatar) {
             if (this.props.app.cdn_root) {
                 avatar = `${this.props.app.cdn_root}/${this.props.entity.currentUser.user.avatar}`;
@@ -64,7 +60,7 @@ export default class HeaderBar extends Component {
                                 <View style={{marginLeft: 4, flexDirection: 'row'}}>
                                     <Image source={require('../../App/Resources/Images/Lv.png')} />
                                     <Text style={styles.levelText}>
-                                        17
+                                        {this.props.entity.currentUser.user.level || 0}
                                     </Text>
                                 </View>}
                             </View>

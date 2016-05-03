@@ -1,3 +1,7 @@
+import {
+    AlertIOS
+} from 'react-native';
+
 import { Actions } from 'react-native-router-flux';
 import Types from '../../Constants/ActionTypes';
 
@@ -11,7 +15,11 @@ import {
 
 import {
     login,
+    signup,
+    getUser,
 } from '../../Services/UserService';
+
+import { getErrorsMessage } from '../../Constants/Errors';
 
 function request_login() {
     return {
@@ -19,9 +27,22 @@ function request_login() {
     };
 }
 
+function request_register() {
+    return {
+        type: Types.REQUEST_SIGNUP,
+    }
+}
+
 function recv_login(data) {
     return {
         type: Types.RECV_LOGIN,
+        data,
+    };
+}
+
+function recv_register(data) {
+    return {
+        type: Types.RECV_SIGNUP,
         data,
     };
 }
@@ -46,6 +67,24 @@ export function loadUserFromStorage() {
                 if (value) {
                     value = JSON.parse(value);
                     dispatch(set_authorization(value));
+                    dispatch(refresh_user(value.token));
+                }
+            })
+    }
+}
+
+export function refresh_user(token) {
+    return (dispatch) => {
+        return getUser(token)
+            .then((response) => response.json())
+            .then((json) => {
+                if (json.error === 0) {
+                    saveToStorage('user', JSON.stringify(json.retData.user)).then(()=> {
+                        dispatch(set_authorization(json.retData.user));
+                    }).done();
+                } else {
+                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+                    dispatch(user_logout());
                 }
             })
     }
@@ -57,11 +96,16 @@ export function user_login(username, password) {
         return login(username, password)
             .then((response) => response.json())
             .then((json) => {
-                dispatch(recv_login(json));
-                saveToStorage('user', JSON.stringify(json.retData.user)).then(()=> {
-                    Actions.pop();
-                    Actions.refresh();
-                }).done();
+                if (json.error === 0) {
+                    dispatch(recv_login(json));
+                    saveToStorage('user', JSON.stringify(json.retData.user)).then(()=> {
+                        Actions.pop();
+                        Actions.refresh();
+                    }).done();
+                } else {
+                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+                    dispatch(user_logout());
+                }
             });
     }
 }
@@ -73,6 +117,28 @@ export function user_logout() {
             dispatch(set_tabbar());
             Actions.refresh();
         });
+    }
+}
+
+export function user_register(username, password) {
+    return (dispatch) => {
+        dispatch(request_register);
+        return signup({
+            phone: username,
+            password,
+        }).then((response) => response.json())
+        .then((json) => {
+            console.log(json, getErrorsMessage(json.error))
+            if (json.error === 0) {
+                dispatch(recv_register(json));
+                saveToStorage('user', JSON.stringify(json.retData.user)).then(()=> {
+                    Actions.callback({key: 'main', type: 'reset'})
+                    Actions.refresh();
+                }).done();
+            } else {
+                AlertIOS.alert('错误', getErrorsMessage(json.error));
+            }
+        })
     }
 }
 
