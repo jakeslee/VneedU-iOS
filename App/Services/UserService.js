@@ -25,3 +25,11 @@ export function set_profile(token = '', params = {}) {
         Authorization: 'token ' + token,
     });
 }
+
+export function reset_password(password, token = '') {
+    return put(`${API.API_ROOT}${API.PASSWORD}`, {
+        password,
+    }, {
+        Authorization: 'token ' + token,
+    })
+}

@@ -18,6 +18,7 @@ import {
     signup,
     getUser,
     set_profile,
+    reset_password,
 } from '../../Services/UserService';
 
 import { getErrorsMessage } from '../../Constants/Errors';
@@ -118,6 +119,7 @@ export function user_logout() {
         dispatch(set_logout());
         return removeFromStorage('user').then(()=>{
             dispatch(set_tabbar());
+            Actions.callback({key: 'main', type: 'reset'});
             Actions.refresh();
         });
     }
@@ -161,6 +163,22 @@ export function modify_user(current_user, params = {}) {
                     
                 }
             });
+    }
+}
+
+export function modify_password(current_user, new_password) {
+    return (dispatch) => {
+        return reset_password(new_password, current_user.token)
+            .then((response) => response.json())
+            .then((json) => {
+                if (json.error === 0) {
+                    // 如果修改成功则需要重新登录
+                    dispatch(user_logout());
+                    AlertIOS.alert('提示', '帐号密码已经修改，请重新登录！');
+                } else {
+                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+                }
+            })
     }
 }
 

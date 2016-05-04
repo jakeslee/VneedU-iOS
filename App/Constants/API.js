@@ -7,4 +7,5 @@ export default {
     API_FREFIX,
     REGIST_USER: `${API_FREFIX}/user`,
     LOGIN: `${API_FREFIX}/user/authorization`,
+    PASSWORD: `${API_FREFIX}/user/password`,
 }
