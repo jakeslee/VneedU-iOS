@@ -9,8 +9,10 @@ import React, {
     Picker,
     View,
     Text,
+    Platform,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { ImagePickerManager } from 'NativeModules';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Base, scrollTools } from '../Common/Base';
@@ -26,11 +28,8 @@ export default class AddRequirement extends Component {
         });
         
         this.state = {
-            dataSource: dataSource,
-            images: dataSource.cloneWithRows([
-                require('../Resources/Images/bgImg/test-2.png'), 
-                require('../Resources/Images/bgImg/test-1.png')
-            ]),
+            images: [],
+            imagesDs: dataSource.cloneWithRows([]),
         }
         
         this.REF_CONST = {
@@ -40,26 +39,107 @@ export default class AddRequirement extends Component {
         }
     }
     
+    _setAsSpot(rowId) {
+        var images_t = this.state.images.slice();
+        var images = images_t.map((val, index)=>{
+            if (index != rowId && val.isSpot != false)
+                return Object.assign({}, val, {
+                    isSpot: false,
+                });
+            if (index == rowId)
+                return Object.assign({}, val, {
+                    isSpot: true,
+                });
+            return val;
+        });
+
+        this.setState({
+            images: images,
+            imagesDs: this.state.imagesDs.cloneWithRows(images),
+        });
+    }
+    
     _renderImages(rowData, sectionID, rowID) {
         return (
-            <View style={[BorderStyles.imageAround, {margin: 2}]}>
-                <Image style={styles.images} source={rowData} />
-                {rowID != 0 ? null :
-                <View style={styles.imagesTag}>
-                    <Text style={{color: '#FFF', flex: 1, textAlign: 'center'}}>主图</Text>
-                </View>}
-            </View>
+            <TouchableOpacity onPress={this._setAsSpot.bind(this, rowID)}>
+                <View style={[BorderStyles.imageAround, {margin: 2}]}>
+                    <Image style={styles.images} source={rowData.image}/>
+                    {rowData.isSpot &&
+                    <View style={styles.imagesTag}>
+                        <Text style={{color: '#FFF', flex: 1, textAlign: 'center'}}>主图</Text>
+                    </View>}
+                </View>
+            </TouchableOpacity>
         )
     }
     
     _renderFooter() {
         return (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=> this._selectImage()}>
                 <View style={[BorderStyles.imageAround, {margin: 2}]}>
                     <Image style={styles.images} source={require('../Resources/Images/bgImg/add-image.jpg')} />
                 </View>
             </TouchableOpacity>
         )
+    }
+    
+    _selectImage() {
+        var options = {
+            title: '选择照片', // specify null or empty string to remove the title
+            cancelButtonTitle: '取消',
+            takePhotoButtonTitle: '拍照', // specify null or empty string to remove this button
+            chooseFromLibraryButtonTitle: '从相册中选择', // specify null or empty string to remove this button
+            cameraType: '返回', // 'front' or 'back'
+            mediaType: 'photo', // 'photo' or 'video'
+            maxWidth: 325, // photos only
+            maxHeight: 325, // photos only
+            aspectX: 1, // android only - aspectX:aspectY, the cropping image's ratio of width to height
+            aspectY: 1, // android only - aspectX:aspectY, the cropping image's ratio of width to height
+            quality: 0.5, // 0 to 1, photos only
+            angle: 0, // android only, photos only
+            allowsEditing: true, // Built in functionality to resize/reposition the image after selection
+            noData: false, // photos only - disables the base64 `data` field from being generated (greatly improves performance on large photos)
+            storageOptions: { // if this key is provided, the image will get saved in the documents directory on ios, and the pictures directory on android (rather than a temporary directory)
+                skipBackup: true, // ios only - image will NOT be backed up to icloud
+                path: 'images',
+            }
+        };
+
+        /**
+        * The first arg will be the options object for customization, the second is
+        * your callback which sends object: response.
+        *
+        * See the README for info about the response
+        */
+
+        ImagePickerManager.showImagePicker(options, (response) => {
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.error) {
+                console.log('ImagePickerManager Error: ', response.error);
+            } else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+            } else {
+                // You can display the image using either data:
+                //const source = {uri: 'data:image/jpeg;base64,' + response.data, isStatic: true};
+                var source;
+                if (Platform.OS === 'android') {
+                    source = {uri: response.uri, isStatic: true};
+                } else {
+                    source = {uri: response.uri.replace('file://', ''), isStatic: true};
+                }
+                console.log(source);
+                let images = [ ...this.state.images, {
+                    image: source,
+                    isSpot: this.state.images.length === 0,
+                }];
+                
+                this.setState({
+                    images: images,
+                    imagesDs: this.state.imagesDs.cloneWithRows(images),
+                });
+            }
+        });
     }
     
     render() {
@@ -73,13 +153,14 @@ export default class AddRequirement extends Component {
                             <TextInput style={{height: 32}} placeholder='标题' placeholderTextColor='#989898'/>
                             
                             <View style={[BorderStyles.top, {flex: 1}]}>
-                                <TextInput multiline={true} placeholder='描述一下你的需求' style={{height: 90}}/>
+                                <TextInput multiline={true} placeholder='描述一下你的需求' style={{height: 90, fontSize: 14,}}/>
                             </View>
                             <ListView 
+                                enableEmptySections={true}
                                 bounces={false}
-                                dataSource={this.state.images}
-                                renderRow={this._renderImages}
-                                renderFooter={this._renderFooter}
+                                dataSource={this.state.imagesDs}
+                                renderRow={this._renderImages.bind(this)}
+                                renderFooter={this._renderFooter.bind(this)}
                                 contentContainerStyle={styles.imageContainer}/>
                             <View style={{flexDirection: 'row', marginTop: 4, alignItems: 'center'}}>
                                 <Icon name="location" color='#9489E2' size={22}/>

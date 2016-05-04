@@ -1,5 +1,6 @@
 import {
-    StyleSheet
+    StyleSheet,
+    PixelRatio,
 } from 'react-native';
 
 import { border } from './Variables';
@@ -20,9 +21,9 @@ export const BorderStyles = StyleSheet.create({
     bottom: bottomBorderStyle,
     topAndBottom: Object.assign({}, topBorderStyle, bottomBorderStyle),
     imageAround: {
-        borderWidth: 0.5, 
+        borderWidth: 1 / PixelRatio.get(), 
         borderColor: '#E1E1E1',
-        overflow: 'hidden',
+        //overflow: 'hidden',
     },
 });
 

@@ -46,7 +46,7 @@ export function avatar_process(avatar, cdn_config) {
 export let scrollTools = {
     scrollToInput: function(refName, scroll, event) {
         let node = React.findNodeHandle(this.refs[refName]);
-        console.log('node', node);
+
         let extraHeight = 70;
         var t = setTimeout(()=> {
             this.refs[scroll].scrollToFocusedInput(event, node, extraHeight);
