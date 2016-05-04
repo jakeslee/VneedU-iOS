@@ -1,5 +1,5 @@
 
-import {Dimensions} from 'react-native';
+import React, {Dimensions} from 'react-native';
 
 import API from '../Constants/API';
 
@@ -41,5 +41,22 @@ export function avatar_process(avatar, cdn_config) {
             
     }
     return avatar_tmp;
+}
+
+export let scrollTools = {
+    scrollToInput: function(refName, scroll, event) {
+        let node = React.findNodeHandle(this.refs[refName]);
+        console.log('node', node);
+        let extraHeight = 70;
+        var t = setTimeout(()=> {
+            this.refs[scroll].scrollToFocusedInput(event, node, extraHeight);
+            clearTimeout(t);
+        }, 100);
+        
+    },
+    scrollBack: function(refName, scroll, event) {
+        let node = React.findNodeHandle(this.refs[refName]);
+        this.refs[scroll].scrollToFocusedInput(event, node, 0);
+    }
 }
 
