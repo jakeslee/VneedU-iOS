@@ -3,7 +3,6 @@ import React, {
     StyleSheet,
     TextInput,
     ListView,
-    ScrollView,
     TouchableOpacity,
     Image,
     Modal,
@@ -11,9 +10,10 @@ import React, {
     View,
     Text,
 } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Base } from '../Common/Base';
+import { Base, scrollTools } from '../Common/Base';
 import CommentItem from '../Component/CommentItem';
 import NavigatorBar from '../Component/NavigatorBar';
 import { BorderStyles, ButtonStyles, NavigatorStyles, ImageStyles, ContentStyles } from '../Common/Styles';
@@ -31,6 +31,12 @@ export default class AddRequirement extends Component {
                 require('../Resources/Images/bgImg/test-2.png'), 
                 require('../Resources/Images/bgImg/test-1.png')
             ]),
+        }
+        
+        this.REF_CONST = {
+            scroll: 'scroll',
+            keywords: 'keywords',
+            address: 'address',
         }
     }
     
@@ -61,7 +67,7 @@ export default class AddRequirement extends Component {
             <View style={NavigatorStyles.navigatorContainer}>
                 <NavigatorBar title='添加需求' {...this.props}/>
                 <View style={{flex: 1}}>
-                    <ScrollView bounces={false} automaticallyAdjustContentInsets={false}>
+                    <KeyboardAwareScrollView ref={this.REF_CONST.scroll} bounces={false} automaticallyAdjustContentInsets={false}>
                         {/* 需求内容 start */}
                         <View style={[BorderStyles.topAndBottom, {backgroundColor: '#FFF', flexDirection: 'column', padding: 10}]}>
                             <TextInput style={{height: 32}} placeholder='标题' placeholderTextColor='#989898'/>
@@ -77,7 +83,10 @@ export default class AddRequirement extends Component {
                                 contentContainerStyle={styles.imageContainer}/>
                             <View style={{flexDirection: 'row', marginTop: 4, alignItems: 'center'}}>
                                 <Icon name="location" color='#9489E2' size={22}/>
-                                <TextInput style={{height: 20, flex: 1, marginLeft: 5, marginTop: 3}} placeholder='输入交易地址'/>
+                                <TextInput ref={this.REF_CONST.address}
+                                    style={{height: 20, flex: 1, marginLeft: 5, marginTop: 3}} placeholder='输入交易地址'
+                                    onFocus={scrollTools.scrollToInput.bind(this, this.REF_CONST.address, this.REF_CONST.scroll)}
+                                    onBlur={scrollTools.scrollBack.bind(this, this.REF_CONST.address, this.REF_CONST.scroll)}/>
                             </View>
                         </View>
                         {/* 需求内容 end */}
@@ -103,7 +112,10 @@ export default class AddRequirement extends Component {
                                 <Text style={styles.textStyle}>
                                     关键字
                                 </Text>
-                                <TextInput style={{height: 20, color: '#5D5D5B', flex: 1, fontSize: 16}} placeholder='请输入关键字，方便其它用户找到'/>
+                                <TextInput style={{height: 20, color: '#5D5D5B', flex: 1, fontSize: 16}} 
+                                    placeholder='请输入关键字，方便其它用户找到' ref={this.REF_CONST.keywords}
+                                    onFocus={scrollTools.scrollToInput.bind(this, this.REF_CONST.keywords, this.REF_CONST.scroll)}
+                                    onBlur={scrollTools.scrollBack.bind(this, this.REF_CONST.keywords, this.REF_CONST.scroll)}/>
                             </View>
                         </View>
                         {/* 分类内容 end */}
@@ -112,7 +124,7 @@ export default class AddRequirement extends Component {
                                 <Text style={ButtonStyles.primaryBtnText}>确认发布</Text>
                             </TouchableOpacity>
                         </View>
-                    </ScrollView>
+                    </KeyboardAwareScrollView>
                 </View>
             </View>
         )
