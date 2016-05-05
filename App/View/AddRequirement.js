@@ -13,6 +13,7 @@ import React, {
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { ImagePickerManager } from 'NativeModules';
+import ModalBox from 'react-native-modalbox';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Base, scrollTools } from '../Common/Base';
@@ -28,14 +29,29 @@ export default class AddRequirement extends Component {
         });
         
         this.state = {
+            categrory: 'part-time',
+            currentCate: null,
+            title: '',
+            desc: '',
             images: [],
             imagesDs: dataSource.cloneWithRows([]),
-        }
+        };
         
         this.REF_CONST = {
             scroll: 'scroll',
             keywords: 'keywords',
             address: 'address',
+        };
+
+        this.CATE_CONST = {
+            build: '施工',
+            edu: '家教',
+            'part-time': '钟点工',
+            driving: '代驾',
+            buying: '代购',
+            medicine: '送药上门',
+            gift: '送礼',
+            working: '代班',
         }
     }
     
@@ -150,10 +166,11 @@ export default class AddRequirement extends Component {
                     <KeyboardAwareScrollView ref={this.REF_CONST.scroll} bounces={false} automaticallyAdjustContentInsets={false}>
                         {/* 需求内容 start */}
                         <View style={[BorderStyles.topAndBottom, {backgroundColor: '#FFF', flexDirection: 'column', padding: 10}]}>
-                            <TextInput style={{height: 32}} placeholder='标题' placeholderTextColor='#989898'/>
-                            
+                            <TextInput style={{height: 32}} placeholder='标题' placeholderTextColor='#989898'
+                                value={this.state.title} onChangeText={(v)=> this.setState({title: v})}/>
                             <View style={[BorderStyles.top, {flex: 1}]}>
-                                <TextInput multiline={true} placeholder='描述一下你的需求' style={{height: 90, fontSize: 14,}}/>
+                                <TextInput multiline={true} placeholder='描述一下你的需求' style={{height: 90, fontSize: 16,}}
+                                    value={this.state.desc} onChangeText={(v)=> this.setState({desc: v})}/>
                             </View>
                             <ListView 
                                 enableEmptySections={true}
@@ -164,8 +181,8 @@ export default class AddRequirement extends Component {
                                 contentContainerStyle={styles.imageContainer}/>
                             <View style={{flexDirection: 'row', marginTop: 4, alignItems: 'center'}}>
                                 <Icon name="location" color='#9489E2' size={22}/>
-                                <TextInput ref={this.REF_CONST.address}
-                                    style={{height: 20, flex: 1, marginLeft: 5, marginTop: 3}} placeholder='输入交易地址'
+                                <TextInput ref={this.REF_CONST.address} 
+                                    style={{height: 20, flex: 1, marginLeft: 8, marginTop: 3}} placeholder='输入交易地址'
                                     onFocus={scrollTools.scrollToInput.bind(this, this.REF_CONST.address, this.REF_CONST.scroll)}
                                     onBlur={scrollTools.scrollBack.bind(this, this.REF_CONST.address, this.REF_CONST.scroll)}/>
                             </View>
@@ -185,9 +202,11 @@ export default class AddRequirement extends Component {
                                 <Text style={styles.textStyle}>
                                     分类
                                 </Text>
-                                <Text style={styles.textValue}>
-                                    请选择分类
-                                </Text>
+                                <TouchableOpacity onPress={()=> this.refs.cate_model.open()}>
+                                    <Text style={styles.textValue}>
+                                        {this.state.currentCate || '请选择分类'}
+                                    </Text>
+                                </TouchableOpacity>
                             </View>
                             <View style={[styles.textArea, {borderBottomWidth: 0}]}>
                                 <Text style={styles.textStyle}>
@@ -206,6 +225,23 @@ export default class AddRequirement extends Component {
                             </TouchableOpacity>
                         </View>
                     </KeyboardAwareScrollView>
+                    <ModalBox ref='cate_model' position='bottom' style={[styles.modal, {height: 260}]}
+                        swipeToClose={false} onClosed={()=> this.setState({currentCate: this.CATE_CONST[this.state.categrory]})}>
+                        <Text style={styles.text}>请选择分类</Text>
+                        <Picker
+                            style={{alignSelf:'stretch', backgroundColor:'white'}}
+                            selectedValue={this.state.categrory}
+                            onValueChange={(v) => this.setState({categrory: v})}>
+                            <Picker.Item label="施工" value="build" />
+                            <Picker.Item label="家教" value="edu" />
+                            <Picker.Item label="钟点工" value="part-time" />
+                            <Picker.Item label="代驾" value="driving" />
+                            <Picker.Item label="代购" value="buying" />
+                            <Picker.Item label="送药上门" value="medicine" />
+                            <Picker.Item label="送礼" value="gift" />
+                            <Picker.Item label="代班" value="working" />
+                        </Picker>
+                    </ModalBox>
                 </View>
             </View>
         )
@@ -248,4 +284,13 @@ const styles = StyleSheet.create({
         color: '#5D5D5B', 
         fontSize: 16
     },
+    modal: {
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    text: {
+        color: "black",
+        fontSize: 22,
+        paddingVertical: 10,
+    }
 });

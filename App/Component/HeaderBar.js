@@ -65,7 +65,7 @@ export default class HeaderBar extends Component {
                         {this.props.title}
                     </Text>
                 </View>
-                <View style={[styles.barItem, {flex: 3, flexDirection: 'row', justifyContent: 'flex-end'}]}>
+                <View style={[styles.barItem, {flex: 3, flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 4}]}>
                     <TouchableOpacity onPress={()=> this.props.navigator.push({name: 'search'})}>
                         <Icon style={styles.btnIcon} name="ios-search" color="#929292" />
                     </TouchableOpacity>
