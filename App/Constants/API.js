@@ -8,4 +8,6 @@ export default {
     REGIST_USER: `${API_FREFIX}/user`,
     LOGIN: `${API_FREFIX}/user/authorization`,
     PASSWORD: `${API_FREFIX}/user/password`,
+    REQUIREMENT: `${API_FREFIX}/requirement`,
+    UPLOAD:  `${API_FREFIX}/file/upload`,
 }
