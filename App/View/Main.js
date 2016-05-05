@@ -156,6 +156,7 @@ export default connect((state)=>{
             currentUser,
             user,
             order,
+            requirement,
         }
     }
 })(Main);
