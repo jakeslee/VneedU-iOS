@@ -3,23 +3,28 @@ import React, {
     StyleSheet,
     TextInput,
     ListView,
+    ActivityIndicatorIOS,
     TouchableOpacity,
     Image,
-    Modal,
     Picker,
     View,
     Text,
     Platform,
+    AlertIOS,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { ImagePickerManager } from 'NativeModules';
 import ModalBox from 'react-native-modalbox';
+import AlphabetListView from 'react-native-alphabetlistview';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Base, scrollTools } from '../Common/Base';
 import CommentItem from '../Component/CommentItem';
 import NavigatorBar from '../Component/NavigatorBar';
 import { BorderStyles, ButtonStyles, NavigatorStyles, ImageStyles, ContentStyles } from '../Common/Styles';
+import { uploadFileAsync } from '../Services/FileService';
+import { post_requirement } from '../Redux/Actions/RequirementAction';
+import { Area } from '../Constants/AreaData';
 
 export default class AddRequirement extends Component {
     constructor(props) {
@@ -31,16 +36,23 @@ export default class AddRequirement extends Component {
         this.state = {
             categrory: 'part-time',
             currentCate: null,
+            currentArea: null,
             title: '',
             desc: '',
+            price: '',
+            address: '',
+            keywords: '',
             images: [],
             imagesDs: dataSource.cloneWithRows([]),
+            spotImg: 0,
+            area_model: false,
         };
         
         this.REF_CONST = {
             scroll: 'scroll',
             keywords: 'keywords',
             address: 'address',
+            price: 'price',
         };
 
         this.CATE_CONST = {
@@ -55,32 +67,12 @@ export default class AddRequirement extends Component {
         }
     }
     
-    _setAsSpot(rowId) {
-        var images_t = this.state.images.slice();
-        var images = images_t.map((val, index)=>{
-            if (index != rowId && val.isSpot != false)
-                return Object.assign({}, val, {
-                    isSpot: false,
-                });
-            if (index == rowId)
-                return Object.assign({}, val, {
-                    isSpot: true,
-                });
-            return val;
-        });
-
-        this.setState({
-            images: images,
-            imagesDs: this.state.imagesDs.cloneWithRows(images),
-        });
-    }
-    
     _renderImages(rowData, sectionID, rowID) {
         return (
-            <TouchableOpacity onPress={this._setAsSpot.bind(this, rowID)}>
+            <TouchableOpacity onPress={()=> this.setState({spotImg: rowID})}>
                 <View style={[BorderStyles.imageAround, {margin: 2}]}>
                     <Image style={styles.images} source={rowData.image}/>
-                    {rowData.isSpot &&
+                    {rowID == this.state.spotImg &&
                     <View style={styles.imagesTag}>
                         <Text style={{color: '#FFF', flex: 1, textAlign: 'center'}}>主图</Text>
                     </View>}
@@ -121,13 +113,6 @@ export default class AddRequirement extends Component {
             }
         };
 
-        /**
-        * The first arg will be the options object for customization, the second is
-        * your callback which sends object: response.
-        *
-        * See the README for info about the response
-        */
-
         ImagePickerManager.showImagePicker(options, (response) => {
             if (response.didCancel) {
                 console.log('User cancelled image picker');
@@ -144,18 +129,73 @@ export default class AddRequirement extends Component {
                 } else {
                     source = {uri: response.uri.replace('file://', ''), isStatic: true};
                 }
-                console.log(source);
+
                 let images = [ ...this.state.images, {
                     image: source,
-                    isSpot: this.state.images.length === 0,
                 }];
                 
                 this.setState({
                     images: images,
+                    spotImg: this.state.images.length === 0 ? 0 : this.state.spotImg,
                     imagesDs: this.state.imagesDs.cloneWithRows(images),
                 });
             }
         });
+    }
+    
+    kaiche() {
+        if (this.props.requirement.isPosting)
+            return;
+        if (this.state.title.length < 4) {
+            AlertIOS.alert('错误', '标题必须至少4个字符!');
+            return;
+        } else if (this.state.address.length < 3) {
+            AlertIOS.alert('错误', '地址必须提供!');
+            return;
+        } else if (!this.state.currentArea || this.state.currentArea.length < 2) {
+            AlertIOS.alert('错误', '地区必须提供!');
+            return;
+        } else if (!this.state.currentCate) {
+            AlertIOS.alert('错误', '分类必须选择!');
+            return;
+        }
+        
+        let files = this.state.images.map((v)=> {
+            let path = v.image.uri;
+            return {
+                name: 'files',
+                filename: path.slice(path.lastIndexOf('/') + 1),
+                filepath: path,
+            }
+        });
+        
+        uploadFileAsync(files, this.props.currentUser.user.token)
+            .then((response)=> {
+                if (response.data.error !== 0) {
+                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+                } else {
+                    let retData = response.data.retData;
+                    this.props.dispatch(post_requirement({
+                            title: this.state.title,
+                            price: parseFloat(this.state.price.length == 0 ? 0 : this.state.price.length),
+                            payMethod: 0,
+                            address: this.state.address,
+                            area: this.state.currentArea,
+                            categrory: this.state.categrory,
+                            keywords: this.state.keywords,
+                            description: this.state.desc,
+                            image: retData.files[this.state.spotImg].userfile_id,
+                            images: retData.files.map((v)=> v.userfile_id),
+                        }, this.props.currentUser.user));
+                }
+            });
+    }
+    
+    _onOpenOfAreaModal() {
+        var t = setTimeout(()=> {
+            this.setState({area_model: true});
+            clearTimeout(t);
+        }, 190); 
     }
     
     render() {
@@ -190,21 +230,42 @@ export default class AddRequirement extends Component {
                         {/* 需求内容 end */}
                         {/* 分类内容 start */}
                         <View style={[BorderStyles.topAndBottom, {backgroundColor: '#FFF', flexDirection: 'column', paddingHorizontal: 10, marginTop: 4}]}>
-                            <View style={styles.textArea}>
+                            <View style={[styles.textArea, {alignItems: 'center'}]}>
                                 <Text style={styles.textStyle}>
                                     价格
                                 </Text>
-                                <Text style={styles.textValue}>
-                                    ￥ 0.00
-                                </Text>
+                                <View style={{flexDirection: 'row', flex: 1}}>
+                                    <Text style={styles.textValue}>￥ </Text>
+                                    <TextInput style={[styles.textValue, {height: 20, flex: 1}]} placeholder='0.00' placeholderTextColor='#989898'
+                                        keyboardType='decimal-pad' ref={this.REF_CONST.price}
+                                        value={this.state.price} onChangeText={(v)=> this.setState({price: v})}
+                                        onFocus={scrollTools.scrollToInput.bind(this, this.REF_CONST.price, this.REF_CONST.scroll)}
+                                        onBlur={scrollTools.scrollBack.bind(this, this.REF_CONST.price, this.REF_CONST.scroll)}/>
+                                </View>
                             </View>
                             <View style={styles.textArea}>
                                 <Text style={styles.textStyle}>
                                     分类
                                 </Text>
-                                <TouchableOpacity onPress={()=> this.refs.cate_model.open()}>
+                                <TouchableOpacity onPress={()=> this.refs.cate_model.open()} style={{flex:1, flexDirection: 'row'}}>
                                     <Text style={styles.textValue}>
                                         {this.state.currentCate || '请选择分类'}
+                                    </Text>
+                                    <Text style={[styles.textValue, styles.upIconStyle]}>
+                                        <Icon name='chevron-up'/>
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={styles.textArea}>
+                                <Text style={styles.textStyle}>
+                                    地区
+                                </Text>
+                                <TouchableOpacity onPress={()=> this.refs.area_model.open()} style={{flex:1, flexDirection: 'row'}}>
+                                    <Text style={styles.textValue}>
+                                        {this.state.currentArea || '请选择所在地区'}
+                                    </Text>
+                                    <Text style={[styles.textValue, styles.upIconStyle]}>
+                                        <Icon name='chevron-up'/>
                                     </Text>
                                 </TouchableOpacity>
                             </View>
@@ -220,10 +281,16 @@ export default class AddRequirement extends Component {
                         </View>
                         {/* 分类内容 end */}
                         <View style={[ButtonStyles.itemBtnArea, {marginBottom: 15}]}>
-                            <TouchableOpacity style={[ButtonStyles.primaryBtn, {width: Base.width * 0.9, }]}>
-                                <Text style={ButtonStyles.primaryBtnText}>确认发布</Text>
+                            <TouchableOpacity style={[ButtonStyles.primaryBtn, this.props.requirement.isPosting && {backgroundColor: '#e4e4e4'}
+                                , {width: Base.width * 0.9, }]}
+                                onPress={this.kaiche.bind(this)}>
+                                <Text style={[ButtonStyles.primaryBtnText, ]}>确认发布</Text>
                             </TouchableOpacity>
                         </View>
+                        {this.props.requirement.isPosting &&
+                        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                            <ActivityIndicatorIOS animating={true} size="large"/>
+                        </View>}
                     </KeyboardAwareScrollView>
                     <ModalBox ref='cate_model' position='bottom' style={[styles.modal, {height: 260}]}
                         swipeToClose={false} onClosed={()=> this.setState({currentCate: this.CATE_CONST[this.state.categrory]})}>
@@ -242,8 +309,67 @@ export default class AddRequirement extends Component {
                             <Picker.Item label="代班" value="working" />
                         </Picker>
                     </ModalBox>
+                    <ModalBox ref='area_model' position='bottom' style={[styles.modal, {alignSelf:'stretch'}]}
+                        swipeArea={100} onOpened={this._onOpenOfAreaModal.bind(this)}
+                        swipeToClose={true} onClosed={()=> this.setState({area: this.state.currentArea, area_model: false})}>
+                        <View style={{flexDirection: 'column'}}>
+                            <Text style={[styles.textValue, {textAlign: 'center'}]}>
+                                <Icon name='drag'/>
+                            </Text>
+                            <Text style={[styles.text, {flex: 1, paddingTop: 0}]}>请选择所在地区</Text>
+                        </View>
+                        { this.state.area_model ?
+                        <AlphabetListView
+                            style={{alignSelf:'stretch'}}
+                            data={Area}
+                            cell={Cell}
+                            cellHeight={30}
+                            useDynamicHeights={true}
+                            enableEmptySections={true}
+                            sectionListItem={SectionItem}
+                            sectionHeader={SectionHeader}
+                            sectionHeaderHeight={22.5}
+                            onCellSelect={(item)=> {
+                                this.setState({currentArea: item});
+                                this.refs.area_model.close();
+                            }}/>:
+                        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                            <ActivityIndicatorIOS animating={true} size="large"/>
+                        </View>}
+                    </ModalBox>
                 </View>
+                
             </View>
+        )
+    }
+}
+
+class SectionHeader extends Component {
+    render() {
+        return (
+            <View style={{backgroundColor: '#ccc'}}>
+                <Text style={styles.sectionTextStyle}>{this.props.title}</Text>
+            </View>
+        );
+    };
+}
+
+class SectionItem extends Component {
+    render() {
+        return (
+            <Text style={{color:'#f00'}}>{this.props.title}</Text>
+        );
+    };
+}
+
+class Cell extends Component {
+    render() {
+        return (
+            <TouchableOpacity onPress={()=> this.props.onSelect(this.props.item)}>
+                <View style={{height: 35, justifyContent: 'center'}}>
+                    <Text style={{fontSize: 16, paddingLeft: 10}}>{this.props.item}</Text>
+                </View>
+            </TouchableOpacity>
         )
     }
 }
@@ -269,10 +395,23 @@ const styles = StyleSheet.create({
         flexDirection: 'column', 
         width: 110/375 * Base.width
     },
+    upIconStyle: {
+        flex: 1, 
+        textAlign: 'right', 
+        paddingRight: 160, 
+        alignItems: 'center', 
+        paddingTop: 2
+    },
     textStyle: {
         width: 60, 
         color: '#5D5D5B', 
         fontSize: 16
+    },
+    sectionTextStyle: {
+        textAlign:'center',
+        color:'#fff',
+        fontWeight:'700',
+        fontSize:16
     },
     textArea: {
         flexDirection: 'row', 
@@ -290,7 +429,7 @@ const styles = StyleSheet.create({
     },
     text: {
         color: "black",
-        fontSize: 22,
+        fontSize: 18,
         paddingVertical: 10,
     }
 });
