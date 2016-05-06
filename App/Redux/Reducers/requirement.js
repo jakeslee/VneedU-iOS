@@ -32,17 +32,17 @@ export default function reducer(state = {
         case Types.LOAD_REQUIREMENT:
             return {
                 ...state,
-                [action.category]: load_requiremt(action),
+                [action.category]: load_requiremt(state[action.category], action),
             }
         case Types.INSERT_REQUIRMENT:
-            var items = state[action.category].items.slice();
+            var items = (state[action.category].items || []).slice();
             items.unshift(action.item);
             return {
                 ...state,
                 [action.category]: {
                     ...state[action.category],
                     items: items,
-                    dataSource: state[action.category].dataSource.cloneWithRows(items),
+                    dataSource: (state[action.category].dataSource || dataSource).cloneWithRows(items),
                 }
             }
         default:
@@ -50,11 +50,14 @@ export default function reducer(state = {
     }
 }
 
-function load_requiremt(action) {
+function load_requiremt(state, action) {
     return {
         isFetching: false,
         page: action.page,
-        items: action.items,
+        items: [
+            action.items,
+            ...state.items,
+        ],
         dataSource: dataSource.cloneWithRows(action.items),
     }
 }
