@@ -1,5 +1,6 @@
 const COMMON_ERRORS = {
     1000: '请求的资源不存在',
+    1001: '请求错误',
 }
 
 const REQUIREMENT_ERRORS = {

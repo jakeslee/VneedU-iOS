@@ -23,8 +23,9 @@ import CommentItem from '../Component/CommentItem';
 import NavigatorBar from '../Component/NavigatorBar';
 import { BorderStyles, ButtonStyles, NavigatorStyles, ImageStyles, ContentStyles } from '../Common/Styles';
 import { uploadFileAsync } from '../Services/FileService';
-import { post_requirement } from '../Redux/Actions/RequirementAction';
+import { post_requirement, request_post } from '../Redux/Actions/RequirementAction';
 import { Area } from '../Constants/AreaData';
+import { getErrorsMessage } from '../Constants/Errors';
 
 export default class AddRequirement extends Component {
     constructor(props) {
@@ -44,7 +45,7 @@ export default class AddRequirement extends Component {
             keywords: '',
             images: [],
             imagesDs: dataSource.cloneWithRows([]),
-            spotImg: 0,
+            spotImg: -1,
             area_model: false,
         };
         
@@ -160,6 +161,8 @@ export default class AddRequirement extends Component {
             return;
         }
         
+        this.props.dispatch(request_post(true));
+        
         let files = this.state.images.map((v)=> {
             let path = v.image.uri;
             return {
@@ -169,26 +172,42 @@ export default class AddRequirement extends Component {
             }
         });
         
-        uploadFileAsync(files, this.props.currentUser.user.token)
-            .then((response)=> {
-                if (response.data.error !== 0) {
+        var images, hotSpot;
+        
+        if (files.length == 0) {
+            this._dispatchPostReq();
+        } else {
+            uploadFileAsync(files, this.props.currentUser.user.token).then((response) => JSON.parse(response.data))
+            .then((json)=> {
+                console.log(json, typeof json)
+                if (json.error != 0) {
                     AlertIOS.alert('错误', getErrorsMessage(json.error));
                 } else {
-                    let retData = response.data.retData;
-                    this.props.dispatch(post_requirement({
-                            title: this.state.title,
-                            price: parseFloat(this.state.price.length == 0 ? 0 : this.state.price.length),
-                            payMethod: 0,
-                            address: this.state.address,
-                            area: this.state.currentArea,
-                            categrory: this.state.categrory,
-                            keywords: this.state.keywords,
-                            description: this.state.desc,
-                            image: retData.files[this.state.spotImg].userfile_id,
-                            images: retData.files.map((v)=> v.userfile_id),
-                        }, this.props.currentUser.user));
+                    let retData = json.retData;
+                    images = retData.files.map((v)=> v.userfile_id);
+                    hotSpot = this.state.spotImg != -1 ? retData.files[this.state.spotImg].userfile_id : undefined;
+                    this._dispatchPostReq(images, hotSpot)
                 }
             });
+        }
+    }
+    
+    _dispatchPostReq(images = [], hotSpot) {
+        let value = {
+            title: this.state.title,
+            price: parseFloat(this.state.price.length == 0 ? 0 : this.state.price.length),
+            payMethod: 0,
+            address: this.state.address,
+            area: this.state.currentArea,
+            category: this.state.categrory,
+            keywords: this.state.keywords,
+            description: this.state.desc,
+            images: JSON.stringify(images),
+        };
+        if (typeof hotSpot !== 'undefined')
+            value['image'] = hotSpot;
+
+        this.props.dispatch(post_requirement(value, this.state.categrory, this.props.currentUser.user));
     }
     
     _onOpenOfAreaModal() {
@@ -222,6 +241,7 @@ export default class AddRequirement extends Component {
                             <View style={{flexDirection: 'row', marginTop: 4, alignItems: 'center'}}>
                                 <Icon name="location" color='#9489E2' size={22}/>
                                 <TextInput ref={this.REF_CONST.address} 
+                                    value={this.state.address} onChangeText={(v)=> this.setState({address: v})}
                                     style={{height: 20, flex: 1, marginLeft: 8, marginTop: 3}} placeholder='输入交易地址'
                                     onFocus={scrollTools.scrollToInput.bind(this, this.REF_CONST.address, this.REF_CONST.scroll)}
                                     onBlur={scrollTools.scrollBack.bind(this, this.REF_CONST.address, this.REF_CONST.scroll)}/>
@@ -274,6 +294,7 @@ export default class AddRequirement extends Component {
                                     关键字
                                 </Text>
                                 <TextInput style={{height: 20, color: '#5D5D5B', flex: 1, fontSize: 16}} 
+                                    value={this.state.keywords} onChangeText={(v)=> this.setState({keywords: v})}
                                     placeholder='请输入关键字，方便其它用户找到' ref={this.REF_CONST.keywords}
                                     onFocus={scrollTools.scrollToInput.bind(this, this.REF_CONST.keywords, this.REF_CONST.scroll)}
                                     onBlur={scrollTools.scrollBack.bind(this, this.REF_CONST.keywords, this.REF_CONST.scroll)}/>
