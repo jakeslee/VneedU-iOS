@@ -4,18 +4,17 @@ import React, {
 import Types from '../../Constants/ActionTypes';
 
 var dataSource = new ListView.DataSource({rowHasChanged: (r1, r2)=> r1 !== r2});
+let requirementInitial = {
+    isFetching: false,
+    page: 1,
+    items: [],
+    dataSource: dataSource.cloneWithRows([]),
+};
+let initialState = {isPosting: false,};
+['latest', 'build', 'edu', 'driving', 'buying', 'buying', 'medicine', 'gift', 'working', 'part-time']
+.forEach((key)=> initialState[key] = Object.assign({}, requirementInitial));
 
-export default function reducer(state = {
-    isPosting: false,
-    latest: {
-        isFetching: false,
-        page: 1,
-        items: [],
-        dataSource: dataSource.cloneWithRows([]),
-    },
-    build: {}, edu: {}, 'part-time': {}, driving: {}, 
-    buying: {}, medicine: {}, gift: {}, working: {},
-}, action = {}) {
+export default function reducer(state = initialState, action = {}) {
     switch(action.type) {
         case Types.REQUEST_REQUIREMENT:
             return {

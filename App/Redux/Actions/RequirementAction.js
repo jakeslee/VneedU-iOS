@@ -12,6 +12,7 @@ import {
 
 import {
     add_requirement,
+    fetch_latest_requirement,
 } from '../../Services/RequirementService';
 
 import { getErrorsMessage } from '../../Constants/Errors';
@@ -38,6 +39,15 @@ function insert_req(item, category) {
     }
 }
 
+function load_req(items, category, page) {
+    return {
+        type: Types.LOAD_REQUIREMENT,
+        items,
+        category,
+        page,
+    }
+}
+
 export function post_requirement(data = {}, category, current_user) {
     return (dispatch)=> {
         return add_requirement(data, current_user.token).then((response)=> response.json())
@@ -58,6 +68,25 @@ export function post_requirement(data = {}, category, current_user) {
             }).catch(function(reason) {
                 AlertIOS.alert('错误', '添加失败！');
                 console.warn(reason);
+            });
+    }
+}
+
+export function load_new_requirements(category, page = 1) {
+    return (dispatch)=> {
+        dispatch(request_requirement(category));
+        return fetch_latest_requirement(category, page, {
+            expand: 'category,images,publisher',
+            exclude: 'address'
+        })
+            .then((response)=> response.json())
+            .then((json)=> {
+                if (json.error === 0) {
+                    dispatch(load_req(json.retData.requirements, category, page));
+                    
+                    console.log(`loading ${category} of requirement at page ${page}`);
+                } else 
+                    AlertIOS.alert('错误', getErrorsMessage(json.error));
             });
     }
 }
