@@ -6,6 +6,7 @@ import React, {
     ScrollView,
     StatusBar,
     ListView,
+    ActivityIndicatorIOS,
     TouchableOpacity,
     View,
     Text,
@@ -13,47 +14,16 @@ import React, {
 } from 'react-native';
 
 import RequirementItem from '../../Component/RequirementItem';
+import { load_new_requirements } from '../../Redux/Actions/RequirementAction';
 
 export default class Home extends Component {
-    constructor(props) {
-        super(props);
-        var dataSource = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 !== r2,
-        });
-        
-        var test = [];
-        for (var i = 0; i < 3 ; ++i)
-            test.push({
-                title: '帮忙搬家具',
-                description: '最近新购入了一些家具，但是厂家不提供搬家服务，得自己搬。家具有点多，希望请些人来帮忙。',
-                publisher: {
-                    id: '[UUID]',
-                    name: 'Jakes Lee',
-                    avatar: require('../../Resources/Images/avatar.png'),
-                },
-                category: {
-                    id: '[UUID]',
-                    name: '施工',
-                    type: 'build',
-                },
-                area: '贵阳',
-                price: '10000',
-                payMethod: 2,
-                image: null,
-                nice: 9,
-                datetime: '2016-4-21 9:00',
-                images: [],
-                comments: 0,
-            });
-        
-        this.state = {
-            dataSource: dataSource.cloneWithRows(test),
-        }
+    componentDidMount() {
+        this.props.dispatch(load_new_requirements('latest', 1));
     }
     
     _renderRow(rowData) {
         return (
-            <RequirementItem {...rowData} navigator={this.props.navigator}/>
+            <RequirementItem {...rowData} app={this.props.app}/>
         )
     }
     
@@ -138,9 +108,17 @@ export default class Home extends Component {
                         <Text style={styles.rqAreaTitle}>
                             最新需求
                         </Text>
+                        {this.props.entity.requirement.latest.items.length == 0 ? 
+                        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', height: 200, backgroundColor: '#FFF'}}>
+                            <ActivityIndicatorIOS animating={true} size="large"/>
+                            <Text style={{color: '#bbb', marginTop: 10,}}>
+                                正在加载
+                            </Text>
+                        </View>:
                         <ListView 
-                            dataSource={this.state.dataSource}
-                            renderRow={this._renderRow.bind(this)} />
+                            dataSource={this.props.entity.requirement.latest.dataSource}
+                            renderRow={this._renderRow.bind(this)}
+                            enableEmptySections={true}/>}
                     </View>
                     {/* Requirements area end */}
                 </ScrollView>

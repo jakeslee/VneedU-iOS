@@ -8,22 +8,28 @@ import React, {
 } from 'react-native';
 
 import moment from 'moment';
-import localeZh from 'moment/locale/zh-cn';
-
+import localeZh from 'moment/locale/zh-cn';moment.locale('zh-cn', localeZh);
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/FontAwesome';
 
-moment.locale('zh-cn', localeZh);
+import { Actions } from 'react-native-router-flux';
+import { Base, avatar_process } from '../Common/Base';
+import { ImageStyles } from '../Common/Styles';
+
 
 export default class RequirementItem extends Component {
     render() {
+        let avatar = avatar_process(this.props.publisher.avatar, this.props.app.cdn_config);
+        
         return (
             <View style={[styles.rqItemArea, this.props.style && this.props.style]}>
                 <View style={styles.rqItemHeader}>
-                    <Image style={styles.rqItemHeaderAvatar} source={this.props.publisher.avatar} />
+                    <View style={[ImageStyles.avatarRound(37), {width: 37}]}>
+                        <Image style={ImageStyles.avatarRound(37)} source={avatar} />
+                    </View>
                     <View style={styles.rqItemHeaderUser}>
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                            <TouchableOpacity onPress={()=> this.props.navigator.push({name: 'user_info'})}>
+                            <TouchableOpacity onPress={()=> Actions.user_info({app: this.props.app})}>
                                 <Text style={{color: '#3584F0',}}>{this.props.publisher.name}</Text>
                             </TouchableOpacity>
                             <Text style={{fontSize: 13,}}>
@@ -32,7 +38,9 @@ export default class RequirementItem extends Component {
                         </View>
                         <Text style={{fontSize: 12, color: '#929292'}}>{moment(this.props.datetime, 'YYYY-MM-DD HH:mm:ss').fromNow()}</Text>
                     </View>
-                    <Text style={styles.rqItemHeaderPrice}>￥{this.props.price}</Text>
+                    <View style={{justifyContent: 'center'}}>
+                        <Text style={styles.rqItemHeaderPrice}>￥{this.props.price}</Text>
+                    </View>
                 </View>
                 <View style={styles.rqItemContent}>
                     <TouchableOpacity onPress={()=> this.props.navigator.push({name: 'requirement_detail'})}>
@@ -81,7 +89,8 @@ const styles = StyleSheet.create({
     rqItemHeaderUser: {
         flex: 1, 
         flexDirection: 'column', 
-        marginLeft: 10
+        marginLeft: 10,
+        justifyContent: 'center',
     },
     rqItemHeaderPrice: {
         fontSize: 18, 
