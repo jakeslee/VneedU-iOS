@@ -1,5 +1,5 @@
-import React, {
-    Component,
+import React, { Component } from 'react';
+import {
     StyleSheet,
     TouchableOpacity,
     View,
@@ -20,7 +20,7 @@ import { ImageStyles } from '../Common/Styles';
 export default class RequirementItem extends Component {
     render() {
         let avatar = avatar_process(this.props.publisher.avatar, this.props.app.cdn_config);
-        
+
         return (
             <View style={[styles.rqItemArea, this.props.style && this.props.style]}>
                 <View style={styles.rqItemHeader}>

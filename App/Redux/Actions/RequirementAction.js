@@ -17,10 +17,11 @@ import {
 
 import { getErrorsMessage } from '../../Constants/Errors';
 
-function request_requirement(category) {
+export function request_requirement(category, append = false, value = true) {
     return {
-        type: Types.REQUEST_REQUIREMENT,
+        type: append ? Types.REQUEST_REQ_APPEND : Types.REQUEST_REQUIREMENT,
         category,
+        value,
     }
 }
 
@@ -39,9 +40,9 @@ function insert_req(item, category) {
     }
 }
 
-function load_req(items, category, page) {
+function load_req(items, category, page, append = false) {
     return {
-        type: Types.LOAD_REQUIREMENT,
+        type: append ? Types.LOAD_REQUIREMENT_APPEND : Types.LOAD_REQUIREMENT,
         items,
         category,
         page,
@@ -54,13 +55,11 @@ export function post_requirement(data = {}, category, current_user) {
             .then((json)=> {
                 dispatch(request_post(false));
                 if (json.error === 0) {
-                    dispatch(insert_req(data, category));
-                    dispatch(insert_req(data, 'latest'));
                     AlertIOS.alert('提示', '添加成功', [{
                         text: '确定', 
                         onPress: () => {
                             Actions.pop();
-                            Actions.refresh();
+                            dispatch(load_new_requirements('latest', 1));
                         }},
                     ]);
                 } else 
@@ -72,17 +71,16 @@ export function post_requirement(data = {}, category, current_user) {
     }
 }
 
-export function load_new_requirements(category, page = 1) {
+export function load_new_requirements(category, page = 1, append = false) {
     return (dispatch)=> {
-        dispatch(request_requirement(category));
+        dispatch(request_requirement(category, append));
         return fetch_latest_requirement(category, page, {
             expand: 'category,images,publisher',
             exclude: 'address'
-        })
-            .then((response)=> response.json())
+        }).then((response)=> response.json())
             .then((json)=> {
                 if (json.error === 0) {
-                    dispatch(load_req(json.retData.requirements, category, page));
+                    dispatch(load_req(json.retData.requirements, category, page, append));
                     
                     console.log(`loading ${category} of requirement at page ${page}`);
                 } else 

@@ -1,12 +1,5 @@
-import React, {
-    Component,
-    StyleSheet,
-    TextInput,
-    TouchableOpacity,
-    Image,
-    View,
-    Text,
-} from 'react-native';
+import React, {Component} from "react";
+import {StyleSheet, TextInput, TouchableOpacity, Image, View, Text} from "react-native";
 import StarRating from 'react-native-star-rating';
 
 import { Base } from '../Common/Base';

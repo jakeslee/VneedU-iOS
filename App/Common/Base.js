@@ -1,5 +1,6 @@
 
-import React, {Dimensions} from 'react-native';
+import React from "react";
+import {Dimensions} from "react-native";
 
 import API from '../Constants/API';
 
@@ -12,7 +13,7 @@ export const Base = {
 }
 
 export function cdn_process(cdn_config, url = '') {
-    let matches = url.match(/(.+):\//);
+    let matches = (typeof url.match === 'function') ? url.match(/(.+):\//) : false;
 
     if (!matches) {
         console.warn('URL is illegal!');
@@ -33,7 +34,8 @@ export function avatar_process(avatar, cdn_config) {
     var avatar_tmp = require('../Resources/Images/defaultAvatar.jpg');
     if (avatar) {
         if (cdn_config.cdn_enable) {
-            avatar_tmp = { uri: cdn_process(cdn_config, avatar) };
+            let processed = cdn_process(cdn_config, avatar);
+            avatar_tmp = processed == avatar ? avatar_tmp : { uri: cdn_process(cdn_config, avatar) };
         } else {
             let av = avatar.replace(/.*:\//, '');
             avatar_tmp = { uri: `${API.API_ROOT}/static${av}` };

@@ -1,12 +1,5 @@
-import React, {
-    Component,
-    PropTypes,
-    StyleSheet,
-    TouchableOpacity,
-    View,
-    Text,
-    Image,
-} from 'react-native';
+import React, { Component, PropTypes } from 'react';
+import {StyleSheet, TouchableOpacity, View, Text, Image} from "react-native";
 
 import moment from 'moment';
 import localeZh from 'moment/locale/zh-cn';

@@ -1,13 +1,5 @@
-import React, {
-    Component,
-    StyleSheet,
-    TextInput,
-    StatusBar,
-    TouchableOpacity,
-    Image,
-    View,
-    Text,
-} from 'react-native';
+import React, {Component} from "react";
+import {StyleSheet, TextInput, StatusBar, TouchableOpacity, Image, View, Text} from "react-native";
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -30,11 +22,11 @@ class Login extends Component {
     }
     
     componentDidMount() {
-        StatusBar.setBarStyle('light-content', true);
+        StatusBar.setBarStyle('light-content', false);
     }
     
     componentWillUnmount() {
-        StatusBar.setBarStyle('default', true);
+        StatusBar.setBarStyle('default', false);
     }
     
     render() {

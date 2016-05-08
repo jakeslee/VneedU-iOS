@@ -1,24 +1,117 @@
-'use strict';
-
-import React, {
-    Component,
+import React, { Component } from 'react';
+import {
     StyleSheet,
     ScrollView,
     StatusBar,
     ListView,
+    RefreshControl,
     ActivityIndicatorIOS,
     TouchableOpacity,
     View,
     Text,
     Image,
 } from 'react-native';
-
+import { Actions } from 'react-native-router-flux';
 import RequirementItem from '../../Component/RequirementItem';
 import { load_new_requirements } from '../../Redux/Actions/RequirementAction';
 
 export default class Home extends Component {
+    constructor(props) {
+        super(props);
+        
+        this._onRefresh = this._onRefresh.bind(this);
+        this._onEndReached = this._onEndReached.bind(this);
+    }
+    
     componentDidMount() {
-        this.props.dispatch(load_new_requirements('latest', 1));
+        this._onRefresh();
+    }
+    
+    _renderHeader() {
+        return (
+            <View>
+                {/* Category area start */}
+                <View style={styles.contentArea}>
+                    <View style={{flexDirection: 'row'}}>
+                        <TouchableOpacity style={styles.typeBtn} 
+                            onPress={()=> Actions.category_filter({category: 'build'})}>
+                            <Image style={[styles.btnIcon, ]} 
+                            source={require('../../Resources/Images/category-icons/under-const.png')} />
+                            <Text style={styles.btnText}>施工</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.typeBtn}
+                            onPress={()=> Actions.category_filter({category: 'edu'})}>
+                            <Image style={[styles.btnIcon, ]} 
+                                source={require('../../Resources/Images/category-icons/edu.png')} />
+                            <Text style={styles.btnText}>家教</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.typeBtn}
+                            onPress={()=> Actions.category_filter({category: 'part-time'})}>
+                            <Image style={[styles.btnIcon, ]} 
+                                source={require('../../Resources/Images/category-icons/clock.png')} />
+                            <Text style={styles.btnText}>钟点工</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.typeBtn}
+                            onPress={()=> Actions.category_filter({category: 'driving'})}>
+                            <Image style={[styles.btnIcon, ]} 
+                                source={require('../../Resources/Images/category-icons/car.png')} />
+                            <Text style={styles.btnText}>代驾</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{flexDirection: 'row', marginTop: 10}}>
+                        <TouchableOpacity style={styles.typeBtn} 
+                            onPress={()=> Actions.category_filter({category: 'buying'})}>
+                            <Image style={[styles.btnIcon, ]} 
+                            source={require('../../Resources/Images/category-icons/shop-cart.png')} />
+                            <Text style={styles.btnText}>代购</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.typeBtn}
+                            onPress={()=> Actions.category_filter({category: 'medicine'})}>
+                            <Image style={[styles.btnIcon, ]} 
+                                source={require('../../Resources/Images/category-icons/MedCar.png')} />
+                            <Text style={styles.btnText}>送药上门</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.typeBtn}
+                            onPress={()=> Actions.category_filter({category: 'gift'})}>
+                            <Image style={[styles.btnIcon, ]} 
+                                source={require('../../Resources/Images/category-icons/gift.png')} />
+                            <Text style={styles.btnText}>送礼</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.typeBtn}
+                            onPress={()=> Actions.category_filter({category: 'working'})}>
+                            <Image style={[styles.btnIcon, ]} 
+                                source={require('../../Resources/Images/category-icons/working.png')} />
+                            <Text style={styles.btnText}>代班</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                {/* Category area end */}
+                {/* Ads area start */}
+                <View style={[styles.contentArea, styles.adsArea]}>
+                    <View style={[styles.adsItem, styles.adsItemRBorder]}>
+                        <View style={styles.adsItemDetail}>
+                            <Text style={styles.adsItemTitle}>注册奖励</Text>
+                            <Text style={styles.adsItemSubtitle}>新用户注册即送积分</Text>
+                        </View>
+                        <Image style={{flex: 1, width: 47, height: 47}} source={require('../../Resources/Images/ads/ads-2.png')} />
+                    </View>
+                    <View style={styles.adsItem}>
+                        <View style={styles.adsItemDetail}>
+                            <Text style={styles.adsItemTitle}>邀请福利</Text>
+                            <Text style={styles.adsItemSubtitle}>邀请帮手提升排名</Text>
+                        </View>
+                        <Image style={{flex: 1, width: 47, height: 47}} source={require('../../Resources/Images/ads/ads-1.png')} />
+                    </View>
+                </View>
+                {/* Ads area end */}
+                {/* Requirements area start */}
+                <View style={styles.requirementArea}>
+                    <Text style={styles.rqAreaTitle}>
+                        最新需求
+                    </Text>
+                </View>
+            </View>
+        )
     }
     
     _renderRow(rowData) {
@@ -27,101 +120,61 @@ export default class Home extends Component {
         )
     }
     
+    _onRefresh() {
+        console.log('on refresh');
+        this.props.dispatch(load_new_requirements('latest', 1));
+    }
+    
+    _onEndReached() {
+        console.log('reached end');
+        
+        if (!this.props.entity.requirement.latest.isLoadingTail) {
+            this.props.dispatch(load_new_requirements('latest', this.props.entity.requirement.latest.page + 1, true));
+        }
+    }
+    
+    _onLoading() {
+        return (
+            <View style={{alignItems: 'center', justifyContent: 'center', height: 80}}>
+                <ActivityIndicatorIOS animating={true} size="large"/>
+                <Text style={{color: '#bbb', marginTop: 10,}}>
+                    正在加载
+                </Text>
+            </View>
+        )
+    }
+    
     render() {
         return (
             <View style={{flex: 1,}}>
-                <ScrollView style={styles.contentContainer} 
-                            contentContainerStyle={{paddingVertical: 8}} 
-                            automaticallyAdjustContentInsets={false} >
-                    {/* Category area start */}
-                    <View style={styles.contentArea}>
-                        <View style={{flexDirection: 'row'}}>
-                            <TouchableOpacity style={styles.typeBtn} onPress={()=> this.props.navigator.push({name: 'category_filter'})}>
-                                <Image style={[styles.btnIcon, ]} 
-                                source={require('../../Resources/Images/category-icons/under-const.png')} />
-                                <Text style={styles.btnText}>施工</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.typeBtn}>
-                                <Image style={[styles.btnIcon, ]} 
-                                    source={require('../../Resources/Images/category-icons/edu.png')} />
-                                <Text style={styles.btnText}>家教</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.typeBtn}>
-                                <Image style={[styles.btnIcon, ]} 
-                                    source={require('../../Resources/Images/category-icons/clock.png')} />
-                                <Text style={styles.btnText}>钟点工</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.typeBtn}>
-                                <Image style={[styles.btnIcon, ]} 
-                                    source={require('../../Resources/Images/category-icons/car.png')} />
-                                <Text style={styles.btnText}>代驾</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{flexDirection: 'row', marginTop: 10}}>
-                            <TouchableOpacity style={styles.typeBtn} onPress={(e)=>{
-                                this.props.navigator.push({
-                                    name: 'login',
-                                })
-                            }}>
-                                <Image style={[styles.btnIcon, ]} 
-                                source={require('../../Resources/Images/category-icons/shop-cart.png')} />
-                                <Text style={styles.btnText}>代购</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.typeBtn}>
-                                <Image style={[styles.btnIcon, ]} 
-                                    source={require('../../Resources/Images/category-icons/MedCar.png')} />
-                                <Text style={styles.btnText}>送药上门</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.typeBtn}>
-                                <Image style={[styles.btnIcon, ]} 
-                                    source={require('../../Resources/Images/category-icons/gift.png')} />
-                                <Text style={styles.btnText}>送礼</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.typeBtn}>
-                                <Image style={[styles.btnIcon, ]} 
-                                    source={require('../../Resources/Images/category-icons/working.png')} />
-                                <Text style={styles.btnText}>代班</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    {/* Category area end */}
-                    {/* Ads area start */}
-                    <View style={[styles.contentArea, styles.adsArea]}>
-                        <View style={[styles.adsItem, styles.adsItemRBorder]}>
-                            <View style={styles.adsItemDetail}>
-                                <Text style={styles.adsItemTitle}>注册奖励</Text>
-                                <Text style={styles.adsItemSubtitle}>新用户注册即送积分</Text>
-                            </View>
-                            <Image style={{flex: 1, width: 47, height: 47}} source={require('../../Resources/Images/ads/ads-2.png')} />
-                        </View>
-                        <View style={styles.adsItem}>
-                            <View style={styles.adsItemDetail}>
-                                <Text style={styles.adsItemTitle}>邀请福利</Text>
-                                <Text style={styles.adsItemSubtitle}>邀请帮手提升排名</Text>
-                            </View>
-                            <Image style={{flex: 1, width: 47, height: 47}} source={require('../../Resources/Images/ads/ads-1.png')} />
-                        </View>
-                    </View>
-                    {/* Ads area end */}
-                    {/* Requirements area start */}
-                    <View style={styles.requirementArea}>
-                        <Text style={styles.rqAreaTitle}>
-                            最新需求
-                        </Text>
-                        {this.props.entity.requirement.latest.items.length == 0 ? 
-                        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', height: 200, backgroundColor: '#FFF'}}>
-                            <ActivityIndicatorIOS animating={true} size="large"/>
-                            <Text style={{color: '#bbb', marginTop: 10,}}>
-                                正在加载
-                            </Text>
-                        </View>:
-                        <ListView 
-                            dataSource={this.props.entity.requirement.latest.dataSource}
-                            renderRow={this._renderRow.bind(this)}
-                            enableEmptySections={true}/>}
-                    </View>
+                <ListView style={styles.contentContainer} 
+                        dataSource={this.props.entity.requirement.latest.dataSource}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={this.props.entity.requirement.latest.isFetching}
+                                onRefresh={this._onRefresh}
+                                tintColor="#ff0000" 
+                                title="Loading..."
+                                colors={['#ff0000', '#00ff00', '#0000ff']}
+                                progressBackgroundColor="#ffff00"/>
+                        }
+                        enableEmptySections={true}
+                        renderHeader={this._renderHeader.bind(this)}
+                        renderRow={this._renderRow.bind(this)}
+                        onEndReached={this._onEndReached}
+                        onEndReachedThreshold={-60}
+                        contentContainerStyle={{paddingVertical: 8}} 
+                        automaticallyAdjustContentInsets={false} 
+                        renderFooter={()=>{
+                            if (this.props.entity.requirement.latest.isLoadingTail ||
+                                (this.props.entity.requirement.latest.isFetching && 
+                                this.props.entity.requirement.latest.items.length == 0))
+                                return this._onLoading();
+                            else
+                                <View/>;
+                        }}>
                     {/* Requirements area end */}
-                </ScrollView>
+                </ListView>
                 
             </View>
         )

@@ -1,6 +1,6 @@
-import React, {
+import React, { Component } from 'react';
+import {
     StatusBar,
-    Component,
     StyleSheet,
     TouchableOpacity,
     View,
@@ -18,14 +18,6 @@ import {
 } from '../Redux/Actions/AppAction';
 
 export default class HeaderBar extends Component {
-    constructor(props) {
-        super(props);
-    }
-    
-    componentDidMount() {
-        StatusBar.setBarStyle('default', true);
-    }
-    
     turnToMe(logined = false) {
         if (!logined) {
             Actions.login();
@@ -39,6 +31,9 @@ export default class HeaderBar extends Component {
         let logined = (this.props.entity.currentUser.user || {}).hasOwnProperty('id');
         return (
             <View style={styles.barContainer}>
+                <StatusBar 
+                    animated={false}
+                    barStyle='default'/>
                 <View style={[styles.barItem, {flex: 3,  marginLeft: 5}]}>
                     <TouchableOpacity onPress={this.turnToMe.bind(this, logined)}>
                         <View style={{flexDirection: 'row'}}>

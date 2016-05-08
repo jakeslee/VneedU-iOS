@@ -1,11 +1,11 @@
-import React, {
-    ListView,
-} from 'react-native';
+import React from "react";
+import {ListView} from "react-native";
 import Types from '../../Constants/ActionTypes';
 
 var dataSource = new ListView.DataSource({rowHasChanged: (r1, r2)=> r1 !== r2});
 let requirementInitial = {
     isFetching: false,
+    isLoadingTail: false,
     page: 1,
     items: [],
     dataSource: dataSource.cloneWithRows([]),
@@ -20,7 +20,14 @@ export default function reducer(state = initialState, action = {}) {
             return {
                 ...state,
                 [action.category]: Object.assign({}, state[action.category], {
-                    isFetching: true,
+                    isFetching: action.value,
+                })
+            }
+        case Types.REQUEST_REQ_APPEND:
+            return {
+                ...state,
+                [action.category]: Object.assign({}, state[action.category], {
+                    isLoadingTail: action.value,
                 })
             }
         case Types.REQUEST_REQ_ADDING:
@@ -32,6 +39,11 @@ export default function reducer(state = initialState, action = {}) {
             return {
                 ...state,
                 [action.category]: load_requiremt(state[action.category], action),
+            }
+        case Types.LOAD_REQUIREMENT_APPEND:
+            return {
+                ...state,
+                [action.category]: load_requiremt(state[action.category], action, true),
             }
         case Types.INSERT_REQUIRMENT:
             var items = (state[action.category].items || []).slice();
@@ -49,14 +61,35 @@ export default function reducer(state = initialState, action = {}) {
     }
 }
 
-function load_requiremt(state, action) {
-    return {
-        isFetching: false,
-        page: action.page,
-        items: [
-            action.items,
+function load_requiremt(state, action, append = false) {
+    // 若获取到的新数据为空，则只清除拉取状态
+    if (action.items.length === 0)
+        return Object.assign({}, state, {
+            isFetching: false,
+            isLoadingTail: false,
+        });
+    
+    var items;
+    if (append) {
+        items = [
             ...state.items,
-        ],
-        dataSource: dataSource.cloneWithRows(action.items),
+            ...action.items,
+        ]
+    } else {
+        items = [
+            ...action.items,
+        ];
+        state.items.forEach((v)=> {
+            if (items.indexOf(v) != -1)
+                items.push(v);
+        })
     }
+    
+    return Object.assign({}, state, {
+        isFetching: false,
+        isLoadingTail: false,
+        page: action.page,
+        items: items,
+        dataSource: dataSource.cloneWithRows(items),
+    });
 }

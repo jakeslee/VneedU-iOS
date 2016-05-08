@@ -1,12 +1,10 @@
-'use strict';
-
-import React, {
+import React, { Component } from 'react';
+import {
     StyleSheet,
     Text,
     View,
     Image,
     Dimensions,
-    Component,
 } from 'react-native';
 
 import { Base } from '../Common/Base';

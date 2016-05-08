@@ -1,13 +1,5 @@
-import React, {
-    Component,
-    StyleSheet,
-    TextInput,
-    ScrollView,
-    TouchableOpacity,
-    Image,
-    View,
-    Text,
-} from 'react-native';
+import React, {Component} from "react";
+import {StyleSheet, TextInput, ScrollView, TouchableOpacity, Image, View, Text} from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Base, scrollTools } from '../Common/Base';
 import NavigatorBar from '../Component/NavigatorBar';

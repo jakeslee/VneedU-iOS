@@ -1,13 +1,5 @@
-import React, {
-    Component,
-    StyleSheet,
-    TextInput,
-    ScrollView,
-    TouchableOpacity,
-    Image,
-    View,
-    Text,
-} from 'react-native';
+import React, {Component} from "react";
+import {StyleSheet, TextInput, ScrollView, TouchableOpacity, Image, View, Text} from "react-native";
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Base } from '../Common/Base';
 import NavigatorBar from '../Component/NavigatorBar';

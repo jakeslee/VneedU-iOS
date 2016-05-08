@@ -1,72 +1,66 @@
-import React, {
-    Component,
-    StyleSheet,
-    TextInput,
-    ListView,
-    TouchableOpacity,
-    Image,
-    View,
-    Text,
-} from 'react-native';
+import React, {Component} from "react";
+import {StyleSheet, TextInput, ListView, ScrollView, RefreshControl, TouchableOpacity, InteractionManager, ActivityIndicatorIOS, Image, View, Text} from "react-native";
+import { connect, provide } from 'react-redux';
+
 import { Base } from '../Common/Base';
 import NavigatorBar from '../Component/NavigatorBar';
 import RequirementItem from '../Component/RequirementItem';
-
+import { load_new_requirements, request_requirement } from '../Redux/Actions/RequirementAction';
 import { BorderStyles, ButtonStyles, InputStyles } from '../Common/Styles';
 
-export default class CategoryFilter extends Component {
+class CategoryFilter extends Component {
     constructor(props) {
         super(props);
         
-        var dataSource = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 !== r2,
+        this._onRefresh = this._onRefresh.bind(this);
+    }
+    
+    componentDidMount() {
+        InteractionManager.runAfterInteractions(() => {
+            this._onRefresh();
         });
-        
-        var test = [];
-        for (var i = 0; i < 6 ; ++i)
-            test.push({
-                title: '帮忙搬家具',
-                description: '最近新购入了一些家具，但是厂家不提供搬家服务，得自己搬。家具有点多，希望请些人来帮忙。',
-                publisher: {
-                    id: '[UUID]',
-                    name: 'Jakes Lee',
-                    avatar: require('../Resources/Images/avatar.png'),
-                },
-                category: {
-                    id: '[UUID]',
-                    name: '施工',
-                    type: 'build',
-                },
-                area: '贵阳',
-                price: '10000',
-                payMethod: 2,
-                image: null,
-                nice: 9,
-                datetime: '2016-4-21 9:00',
-                images: [],
-                comments: 0,
-            });
-        
-        this.state = {
-            dataSource: dataSource.cloneWithRows(test),
-        }
+    }
+    
+    _onRefresh() {
+        console.log('on refresh');
+        this.props.dispatch(load_new_requirements(this.props.category, 1));
     }
     
     _renderRow(rowData) {
         return (
-            <RequirementItem {...rowData} />
+            <RequirementItem {...rowData} app={this.props.app}/>
         )
     }
+    
     render() {
         return (
             <View style={{flex: 1, backgroundColor: '#F6F6F6'}}>
                 <NavigatorBar title='施工需求' {...this.props} />
                 {/* Requirements area start */}
                 <View style={styles.requirementArea}>
-                    <ListView 
-                        style={{paddingTop: 5,}}
-                        dataSource={this.state.dataSource}
-                        renderRow={this._renderRow} />
+                    <ScrollView style={styles.contentContainer} 
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={this.props.requirement[this.props.category].isFetching}
+                                onRefresh={this._onRefresh}
+                                tintColor="#ff0000" 
+                                title="Loading..."
+                                colors={['#ff0000', '#00ff00', '#0000ff']}
+                                progressBackgroundColor="transparent"/>
+                        }
+                        contentContainerStyle={{paddingVertical: 5}} 
+                        automaticallyAdjustContentInsets={false} >
+                        {this.props.requirement[this.props.category].items.length == 0 ? 
+                            <TouchableOpacity onPress={()=> {
+                                console.log(this.props.requirement[this.props.category].isFetching)
+                            }}>
+                            <View style={{height: 200, alignItems: 'center', justifyContent: 'center'}}>
+                                <Text style={{color: '#bbb'}}>该分类目前没有需求！</Text>
+                            </View></TouchableOpacity>:
+                        <ListView 
+                            dataSource={this.props.requirement[this.props.category].dataSource}
+                            renderRow={this._renderRow.bind(this)} />}
+                    </ScrollView>
                 </View>
                 {/* Requirements area end */}
             </View>
@@ -82,3 +76,5 @@ const styles = StyleSheet.create({
         borderTopWidth: 0.5, 
     },
 });
+
+export default connect(({app, requirement})=>({app, requirement}))(CategoryFilter);

@@ -1,16 +1,10 @@
 /**
  * Created by jakes on 4/16/16.
  */
- 'use strict';
+'use strict';
 
-import React, {
-    Component,
-    StyleSheet,
-    StatusBar,
-    View,
-    Text,
-    TabBarIOS
-} from 'react-native';
+import React, {Component} from "react";
+import {StyleSheet, StatusBar, View, Text, TabBarIOS} from "react-native";
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -33,6 +27,10 @@ import {
 class Main extends Component {
     constructor(props) {
         super(props);
+        
+        this.state = {
+            statusBar: 'default',
+        }
     }
 
     componentDidMount() {
@@ -46,16 +44,15 @@ class Main extends Component {
         } else {
             this.props.dispatch(set_tabbar('me', false));
             this.props.dispatch(refresh_user(this.props.entity.currentUser.user));
+            this.setState({statusBar: 'light-content'})
         }
     }
 
     _renderContent() {
         switch(this.props.app.selectedTab) {
             case 'home':
-                StatusBar.setBarStyle('default', true);
                 return <Home {...this.props} />;
             case 'order':
-                StatusBar.setBarStyle('default', true);
                 return <Order {...this.props} />;
             case 'me':
                 return <Me {...this.props} />;
@@ -69,6 +66,9 @@ class Main extends Component {
         
         return (
             <View style={{flex: 1, flexDirection: 'column'}}>
+                <StatusBar 
+                    animated={false}
+                    barStyle={this.state.statusBar}/>
                 <TabBarIOS
                     tintColor={Color.tabBarColor.tabColor}
                     barTintColor={Color.tabBarColor.tabBgColor}
@@ -81,6 +81,7 @@ class Main extends Component {
                         selected={this.props.app.selectedTab === 'home'}
                         onPress={()=> {
                             this.props.dispatch(set_tabbar('home', true));
+                            this.setState({statusBar: 'default'});
                         }} >
                         {this._renderContent()}
                     </Icon.TabBarItem>
@@ -94,6 +95,7 @@ class Main extends Component {
                             if (logined) {
                                 this.props.dispatch(set_tabbar('order', true));
                                 this.props.dispatch(refresh_user(this.props.entity.currentUser.user));
+                                this.setState({statusBar: 'default'});
                             } else {
                                 Actions.login();
                             }

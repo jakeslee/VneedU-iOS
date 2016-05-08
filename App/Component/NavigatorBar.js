@@ -1,13 +1,5 @@
-import React, {
-    Component,
-    StyleSheet,
-    PropTypes,
-    StatusBar,
-    TextInput,
-    TouchableOpacity,
-    View,
-    Text,
-} from 'react-native';
+import React, { Component, PropTypes } from 'react';
+import {StyleSheet, StatusBar, TextInput, TouchableOpacity, View, Text} from "react-native";
 import { Actions } from 'react-native-router-flux';
 
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -33,9 +25,11 @@ export default class NavigatorBar extends Component {
     }
     
     render() {
-        StatusBar.setBarStyle('light-content', true);
         return (
             <View style={[NavigatorStyles.navigatorBar, {flexDirection: 'row'}]}>
+                <StatusBar 
+                    animated={false}
+                    barStyle='light-content'/>
                 <TouchableOpacity onPress={()=> {Actions.pop(); Actions.refresh(); }} style={{flexDirection: 'row'}}>
                     <Icon name='chevron-left' color='#FFF' size={20} style={{paddingRight: 10}} />
                     {this.props.enableSearchBar ? null :
