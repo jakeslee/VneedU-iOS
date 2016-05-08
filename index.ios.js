@@ -22,6 +22,8 @@ const store = compose(
     applyMiddleware(...Middlewares)
 )(createStore)(redusers);
 
+console.disableYellowBox = true; 
+
 import SplashScreen from './App/View/SplashScreen';
 import Main from './App/View/Main';
 import Login from './App/View/Login';
