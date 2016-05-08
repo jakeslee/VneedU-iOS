@@ -775,6 +775,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = asia.gkc.vneedu.ios;
 				PRODUCT_NAME = vneedu;
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -797,6 +798,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = asia.gkc.vneedu.ios;
 				PRODUCT_NAME = vneedu;
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
