@@ -43,7 +43,7 @@ export default class RequirementItem extends Component {
                     </View>
                 </View>
                 <View style={styles.rqItemContent}>
-                    <TouchableOpacity onPress={()=> this.props.navigator.push({name: 'requirement_detail'})}>
+                    <TouchableOpacity onPress={()=> Actions.requirement_detail({id: this.props.id})}>
                         <Text style={styles.rqItemTitle}>{this.props.title}</Text>
                         <Text style={{fontSize: 13,}}>
                             {this.props.description}
@@ -110,12 +110,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row', 
         borderTopColor: '#d8d8d8', 
         borderTopWidth: 0.5, 
-        paddingTop: 4, 
         paddingLeft: 10,
+        height: 30,
+        alignItems: 'center',
     },
     rqItemFooterFrom: {
         paddingLeft: 4, 
-        paddingTop: 4, 
         fontSize: 12, 
         color: '#9489E2', 
         flex: 1
