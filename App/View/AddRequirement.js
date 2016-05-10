@@ -194,7 +194,7 @@ export default class AddRequirement extends Component {
     _dispatchPostReq(images = [], hotSpot) {
         let value = {
             title: this.state.title,
-            price: parseFloat(this.state.price.length == 0 ? 0 : this.state.price.length),
+            price: parseInt(parseFloat(this.state.price.length == 0 ? 0 : this.state.price.length) * 100),
             payMethod: 0,
             address: this.state.address,
             area: this.state.currentArea,
