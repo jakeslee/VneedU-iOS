@@ -12,6 +12,7 @@ import {
     Image,
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
+import Loading from '../../Component/Loading';
 import RequirementItem from '../../Component/RequirementItem';
 import { load_new_requirements } from '../../Redux/Actions/RequirementAction';
 
@@ -133,17 +134,6 @@ export default class Home extends Component {
         }
     }
     
-    _onLoading() {
-        return (
-            <View style={{alignItems: 'center', justifyContent: 'center', height: 80}}>
-                <ActivityIndicatorIOS animating={true} size="large"/>
-                <Text style={{color: '#bbb', marginTop: 10,}}>
-                    正在加载
-                </Text>
-            </View>
-        )
-    }
-    
     render() {
         return (
             <View style={{flex: 1,}}>
@@ -169,9 +159,7 @@ export default class Home extends Component {
                             if (this.props.entity.requirement.latest.isLoadingTail ||
                                 (this.props.entity.requirement.latest.isFetching && 
                                 this.props.entity.requirement.latest.items.length == 0))
-                                return this._onLoading();
-                            else
-                                <View/>;
+                                return <Loading style={{marginVertical: 20}} />;
                         }}>
                     {/* Requirements area end */}
                 </ListView>

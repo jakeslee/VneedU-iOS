@@ -179,7 +179,6 @@ export default class AddRequirement extends Component {
         } else {
             uploadFileAsync(files, this.props.currentUser.user.token).then((response) => JSON.parse(response.data))
             .then((json)=> {
-                console.log(json, typeof json)
                 if (json.error != 0) {
                     AlertIOS.alert('错误', getErrorsMessage(json.error));
                 } else {
