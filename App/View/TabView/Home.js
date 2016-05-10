@@ -5,8 +5,8 @@ import {
     StatusBar,
     ListView,
     RefreshControl,
-    ActivityIndicatorIOS,
     TouchableOpacity,
+    InteractionManager,
     View,
     Text,
     Image,
@@ -25,7 +25,9 @@ export default class Home extends Component {
     }
     
     componentDidMount() {
-        this._onRefresh();
+        InteractionManager.runAfterInteractions(() => {
+            this._onRefresh();
+        });
     }
     
     _renderHeader() {
@@ -128,7 +130,7 @@ export default class Home extends Component {
     
     _onEndReached() {
         console.log('reached end');
-        
+
         if (!this.props.entity.requirement.latest.isLoadingTail) {
             this.props.dispatch(load_new_requirements('latest', this.props.entity.requirement.latest.page + 1, true));
         }

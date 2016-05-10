@@ -5,7 +5,6 @@ import {
     ListView,
     ScrollView,
     InteractionManager,
-    ActivityIndicatorIOS,
     TouchableOpacity,
     RefreshControl,
     AlertIOS,
@@ -192,12 +191,18 @@ class RequirementDetail extends Component {
     }
     
     _renderFooter() {
-        if (this.props.comments.items.length == 0) {
+        if (this.props.comments.items.length == 0 && this.props.comments.isFetching == false) {
             return (
                 <View style={styles.withOutComment}>
                     <Text style={{color: '#bbb'}}>
                         当前需求还没有讨论，快来抢沙发吧~
                     </Text>
+                </View>
+            )
+        } else if (this.props.comments.isFetching) {
+            return (
+                <View style={styles.withOutComment}>
+                    <Loading />
                 </View>
             )
         }

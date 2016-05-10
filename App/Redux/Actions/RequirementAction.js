@@ -18,6 +18,8 @@ import {
     fetch_req_discussions,
 } from '../../Services/RequirementService';
 
+import { load_discussions } from './CommentAction';
+
 import { getErrorsMessage } from '../../Constants/Errors';
 
 export function request_requirement(category, append = false, value = true) {
@@ -98,7 +100,7 @@ export function load_new_requirements(category, page = 1, append = false) {
         }).then((response)=> response.json())
             .then((json)=> {
                 if (json.error === 0) {
-                    dispatch(load_req(json.retData.requirements, category, json.retData.page.max_pages, page, append));
+                    dispatch(load_req(json.retData.requirements, category, page, json.retData.page.max_pages, append));
                     
                     console.log(`loading ${category} of requirement at page ${page}`);
                 } else 
@@ -121,6 +123,7 @@ export function load_req_detail(id) {
             .then((json)=> {
                 if (json.error === 0) {
                     dispatch(recv_req_detail(json.retData.requirement));
+                    dispatch(load_discussions(id));
                 } else {
                     AlertIOS.alert('错误', getErrorsMessage(json.error));
                 }

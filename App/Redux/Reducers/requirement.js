@@ -115,7 +115,7 @@ function load_requiremt(state, action, append = false) {
                 items.push(v);
         })
     }
-    
+
     return Object.assign({}, state, {
         isFetching: false,
         isLoadingTail: false,
