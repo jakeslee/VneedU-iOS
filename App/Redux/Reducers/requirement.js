@@ -7,10 +7,24 @@ let requirementInitial = {
     isFetching: false,
     isLoadingTail: false,
     page: 1,
+    max_pages: 1,
     items: [],
     dataSource: dataSource.cloneWithRows([]),
 };
-let initialState = {isPosting: false,};
+let initialState = {
+    isPosting: false,
+    requirementDetail: {
+        isFetching: false,
+        content: {},
+        keywords: dataSource.cloneWithRows([]),
+        images: dataSource.cloneWithRows([]),
+        comments: {
+            page: 1,
+            items: [],
+        },
+        commentsDs: dataSource.cloneWithRows([]),
+    },
+};
 ['latest', 'build', 'edu', 'driving', 'buying', 'buying', 'medicine', 'gift', 'working', 'part-time']
 .forEach((key)=> initialState[key] = Object.assign({}, requirementInitial));
 
@@ -30,10 +44,27 @@ export default function reducer(state = initialState, action = {}) {
                     isLoadingTail: action.value,
                 })
             }
+        case Types.REQUEST_REQ_DETAIL:
+            return {
+                ...state,
+                requirementDetail: Object.assign({}, state.requirementDetail, {
+                    isFetching: true,
+                })
+            }
         case Types.REQUEST_REQ_ADDING:
             return {
                 ...state,
                 isPosting: action.isPosting,
+            }
+        case Types.RECV_REQ_DETAIL:
+            return {
+                ...state,
+                requirementDetail: Object.assign({}, state.requirementDetail, {
+                    isFetching: false,
+                    content: action.content,
+                    keywords: state.requirementDetail.keywords.cloneWithRows(action.content.keywords),
+                    images: state.requirementDetail.images.cloneWithRows(action.content.images),
+                })
             }
         case Types.LOAD_REQUIREMENT:
             return {
@@ -55,6 +86,11 @@ export default function reducer(state = initialState, action = {}) {
                     items: items,
                     dataSource: (state[action.category].dataSource || dataSource).cloneWithRows(items),
                 }
+            }
+        case Types.CLR_REQ_DETAIL:
+            return {
+                ...state,
+                requirementDetail: Object.assign({}, state.requirementDetail, initialState.requirementDetail)
             }
         default:
             return state;
