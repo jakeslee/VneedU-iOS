@@ -18,11 +18,6 @@ let initialState = {
         content: {},
         keywords: dataSource.cloneWithRows([]),
         images: dataSource.cloneWithRows([]),
-        comments: {
-            page: 1,
-            items: [],
-        },
-        commentsDs: dataSource.cloneWithRows([]),
     },
 };
 ['latest', 'build', 'edu', 'driving', 'buying', 'buying', 'medicine', 'gift', 'working', 'part-time']
