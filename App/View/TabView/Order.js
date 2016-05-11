@@ -63,7 +63,7 @@ class Order extends Component {
                     <Icon name='trash' size={20} color='#454545' />
                 </View>
                 <TouchableOpacity style={{marginTop: 10, }} onPress={()=> {
-                    this.props.dispatch(load_order_detail(rowData));
+                    this.props.dispatch(load_order_detail(rowData.id, this.props.currentUser.user));
                     Actions.order_detail({oid: rowData.id});
                 }} >
                     <View style={{flexDirection: 'row', }}>

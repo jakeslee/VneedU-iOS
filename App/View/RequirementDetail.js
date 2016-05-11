@@ -107,7 +107,9 @@ class RequirementDetail extends Component {
                             <View style={{flexDirection: 'row', alignItems: 'center'}}>
                                 <View style={{marginRight: 10, flexDirection: 'row'}}>
                                     <Icon2 name='thumbs-o-up' size={13} color='#929292' />
-                                    <Text style={{color: '#929292', fontSize: 12, marginLeft: 2}}>{0 > 0 ? this.props.nice: '赞'}</Text>
+                                    <Text style={{color: '#929292', fontSize: 12, marginLeft: 2}}>
+                                        {this.props.requirement.content.nice > 0 ? this.props.requirement.content.nice: '赞'}
+                                    </Text>
                                 </View>
                                 <Text style={{fontSize: 12, marginRight: 4, color: '#859DF4'}}>
                                     {this.props.requirement.content.publisher.name}

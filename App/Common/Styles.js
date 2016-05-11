@@ -33,6 +33,11 @@ export const ButtonStyles = StyleSheet.create({
         flexDirection: 'row', 
         justifyContent: 'center'
     },
+    dangerBtn: {
+        backgroundColor: '#d9534f', 
+        borderRadius: 2, 
+        paddingVertical: 10
+    },
     primaryBtn: {
         backgroundColor: '#6AD072', 
         borderRadius: 2, 

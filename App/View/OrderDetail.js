@@ -1,11 +1,29 @@
 import React, {Component} from "react";
-import {StyleSheet, TextInput, ScrollView, TouchableOpacity, Image, View, Text} from "react-native";
+import {
+    StyleSheet, 
+    TextInput, 
+    ScrollView, 
+    TouchableOpacity, 
+    InteractionManager,
+    Image, 
+    View, 
+    Text,
+    AlertIOS,
+} from "react-native";
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
+import Loading from '../Component/Loading';
 import { Base, avatar_process } from '../Common/Base';
 import NavigatorBar from '../Component/NavigatorBar';
 import { BorderStyles, ButtonStyles, NavigatorStyles, ImageStyles } from '../Common/Styles';
+import {
+    do_cancel_order,
+    do_check_order,
+    do_finished_order,
+    load_order_detail,
+    clr_order_detail,
+} from '../Redux/Actions/OrderAction';
 
 let aa = Base.width/6;
 
@@ -29,6 +47,17 @@ const STATUS_CHOICE = [
 class OrderDetail extends Component {
     constructor(props) {
         super(props);
+        this._onRefresh = this._onRefresh.bind(this);
+    }
+    
+    componentDidMount() {
+        if (this.props.oid !== this.props.detail.content.id) {
+            this.props.dispatch(clr_order_detail());
+        }
+    }
+    
+    _onRefresh() {
+        this.props.dispatch(load_order_detail(rowData.id, this.props.currentUser.user));
     }
     
     _renderIndicator(value) {
@@ -53,6 +82,7 @@ class OrderDetail extends Component {
             <View style={NavigatorStyles.navigatorContainer}>
                 <NavigatorBar title='订单详情' {...this.props}/>
                 <View style={{flex: 1}}>
+                    {!this.props.detail.content.hasOwnProperty('id') ? <Loading />:
                     <ScrollView bounces={false} automaticallyAdjustContentInsets={false} style={{paddingTop: 5}}>
                         {/* 订单状态 start */}
                         <View style={[BorderStyles.topAndBottom, styles.contentArea, {marginTop: 0}]}>
@@ -98,7 +128,7 @@ class OrderDetail extends Component {
                             <TouchableOpacity onPress={()=> {
                                     Actions.requirement_detail({id: this.props.detail.content.requirement.id})
                                 }}>
-                                <Text style={{color: '#545353', fontSize: 16}}>
+                                <Text style={{color: '#4DA7F4', fontSize: 18, paddingLeft: 5}}>
                                     {this.props.detail.content.title}
                                 </Text>
                             </TouchableOpacity>
@@ -147,19 +177,58 @@ class OrderDetail extends Component {
                                     下单时间：{this.props.detail.content.datetime}
                                 </Text>
                             </View>
-                            {this.props.detail.content.status == 2 && 
-                                this.props.detail.content[cur == 0 ? 'cJudged' : 'uJudged'] == 0 && 
                             <View style={[styles.propertyItem, BorderStyles.top, {justifyContent: 'flex-end'}]}>
+                                {this.props.detail.content.status == 2 && 
+                                this.props.detail.content[cur == 0 ? 'cJudged' : 'uJudged'] == 0 && 
                                 <View style={[ButtonStyles.itemBtnArea, {marginTop: 0}]} >
                                     <TouchableOpacity style={[ButtonStyles.primaryBtn, {width: 70, paddingVertical: 8}]}
-                                        onPress={()=> this.props.navigator.push({name: 'judgement'})}>
+                                        onPress={()=> Actions.judgement({oid: this.props.detail.content})}>
                                         <Text style={ButtonStyles.primaryBtnText}>评价</Text>
                                     </TouchableOpacity>
-                                </View>
-                            </View>}
+                                </View>}
+                                {this.props.detail.content.status == 0 && cur == 1 && 
+                                <View style={[ButtonStyles.itemBtnArea, {marginTop: 0}]} >
+                                    <TouchableOpacity style={[ButtonStyles.dangerBtn, {width: 70, paddingVertical: 8}]}
+                                        onPress={()=> {
+                                            AlertIOS.alert('提示', '你确定想取消订单吗？', [
+                                                {text: '取消', onPress: () => console.log('Canceled!')},
+                                                {text: '确定', onPress: () => 
+                                                    this.props.dispatch(do_cancel_order(this.props.id, this.props.currentUser.user))},
+                                            ])
+                                        }}>
+                                        <Text style={ButtonStyles.primaryBtnText}>取消订单</Text>
+                                    </TouchableOpacity>
+                                </View>}
+                                {this.props.detail.content.status == 0 && cur == 0 && 
+                                <View style={[ButtonStyles.itemBtnArea, {marginTop: 0}]} >
+                                    <TouchableOpacity style={[ButtonStyles.primaryBtn, {width: 70, paddingVertical: 8}]}
+                                        onPress={()=> {
+                                            AlertIOS.alert('提示', '你想确认订单吗？', [
+                                                {text: '取消', onPress: () => console.log('Canceled!')},
+                                                {text: '确定', onPress: () => 
+                                                    this.props.dispatch(do_check_order(this.props.id, this.props.currentUser.user))},
+                                            ])
+                                        }}>
+                                        <Text style={ButtonStyles.primaryBtnText}>确认订单</Text>
+                                    </TouchableOpacity>
+                                </View>}
+                                {this.props.detail.content.status == 1 && cur == 0 && 
+                                <View style={[ButtonStyles.itemBtnArea, {marginTop: 0}]} >
+                                    <TouchableOpacity style={[ButtonStyles.primaryBtn, {width: 70, paddingVertical: 8}]}
+                                        onPress={()=> {
+                                            AlertIOS.alert('提示', '对方是否已经完成你的需求吗？', [
+                                                {text: '取消', onPress: () => console.log('Canceled!')},
+                                                {text: '确定', onPress: () => 
+                                                    this.props.dispatch(do_finished_order(this.props.id, this.props.currentUser.user))},
+                                            ])
+                                        }}>
+                                        <Text style={ButtonStyles.primaryBtnText}>确认需求完成</Text>
+                                    </TouchableOpacity>
+                                </View>}
+                            </View>
                         </View>
                         {/* 交易方式 end */}
-                    </ScrollView>
+                    </ScrollView>}
                 </View>
             </View>
         )
