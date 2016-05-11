@@ -1,0 +1,85 @@
+import {
+    AlertIOS
+} from 'react-native';
+import { Actions } from 'react-native-router-flux';
+import Types from '../../Constants/ActionTypes';
+
+import {
+    add_order,
+    get_orders,
+    create_order,
+} from '../../Services/OrderService'
+
+import {
+    load_req_detail
+} from './RequirementAction';
+
+import { getErrorsMessage } from '../../Constants/Errors';
+
+
+function request_orders(append = false) {
+    return {
+        type: append ? Types.REQUEST_ORDERS : Types.REQUEST_ORDERS_APPEND,
+    }
+}
+
+function request_order_add(isPosting = true) {
+    return {
+        type: Types.REQUEST_ORDER_ADD,
+        isPosting,
+    }
+}
+
+function recv_orders(items, page, max_pages, append = false) {
+    return {
+        type: append ? Types.RECV_ORDERS_APPEND : Types.RECV_ORDERS,
+        items,
+        page,
+        max_pages,
+    }
+}
+
+function recv_order(content) {
+    return {
+        type: Types.RECV_ORDER_DETAIL,
+        content,
+    }
+}
+
+export function load_user_orders(current_user, page = 1) {
+    return (dispatch)=> {
+        dispatch(request_orders(page != 1));
+        return get_orders(current_user.id, current_user.token, page, {
+            expand: 'creator, user, requirement',
+        }).then((response)=> response.json())
+            .then((json)=> {
+                if (json.error === 0) {
+                    dispatch(recv_orders(
+                        json.retData.orders, json.retData.page.page, json.retData.page.max_pages, page != 1));
+                } else 
+                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+            })
+    }
+}
+
+export function load_order_detail(orderDetail) {
+    return recv_order(orderDetail);
+}
+
+export function add_new_order(rid, current_user) {
+    return (dispatch)=> {
+        dispatch(request_order_add())
+        return create_order(rid, current_user.token)
+            .then((response)=> response.json())
+            .then((json)=> {
+                if (json.error === 0) {
+                    dispatch(request_order_add(false));
+                    AlertIOS.alert('提示', '添加成功',[
+                        {text: '确定', onPress: () => dispatch(load_req_detail(rid))},
+                    ])
+                    
+                } else 
+                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+            });
+    }
+}

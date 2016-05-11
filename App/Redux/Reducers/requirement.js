@@ -1,4 +1,3 @@
-import React from "react";
 import {ListView} from "react-native";
 import Types from '../../Constants/ActionTypes';
 

@@ -40,17 +40,6 @@ export function fetch_req_discussions(id, { exclude, expand } = {exclude: '', ex
 }
 
 /*
- * 创建订单
- */
-export function create_order(rid, token) {
-    return post(`${API.API_ROOT}${API.ORDER}`, {
-        rid,
-    },{
-        Authorization: 'token ' + token,
-    });
-}
-
-/*
  * 赞
  */
 export function race_up_req(id, token) {

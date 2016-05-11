@@ -16,4 +16,5 @@ export default {
     REQUIREMENT_DISCUSSIONS: `${API_FREFIX}/requirement/discussions`,
     REQUIREMENT_SEARCH: `${API_FREFIX}/requirement/search`,
     ORDER: `${API_FREFIX}/order`,
+    ORDERS: `${API_FREFIX}/orders`,
 }
