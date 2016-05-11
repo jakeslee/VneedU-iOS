@@ -1,19 +1,34 @@
 import React, {Component} from "react";
 import {StyleSheet, TextInput, ScrollView, TouchableOpacity, Image, View, Text} from "react-native";
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Base } from '../Common/Base';
+import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
+import { Base, avatar_process } from '../Common/Base';
 import NavigatorBar from '../Component/NavigatorBar';
-import { BorderStyles, ButtonStyles, NavigatorStyles } from '../Common/Styles';
+import { BorderStyles, ButtonStyles, NavigatorStyles, ImageStyles } from '../Common/Styles';
 
 let aa = Base.width/6;
 
-export default class OrderDetail extends Component {
+/*
+    creator 发起需求 -> 用户创建订单 -> 需求锁定、订单状态为0
+    creator 确认订单 -> 需求关闭 -> 订单状态为1
+    creator 确认需求完成 -> 订单状态为2 允许评价
+*/
+const STATUS_CHOICE = [
+    [// Creator of req
+        ['订单未确认', '请确认订单'],
+        ['订单已确认', '等待对方完成需求'], // 发起者确定需求是否完成
+        ['订单已完成', '双方已经达成协定'],
+    ],[// Creator of order
+        ['订单已提交', '等待确认'],
+        ['订单已确认', '请按要求完成需求'],
+        ['订单已完成', '双方已经达成协定'],
+    ]
+]
+
+class OrderDetail extends Component {
     constructor(props) {
         super(props);
-        
-        this.state = {
-            status: 2,
-        }
     }
     
     _renderIndicator(value) {
@@ -32,6 +47,8 @@ export default class OrderDetail extends Component {
     }
     
     render() {
+        let cur_uid = this.props.currentUser.user.id;
+        let cur = cur_uid == this.props.detail.content.userId ? 0:1;
         return (
             <View style={NavigatorStyles.navigatorContainer}>
                 <NavigatorBar title='订单详情' {...this.props}/>
@@ -42,40 +59,51 @@ export default class OrderDetail extends Component {
                             <View style={{flexDirection: 'row', alignItems: 'center', padding: 20}}>
                                 <Image style={{width: 39, height: 39, marginLeft: 20}} source={require('../Resources/Images/orderIcon/Order_Icon.png')} />
                                 <View style={{marginLeft: 10}}>
-                                    <Text style={{fontSize: 18, marginBottom: 4}}>订单已完成</Text>
-                                    <Text style={{color: '#5D5D5D', fontSize: 12,}}>对方已收到订单信息</Text>
+                                    <Text style={{fontSize: 18, marginBottom: 4}}>{STATUS_CHOICE[cur][this.props.detail.content.status][0]}</Text>
+                                    <Text style={{color: '#5D5D5D', fontSize: 12,}}>{STATUS_CHOICE[cur][this.props.detail.content.status][1]}</Text>
                                 </View>
                             </View>
                             <View style={{flexDirection: 'column' }}>
                                 <View style={styles.line} />
                             
                                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                    <Text style={[styles.indicatorText, this.state.status == 0 && styles.indicatorTextActive]}>
-                                        订单已提交
+                                    <Text style={[styles.indicatorText, this.props.detail.content.status == 0 && styles.indicatorTextActive]}>
+                                        {STATUS_CHOICE[cur][0][0]}
                                     </Text>
-                                    <Text style={[styles.indicatorText, this.state.status == 1 && styles.indicatorTextActive]}>对方已确定</Text>
-                                    <Text style={[styles.indicatorText, this.state.status == 2 && styles.indicatorTextActive]}>已完成</Text>
+                                    <Text style={[styles.indicatorText, this.props.detail.content.status == 1 && styles.indicatorTextActive]}>
+                                        {STATUS_CHOICE[cur][1][0]}
+                                    </Text>
+                                    <Text style={[styles.indicatorText, this.props.detail.content.status == 2 && styles.indicatorTextActive]}>
+                                        {STATUS_CHOICE[cur][2][0]}
+                                    </Text>
                                 </View>
-                                {this._renderIndicator(this.state.status)}
+                                {this._renderIndicator(this.props.detail.content.status)}
                             </View>
                         </View>
                         {/* 订单状态 end */}
                         {/* 关联需求 start */}
                         <View style={[BorderStyles.topAndBottom, styles.contentArea]}>
                             <View style={{flexDirection: 'row', marginBottom: 10, alignItems: 'center'}}>
-                                <Image style={{width: 20, height: 20}} source={require('../Resources/Images/avatar.png')} />
+                                <View style={[ImageStyles.avatarRound(20), {width: 20}]}>
+                                    <Image style={ImageStyles.avatarRound(20)} 
+                                        source={avatar_process(this.props.detail.content.creator.avatar, this.props.app.cdn_config)} />
+                                </View>
                                 <Text style={{flex: 1, marginLeft: 5}}>
-                                    威神
+                                    {this.props.detail.content.creator.name}
                                 </Text>
                                 <Text style={{color: '#545353', fontSize: 12}}>
-                                    2016-10-11 11:24
+                                    {this.props.detail.content.requirement.datetime}
                                 </Text>
                             </View>
-                            <Text style={{color: '#545353', fontSize: 16}}>
-                                帮忙写代码
-                            </Text>
+                            <TouchableOpacity onPress={()=> {
+                                    Actions.requirement_detail({id: this.props.detail.content.requirement.id})
+                                }}>
+                                <Text style={{color: '#545353', fontSize: 16}}>
+                                    {this.props.detail.content.title}
+                                </Text>
+                            </TouchableOpacity>
                             <Text style={{textAlign: 'right', color: '#EB5706'}}>
-                                合计 ￥12300
+                                合计 ￥{this.props.detail.content.requirement.price/100}
                             </Text>
                         </View>
                         {/* 关联需求 end */}
@@ -94,29 +122,33 @@ export default class OrderDetail extends Component {
                             <View style={{flexDirection: 'row', alignItems: 'center'}}>
                                 <Text style={styles.areaTitle}>订单详情</Text>
                                 <Text style={styles.areaSubtitle}>
-                                    订单号：102039398393949112342
+                                    订单号：{this.props.detail.content.orderNo}
                                 </Text>
                             </View>
                             <View style={[styles.propertyItem, BorderStyles.top]}>
                                 <Text style={styles.propertyItemText}>
-                                    联系人：刘先生
+                                    联系人：{cur_uid != this.props.detail.content.userId ? 
+                                            this.props.detail.content.user.name : this.props.detail.content.creator.name}
                                 </Text>
                             </View>
                             <View style={[styles.propertyItem, BorderStyles.top]}>
                                 <Text style={styles.propertyItemText}>
-                                    联系电话：18666666666
+                                    联系电话：{cur_uid != this.props.detail.content.userId ? 
+                                            this.props.detail.content.user.phone : this.props.detail.content.creator.phone}
                                 </Text>
                             </View>
                             <View style={[styles.propertyItem, BorderStyles.top]}>
                                 <Text style={styles.propertyItemText}>
-                                    交易地址：贵州大学北区图书馆
+                                    交易地址：{this.props.detail.content.requirement.address}
                                 </Text>
                             </View>
                             <View style={[styles.propertyItem, BorderStyles.top]}>
                                 <Text style={styles.propertyItemText}>
-                                    下单时间：2016-03-21 12:24
+                                    下单时间：{this.props.detail.content.datetime}
                                 </Text>
                             </View>
+                            {this.props.detail.content.status == 2 && 
+                                this.props.detail.content[cur == 0 ? 'cJudged' : 'uJudged'] == 0 && 
                             <View style={[styles.propertyItem, BorderStyles.top, {justifyContent: 'flex-end'}]}>
                                 <View style={[ButtonStyles.itemBtnArea, {marginTop: 0}]} >
                                     <TouchableOpacity style={[ButtonStyles.primaryBtn, {width: 70, paddingVertical: 8}]}
@@ -124,7 +156,7 @@ export default class OrderDetail extends Component {
                                         <Text style={ButtonStyles.primaryBtnText}>评价</Text>
                                     </TouchableOpacity>
                                 </View>
-                            </View>
+                            </View>}
                         </View>
                         {/* 交易方式 end */}
                     </ScrollView>
@@ -186,3 +218,9 @@ const styles = StyleSheet.create({
         paddingVertical: 4
     },
 });
+
+export default connect(({orders, app, currentUser})=> ({
+    detail: orders.detail,
+    currentUser,
+    app,
+}))(OrderDetail);

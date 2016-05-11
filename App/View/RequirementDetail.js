@@ -32,6 +32,10 @@ import {
     post_comment,
 } from '../Redux/Actions/CommentAction';
 
+import {
+    add_new_order
+} from '../Redux/Actions/OrderAction';
+
 class RequirementDetail extends Component {
     constructor(props) {
         super(props);
@@ -53,7 +57,7 @@ class RequirementDetail extends Component {
     }
     
     _onRefresh() {
-        console.log('on refresh');
+        console.log('on refresh: ', this.props.id);
         this.props.dispatch(load_req_detail(this.props.id));
     }
     
@@ -166,18 +170,22 @@ class RequirementDetail extends Component {
                                     <Text style={ButtonStyles.primaryBtnText}>评论</Text>
                                 </TouchableOpacity>
                             </View>
+                            {this.props.requirement.tradeStatus == 0 &&
                             <View style={[ButtonStyles.itemBtnArea, {marginTop: 0, marginLeft: 12}]} >
                                 <TouchableOpacity style={[ButtonStyles.primaryBtn, {width: 70, paddingVertical: 8, backgroundColor: '#d9534f'}]}
                                     onPress={()=> {
-                                        AlertIOS.alert('提示', '你确定要预定吗？', [
-                                            {text: '取消', onPress: () => console.log('Canceled!')},
-                                            {text: '确定', onPress: () => 
-                                                this.props.dispatch(order_req(this.props.id, this.props.currentUser.user))},
-                                        ])
+                                        if (this.props.requirement.content.publisherId == this.props.currentUser.user.id)
+                                            AlertIOS.alert('提示', '无法操作自己发起的需求！');
+                                        else
+                                            AlertIOS.alert('提示', '你确定要预定吗？', [
+                                                {text: '取消', onPress: () => console.log('Canceled!')},
+                                                {text: '确定', onPress: () => 
+                                                    this.props.dispatch(add_new_order(this.props.id, this.props.currentUser.user))},
+                                            ])
                                     }}>
                                     <Text style={ButtonStyles.primaryBtnText}>预定</Text>
                                 </TouchableOpacity>
-                            </View>
+                            </View>}
                         </View>: null}
                     </View>
                     {/* 交易详情 end */}

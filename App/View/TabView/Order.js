@@ -3,64 +3,54 @@ import {
     StyleSheet,
     ScrollView,
     ListView,
+    RefreshControl,
     TouchableOpacity,
+    InteractionManager,
     View,
     Text,
     Image,
 } from 'react-native';
-
+import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/EvilIcons';
+import Loading from '../../Component/Loading';
+import { avatar_process } from '../../Common/Base';
 import { BorderStyles, ButtonStyles, ImageStyles } from '../../Common/Styles';
+
+import {
+    load_user_orders,
+    load_order_detail,
+} from '../../Redux/Actions/OrderAction';
 
 const ORDER_STATUS = ['订单已提交', '订单已确定', '订单已完成'];
 
-export default class Order extends Component {
+class Order extends Component {
     constructor(props) {
         super(props);
-        var dataSource = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 !== r2,
+        
+        this._onRefresh = this._onRefresh.bind(this);
+        this._renderFooter = this._renderFooter.bind(this);
+    }
+    
+    componentDidMount() {
+        InteractionManager.runAfterInteractions(() => {
+            this._onRefresh();
         });
-        
-        var test = [];
-        for (var i = 0;i < 6;++i) {
-            test.push({
-                id: "754v87v4w547389",
-                creator_id: "8345frhi597b",
-                user_id: "8345frhi597c",
-                creator: {
-                    id: "8345frhi597b",
-                    name: "威神",
-                    avatar: require('../../Resources/Images/avatar.png'),
-                },
-                user: {
-                    id: "8345frhi597c",
-                    name: "Jakes Lee",
-                    avatar: require('../../Resources/Images/avatar.png'),
-                },
-                title: "帮忙写代码",
-                status: 0,
-                u_judged: 0,
-                c_judged: 0,
-                datetime: '2016-3-19 10:11',
-            })
-        }
-        test[2].status = 2;
-        
-        this.state = {
-            dataSource: dataSource.cloneWithRows(test),
-            currentUser: '8345frhi597c',
-        }
     }
     
     _orderStatus(data) {
         if (data.status == 2) {
-            if (this.state.currentUser == data.user_id) {
+            if (this.props.currentUser == data.user_id) {
                 return data.u_judged == 0 ? '订单待评价' : ORDER_STATUS[2];
-            } else if (this.state.currentUser == data.creator_id) {
+            } else if (this.props.currentUser == data.creator_id) {
                 return data.c_judged == 0 ? '订单待评价' : ORDER_STATUS[2];
             }
         }
         return ORDER_STATUS[data.status];
+    }
+    
+    _onRefresh() {
+        this.props.dispatch(load_user_orders(this.props.currentUser.user, 1));
     }
     
     _renderRow(rowData) {
@@ -72,10 +62,14 @@ export default class Order extends Component {
                     <Text style={{fontSize: 12, color: '#454545', flex: 1}} >{os} - {rowData.datetime}</Text>
                     <Icon name='trash' size={20} color='#454545' />
                 </View>
-                <TouchableOpacity style={{marginTop: 10, }} onPress={()=> this.props.navigator.push({name: 'order_detail'})} >
+                <TouchableOpacity style={{marginTop: 10, }} onPress={()=> {
+                    this.props.dispatch(load_order_detail(rowData));
+                    Actions.order_detail({oid: rowData.id});
+                }} >
                     <View style={{flexDirection: 'row', }}>
                         <View style={ImageStyles.avatarRound(37)}>
-                            <Image style={{height: 37, width: 37}} source={rowData.creator.avatar} />
+                            <Image style={ImageStyles.avatarRound(37)} 
+                                source={avatar_process(rowData.creator.avatar, this.props.app.cdn_config)} />
                         </View>
                         <View style={{marginLeft: 10, }}>
                             <Text style={styles.rqUserTitle}>{rowData.creator.name}</Text>
@@ -94,13 +88,44 @@ export default class Order extends Component {
         )
     }
     
+    _renderFooter() {
+        if (this.props.orders.items.length == 0 && this.props.orders.isFetching == false) {
+            return (
+                <View style={styles.withOutComment}>
+                    <Text style={{color: '#bbb'}}>
+                        当前你还没有订单，赶紧去下个单吧~
+                    </Text>
+                </View>
+            )
+        } else if (this.props.orders.isFetching) {
+            return (
+                <View style={styles.withOutComment}>
+                    <Loading />
+                </View>
+            )
+        }
+    }
+    
     render() {
         return (
             <View style={{flex: 1}}>
+                { this.props.orders.items.length == 0 && this.props.orders.items.isFetching ?
+                <Loading style={{flex: 1}} />:
                 <ListView 
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.props.orders.isFetching}
+                            onRefresh={this._onRefresh}
+                            tintColor="#ff0000" 
+                            title="Loading..."
+                            colors={['#ff0000', '#00ff00', '#0000ff']}
+                            progressBackgroundColor="#ffff00"/>
+                    }
+                    enableEmptySections={true}
                     style={{paddingTop: 8,}}
-                    dataSource={this.state.dataSource}
-                    renderRow={this._renderRow.bind(this)}/>
+                    dataSource={this.props.orders.dataSource}
+                    renderRow={this._renderRow.bind(this)}
+                    renderFooter={this._renderFooter}/>}
             </View>
         )
     }
@@ -135,4 +160,15 @@ const styles = StyleSheet.create({
         textAlign: 'center', 
         color: '#FFF',
     },
+    withOutComment: {
+        height: 100, 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+    }
 })
+
+export default connect(({orders, currentUser, app})=> ({
+    orders,
+    currentUser,
+    app,
+}))(Order);
