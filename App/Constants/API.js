@@ -17,4 +17,7 @@ export default {
     REQUIREMENT_SEARCH: `${API_FREFIX}/requirement/search`,
     ORDER: `${API_FREFIX}/order`,
     ORDERS: `${API_FREFIX}/orders`,
+    ORDER_CANCEL: `${API_FREFIX}/order/cancel`,
+    ORDER_CHECK: `${API_FREFIX}/order/check`,
+    ORDER_FINISHED: `${API_FREFIX}/order/finished`,
 }

@@ -33,6 +33,13 @@ export default function reducer(state = initialState, action = {}) {
             return load_orders(state, action)
         case Types.RECV_ORDERS_APPEND:
             return load_orders(state, action, true);
+        case Types.REQUEST_ORDER_DETAIL:
+            return {
+                ...state,
+                detail: Object.assign({}, state.detail, {
+                    isFetching: true,
+                })
+            }
         case Types.RECV_ORDER_DETAIL:
             return {
                 ...state,
@@ -45,6 +52,11 @@ export default function reducer(state = initialState, action = {}) {
             return {
                 ...state,
                 isPosting: action.isPosting,
+            }
+        case Types.CLR_ORDER_DETAIL:
+            return {
+                ...state,
+                detail: Object.assign({}, initialState.detail)
             }
         default:
             return state;

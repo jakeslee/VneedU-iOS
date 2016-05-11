@@ -9,6 +9,15 @@ export function add_order(rid, token = '') {
     });
 }
 
+export function get_order(oid, token = '', { exclude, expand } = {exclude: '', expand: ''}) {
+    return get(`${API.API_ROOT}${API.ORDER}/${oid}`, {
+        exclude,
+        expand,
+    },{
+        Authorization: 'token ' + token,
+    });
+}
+
 export function get_orders(uid, token = '', page = 1, { exclude, expand } = {exclude: '', expand: ''}) {
     return get(`${API.API_ROOT}${API.ORDERS}/${uid}`, {
         page,
@@ -26,6 +35,24 @@ export function create_order(rid, token) {
     return post(`${API.API_ROOT}${API.ORDER}`, {
         rid,
     },{
+        Authorization: 'token ' + token,
+    });
+}
+
+export function cancel_order(oid, token) {
+    return put(`${API.API_ROOT}${API.ORDER_CANCEL}/${oid}`, {}, {
+        Authorization: 'token ' + token,
+    });
+}
+
+export function check_order(oid, token) {
+    return put(`${API.API_ROOT}${API.ORDER_CHECK}/${oid}`, {}, {
+        Authorization: 'token ' + token,
+    });
+}
+
+export function finished_order(oid, token) {
+    return put(`${API.API_ROOT}${API.ORDER_FINISHED}/${oid}`, {}, {
         Authorization: 'token ' + token,
     });
 }

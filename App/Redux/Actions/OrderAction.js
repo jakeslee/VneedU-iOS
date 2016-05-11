@@ -6,8 +6,12 @@ import Types from '../../Constants/ActionTypes';
 
 import {
     add_order,
+    get_order,
     get_orders,
     create_order,
+    cancel_order,
+    check_order,
+    finished_order,
 } from '../../Services/OrderService'
 
 import {
@@ -27,6 +31,12 @@ function request_order_add(isPosting = true) {
     return {
         type: Types.REQUEST_ORDER_ADD,
         isPosting,
+    }
+}
+
+function request_order_detail() {
+    return {
+        type: Types.REQUEST_ORDER_DETAIL,
     }
 }
 
@@ -50,7 +60,7 @@ export function load_user_orders(current_user, page = 1) {
     return (dispatch)=> {
         dispatch(request_orders(page != 1));
         return get_orders(current_user.id, current_user.token, page, {
-            expand: 'creator, user, requirement',
+            expand: 'creator',
         }).then((response)=> response.json())
             .then((json)=> {
                 if (json.error === 0) {
@@ -62,8 +72,19 @@ export function load_user_orders(current_user, page = 1) {
     }
 }
 
-export function load_order_detail(orderDetail) {
-    return recv_order(orderDetail);
+export function load_order_detail(oid, current_user) {
+    return (dispatch)=> {
+        dispatch(request_order_detail())
+        return get_order(oid, current_user.token, {
+            expand: 'creator, user, requirement',
+        }).then((response)=> response.json())
+            .then((json)=> {
+                if (json.error === 0) {
+                    dispatch(recv_order(json.retData.order));
+                } else 
+                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+            });
+    }
 }
 
 export function add_new_order(rid, current_user) {
@@ -81,5 +102,57 @@ export function add_new_order(rid, current_user) {
                 } else 
                     AlertIOS.alert('错误', getErrorsMessage(json.error));
             });
+    }
+}
+
+export function do_cancel_order(oid, current_user) {
+    return (dispatch)=> {
+        dispatch(request_order_add());
+        return cancel_order(oid, current_user.token)
+            .then((response)=> response.json())
+            .then((json)=> {
+                if (json.error === 0) {
+                    dispatch(request_order_add(false));
+                    Actions.pop();
+                    dispatch(load_user_orders(current_user, 1));
+                } else
+                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+            });
+    }
+}
+
+export function do_check_order(oid, current_user) {
+    return (dispatch)=> {
+        dispatch(request_order_add());
+        return check_order(oid, current_user.token)
+            .then((response)=> response.json())
+            .then((json)=> {
+                if (json.error === 0) {
+                    dispatch(request_order_add(false));
+                    dispatch(load_order_detail(oid, current_user));
+                } else
+                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+            });
+    }
+}
+
+export function do_finished_order(oid, current_user) {
+    return (dispatch)=> {
+        dispatch(request_order_add());
+        return finished_order(oid, current_user.token)
+            .then((response)=> response.json())
+            .then((json)=> {
+                if (json.error === 0) {
+                    dispatch(request_order_add(false));
+                    dispatch(load_order_detail(oid, current_user));
+                } else
+                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+            });
+    }
+}
+
+export function clr_order_detail() {
+    return {
+        type: Types.CLR_ORDER_DETAIL,
     }
 }
