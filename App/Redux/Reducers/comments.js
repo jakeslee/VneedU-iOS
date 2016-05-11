@@ -34,6 +34,7 @@ export default function reducer(state = initialState, action = {}) {
             }
         case Types.REQUEST_POST_DISCUSSION:
             return {
+                ...state,
                 isPosting: true,
             }
         case Types.CLR_DISCUSSIONS:

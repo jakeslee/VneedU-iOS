@@ -14,7 +14,7 @@ export function signup(params = {}) {
 }
 
 export function getUser(token = '', uid) {
-    let uid_str = uid ? '/uid' : '';
+    let uid_str = uid ? '/' + uid : '';
     return get(`${API.API_ROOT}${API.REGIST_USER}${uid_str}`, {}, {
         Authorization: 'token ' + token,
     });

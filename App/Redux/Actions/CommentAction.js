@@ -6,6 +6,7 @@ import {
     fetch_req_discussions,
 } from '../../Services/RequirementService';
 import Types from '../../Constants/ActionTypes';
+import { getErrorsMessage } from '../../Constants/Errors';
 
 function request_discussions() {
     return {
@@ -37,7 +38,9 @@ export function clr_discussions() {
 export function load_discussions(rid) {
     return (dispatch)=> {
         dispatch(request_discussions());
-        return fetch_req_discussions(rid).then((response)=> response.json())
+        return fetch_req_discussions(rid, {
+            expand: 'sender'
+        }).then((response)=> response.json())
             .then((json)=> {
                 if (json.error === 0) {
                     dispatch(recv_discussions(

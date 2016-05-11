@@ -43,6 +43,7 @@ class RequirementDetail extends Component {
         this.isSigned = (this.props.currentUser.user || {}).hasOwnProperty('id');
         this._onRefresh = this._onRefresh.bind(this);
         this._renderHeader = this._renderHeader.bind(this);
+        this._renderComments = this._renderComments.bind(this);
         this._renderImages = this._renderImages.bind(this);
         this._renderFooter = this._renderFooter.bind(this);
     }
@@ -82,11 +83,10 @@ class RequirementDetail extends Component {
     }
     
     _renderComments(rowData) {
-        return <CommentItem rowData={rowData} />;
+        return <CommentItem rowData={rowData} app={this.props.app}/>;
     }
     
     _renderHeader() {
-        console.log(this.props.requirement.isFetching, this.props.requirement.content.hasOwnProperty('id'))
         if (!this.props.requirement.content.hasOwnProperty('id'))
             return null;
         let avatar = avatar_process(this.props.requirement.content.publisher.avatar, this.props.app.cdn_config);
@@ -164,13 +164,17 @@ class RequirementDetail extends Component {
                                 <TouchableOpacity style={[ButtonStyles.primaryBtn, {width: 70, paddingVertical: 8}]}
                                     onPress={()=> AlertIOS.prompt('请输入评论内容', '', [
                                         {text: '取消', onPress: () => console.log('Canceled!')},
-                                        {text: '确定', onPress: (v) => 
-                                            this.props.dispatch(post_comment(this.props.id, v, this.props.currentUser.user))},
+                                        {text: '确定', onPress: (v) => {
+                                            if (v.length >= 2) {
+                                                this.props.dispatch(post_comment(this.props.id, v, this.props.currentUser.user));
+                                            } else
+                                                AlertIOS.alert('错误', '评论字数不少于2个')
+                                        }},
                                     ])}>
                                     <Text style={ButtonStyles.primaryBtnText}>评论</Text>
                                 </TouchableOpacity>
                             </View>
-                            {this.props.requirement.tradeStatus == 0 &&
+                            {this.props.requirement.content.tradeStatus == 0 && this.props.requirement.content.publisherId != this.props.currentUser.user.id &&
                             <View style={[ButtonStyles.itemBtnArea, {marginTop: 0, marginLeft: 12}]} >
                                 <TouchableOpacity style={[ButtonStyles.primaryBtn, {width: 70, paddingVertical: 8, backgroundColor: '#d9534f'}]}
                                     onPress={()=> {
