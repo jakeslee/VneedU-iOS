@@ -45,3 +45,11 @@ export function getJudgements(uid, token = '') {
         Authorization: 'token ' + token,
     })
 }
+
+export function changeAvatar(newAvatar, token) {
+    return put(`${API.API_ROOT}${API.USER_AVATAR}`, {
+        userfile_id: newAvatar,
+    }, {
+        Authorization: 'token ' + token,
+    })
+}

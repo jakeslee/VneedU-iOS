@@ -33,7 +33,7 @@ class Login extends Component {
         return (
             <View style={{flex: 1}}>
                 <Image source={require('../Resources/Images/bgImg/Header.png')} style={styles.logoImg}>
-                    <TouchableOpacity onPress={()=> { Actions.pop();StatusBar.setBarStyle('default', true);}} style={{backgroundColor: 'transparent'}}>
+                    <TouchableOpacity onPress={()=> { Actions.pop();StatusBar.setBarStyle('default', false);}} style={{backgroundColor: 'transparent'}}>
                         <Icon name='chevron-left' color='#FFF' size={20} />
                     </TouchableOpacity>
                 </Image>

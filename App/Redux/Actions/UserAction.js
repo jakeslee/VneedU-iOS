@@ -18,6 +18,7 @@ import {
     signup,
     getUser,
     set_profile,
+    changeAvatar,
     reset_password,
     getRequirements,
     getJudgements,
@@ -67,6 +68,13 @@ function request_other_user() {
 function request_user_req() {
     return {
         type: Types.REQUEST_USER_REQ,
+    }
+}
+
+export function request_upload_avatar(uploading = true) {
+    return {
+        type: Types.REQUEST_UPLOAD_AVATAR,
+        uploading,
     }
 }
 
@@ -273,5 +281,19 @@ export function load_user(uid, current_user) {
                 } else 
                     AlertIOS.alert('错误', getErrorsMessage(json.error));
             })
+    }
+}
+
+export function do_change_avatar(userFileId, current_user) {
+    return (dispatch)=> {
+        return changeAvatar(userFileId, current_user.token)
+            .then((response)=> response.json())
+            .then((json)=> {
+                if (json.error === 0) {
+                    dispatch(request_upload_avatar(false));
+                    dispatch(refresh_user(current_user));
+                } else 
+                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+            });
     }
 }

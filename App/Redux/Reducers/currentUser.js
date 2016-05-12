@@ -1,6 +1,7 @@
 import Types from '../../Constants/ActionTypes';
 
 const initialState = {
+    uploading: false,
     isFetching: false,
     user: {},
     hasError: null, 
@@ -9,6 +10,11 @@ const initialState = {
 
 export default function reducer(state = initialState, action = {}) {
     switch(action.type) {
+        case Types.REQUEST_UPLOAD_AVATAR:
+            return {
+                ...state,
+                uploading: action.uploading,
+            }
         case Types.SET_AUTHORIZATION:
             return {
                 ...state,

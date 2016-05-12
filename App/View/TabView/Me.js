@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+    Platform,
     StatusBar,
     StyleSheet,
     ScrollView,
@@ -8,16 +9,87 @@ import {
     Text,
     Image,
 } from 'react-native';
+import { ImagePickerManager } from 'NativeModules';
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import { uploadFileAsync } from '../../Services/FileService';
 import { BorderStyles, ButtonStyles, ImageStyles } from '../../Common/Styles';
 import { Base, avatar_process } from '../../Common/Base';
-import { user_logout } from '../../Redux/Actions/UserAction';
+import { 
+    user_logout, 
+    request_upload_avatar, 
+    do_change_avatar 
+} from '../../Redux/Actions/UserAction';
 
 export default class Me extends Component {
+    constructor(props) {
+        super(props);
+        
+        this._selectImage = this._selectImage.bind(this);
+    }
+    
+    _selectImage() {
+        var options = {
+            title: '选择照片', // specify null or empty string to remove the title
+            cancelButtonTitle: '取消',
+            takePhotoButtonTitle: '拍照', // specify null or empty string to remove this button
+            chooseFromLibraryButtonTitle: '从相册中选择', // specify null or empty string to remove this button
+            cameraType: '返回', // 'front' or 'back'
+            mediaType: 'photo', // 'photo' or 'video'
+            maxWidth: 108, // photos only
+            maxHeight: 108, // photos only
+            aspectX: 1, // android only - aspectX:aspectY, the cropping image's ratio of width to height
+            aspectY: 1, // android only - aspectX:aspectY, the cropping image's ratio of width to height
+            quality: 0.5, // 0 to 1, photos only
+            angle: 0, // android only, photos only
+            allowsEditing: true, // Built in functionality to resize/reposition the image after selection
+            noData: false, // photos only - disables the base64 `data` field from being generated (greatly improves performance on large photos)
+            storageOptions: { // if this key is provided, the image will get saved in the documents directory on ios, and the pictures directory on android (rather than a temporary directory)
+                skipBackup: true, // ios only - image will NOT be backed up to icloud
+                path: 'images',
+            }
+        };
+
+        ImagePickerManager.showImagePicker(options, (response) => {
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.error) {
+                console.log('ImagePickerManager Error: ', response.error);
+            } else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+            } else {
+                // You can display the image using either data:
+                //const source = {uri: 'data:image/jpeg;base64,' + response.data, isStatic: true};
+                var source;
+                if (Platform.OS === 'android') {
+                    source = response.uri;
+                } else {
+                    source = response.uri.replace('file://', '');
+                }
+
+                this.props.dispatch(request_upload_avatar());
+                uploadFileAsync([{
+                    name: 'files',
+                    filename: source.slice(source.lastIndexOf('/') + 1),
+                    filepath: source,
+                }], this.props.entity.currentUser.user.token).then((response)=> JSON.parse(response.data))
+                .then((json)=> {
+                    if (json.error != 0) {
+                        AlertIOS.alert('错误', getErrorsMessage(json.error));
+                    } else {
+                        let retData = json.retData;
+                        images = retData.files.map((v)=> v.userfile_id);
+                        console.info('change avatar', images[0]);
+                        this.props.dispatch(do_change_avatar(images[0], this.props.entity.currentUser.user));
+                    }
+                    StatusBar.setBarStyle('light-content');
+                })
+            }
+        });
+    }
+    
     render() {
-        StatusBar.setBarStyle('light-content', false);
+        StatusBar.setBarStyle('light-content');
         let avatar = avatar_process(this.props.entity.currentUser.user.avatar, this.props.app.cdn_config);
         return (
             <View style={{flex: 1}}>
@@ -38,9 +110,11 @@ export default class Me extends Component {
                     {/* Head start */}
                     <View style={{backgroundColor: '#36D17D', paddingBottom: 30}}>
                         <View style={styles.userInfo}>
-                            <View style={[ImageStyles.avatarRound(55), {marginRight: 20}]}>
-                                <Image style={ImageStyles.avatarRound(54)} source={avatar} />
-                            </View>
+                            <TouchableOpacity style={{marginRight: 20}} onPress={()=> this._selectImage()}>
+                                <View style={[ImageStyles.avatarRound(55)]}>
+                                    <Image style={ImageStyles.avatarRound(54)} source={avatar} />
+                                </View>
+                            </TouchableOpacity>
                             
                             <View style={{flexDirection: 'column', flex: 1}}>
                                 <Text style={{color: '#FFF', fontSize: 18, fontWeight: '500'}}>

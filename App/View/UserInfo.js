@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Base, avatar_process } from '../Common/Base';
+import Loading from '../Component/Loading';9
 import CommentItem from '../Component/CommentItem';
 import RequirementItem from '../Component/RequirementItem';
 import NavigatorBar from '../Component/NavigatorBar';
@@ -38,13 +39,20 @@ class UserInfo extends Component {
     }
     
     _renderFooter(isReq = true) {
-        let c = this.props.user[isReq? 'requirements' : 'judgements'].items.length == 0;
-        if (c)
+        let list = this.props.user[isReq? 'requirements' : 'judgements']
+        let c = list.items.length == 0;
+        if (c && list.isFetching == false)
             return (
                 <View style={styles.withOutComment}>
                     <Text style={{color: '#bbb'}}>
                         此项暂无数据~
                     </Text>
+                </View>
+            )
+        else if (list.isFetching)
+            return (
+                <View style={styles.withOutComment}>
+                    <Loading />
                 </View>
             )
     }
