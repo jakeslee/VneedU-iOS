@@ -77,7 +77,11 @@ class OrderDetail extends Component {
     
     render() {
         let cur_uid = this.props.currentUser.user.id;
+        // 需求发起者为0， 订单创建者为1
         let cur = cur_uid == this.props.detail.content.userId ? 0:1;
+        
+        console.log(cur, cur_uid, this.props.detail.content.userId, this.props.detail.content.creatorId);
+        
         return (
             <View style={NavigatorStyles.navigatorContainer}>
                 <NavigatorBar title='订单详情' {...this.props}/>
@@ -179,21 +183,21 @@ class OrderDetail extends Component {
                             </View>
                             <View style={[styles.propertyItem, BorderStyles.top, {justifyContent: 'flex-end'}]}>
                                 {this.props.detail.content.status == 2 && 
-                                this.props.detail.content[cur == 0 ? 'cJudged' : 'uJudged'] == 0 && 
+                                this.props.detail.content[cur == 0 ? 'uJudged' : 'cJudged'] == 0 && 
                                 <View style={[ButtonStyles.itemBtnArea, {marginTop: 0}]} >
-                                    <TouchableOpacity style={[ButtonStyles.primaryBtn, {width: 70, paddingVertical: 8}]}
-                                        onPress={()=> Actions.judgement({oid: this.props.detail.content})}>
+                                    <TouchableOpacity style={[ButtonStyles.primaryBtn, {paddingVertical: 8, paddingHorizontal: 10}]}
+                                        onPress={()=> Actions.judgement({order: this.props.detail.content, cur})}>
                                         <Text style={ButtonStyles.primaryBtnText}>评价</Text>
                                     </TouchableOpacity>
                                 </View>}
                                 {this.props.detail.content.status == 0 && cur == 1 && 
                                 <View style={[ButtonStyles.itemBtnArea, {marginTop: 0}]} >
-                                    <TouchableOpacity style={[ButtonStyles.dangerBtn, {width: 70, paddingVertical: 8}]}
+                                    <TouchableOpacity style={[ButtonStyles.dangerBtn, {paddingVertical: 8, paddingHorizontal: 10}]}
                                         onPress={()=> {
                                             AlertIOS.alert('提示', '你确定想取消订单吗？', [
                                                 {text: '取消', onPress: () => console.log('Canceled!')},
                                                 {text: '确定', onPress: () => 
-                                                    this.props.dispatch(do_cancel_order(this.props.id, this.props.currentUser.user))},
+                                                    this.props.dispatch(do_cancel_order(this.props.oid, this.props.currentUser.user))},
                                             ])
                                         }}>
                                         <Text style={ButtonStyles.primaryBtnText}>取消订单</Text>
@@ -201,12 +205,12 @@ class OrderDetail extends Component {
                                 </View>}
                                 {this.props.detail.content.status == 0 && cur == 0 && 
                                 <View style={[ButtonStyles.itemBtnArea, {marginTop: 0}]} >
-                                    <TouchableOpacity style={[ButtonStyles.primaryBtn, {width: 70, paddingVertical: 8}]}
+                                    <TouchableOpacity style={[ButtonStyles.primaryBtn, {paddingVertical: 8, paddingHorizontal: 10}]}
                                         onPress={()=> {
                                             AlertIOS.alert('提示', '你想确认订单吗？', [
                                                 {text: '取消', onPress: () => console.log('Canceled!')},
                                                 {text: '确定', onPress: () => 
-                                                    this.props.dispatch(do_check_order(this.props.id, this.props.currentUser.user))},
+                                                    this.props.dispatch(do_check_order(this.props.oid, this.props.currentUser.user))},
                                             ])
                                         }}>
                                         <Text style={ButtonStyles.primaryBtnText}>确认订单</Text>
@@ -214,12 +218,12 @@ class OrderDetail extends Component {
                                 </View>}
                                 {this.props.detail.content.status == 1 && cur == 0 && 
                                 <View style={[ButtonStyles.itemBtnArea, {marginTop: 0}]} >
-                                    <TouchableOpacity style={[ButtonStyles.primaryBtn, {width: 70, paddingVertical: 8}]}
+                                    <TouchableOpacity style={[ButtonStyles.primaryBtn, {paddingVertical: 8, paddingHorizontal: 10}]}
                                         onPress={()=> {
                                             AlertIOS.alert('提示', '对方是否已经完成你的需求吗？', [
                                                 {text: '取消', onPress: () => console.log('Canceled!')},
                                                 {text: '确定', onPress: () => 
-                                                    this.props.dispatch(do_finished_order(this.props.id, this.props.currentUser.user))},
+                                                    this.props.dispatch(do_finished_order(this.props.oid, this.props.currentUser.user))},
                                             ])
                                         }}>
                                         <Text style={ButtonStyles.primaryBtnText}>确认需求完成</Text>
