@@ -35,6 +35,13 @@ function request_register() {
     }
 }
 
+export function request_post_judgement(isPosting = true) {
+    return {
+        type: Types.REQUEST_POST_JUDGEMENT,
+        isPosting,
+    }
+}
+
 function recv_login(data) {
     return {
         type: Types.RECV_LOGIN,

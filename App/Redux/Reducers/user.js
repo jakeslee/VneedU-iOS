@@ -13,6 +13,7 @@ let initialState = {
     },
     judgements: {
         isFetching: false,
+        isPosting: false,
         items: [],
         dataSource: dataSource.cloneWithRows([]),
     },
@@ -20,6 +21,13 @@ let initialState = {
 
 export default function reducer(state = initialState, action = {}) {
     switch(action.type) {
+        case Types.REQUEST_POST_JUDGEMENT:
+            return {
+                ...state,
+                judgements: Object.assign({}, state.judgements, {
+                    isPosting: action.isPosting,
+                })
+            }
         
         default: 
             return state;

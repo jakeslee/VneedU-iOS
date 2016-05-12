@@ -56,3 +56,12 @@ export function finished_order(oid, token) {
         Authorization: 'token ' + token,
     });
 }
+
+export function judge_order(oid, content, score, token) {
+    return post(`${API.API_ROOT}${API.ORDER_JUDGEMENT}/${oid}`, {
+        content,
+        score,
+    }, {
+        Authorization: 'token ' + token,
+    });
+}

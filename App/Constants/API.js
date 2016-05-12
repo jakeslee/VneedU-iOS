@@ -20,4 +20,5 @@ export default {
     ORDER_CANCEL: `${API_FREFIX}/order/cancel`,
     ORDER_CHECK: `${API_FREFIX}/order/check`,
     ORDER_FINISHED: `${API_FREFIX}/order/finished`,
+    ORDER_JUDGEMENT: `${API_FREFIX}/order/judgement`,
 }

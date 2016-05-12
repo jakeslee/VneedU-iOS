@@ -1,14 +1,35 @@
 import React, {Component} from "react";
-import {StyleSheet, TextInput, TouchableOpacity, Image, View, Text} from "react-native";
+import {StyleSheet, TextInput, TouchableOpacity, Image, View, Text, AlertIOS} from "react-native";
 import StarRating from 'react-native-star-rating';
-
-import { Base } from '../Common/Base';
+import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
+import { Base, avatar_process } from '../Common/Base';
 import NavigatorBar from '../Component/NavigatorBar';
-import { BorderStyles, ButtonStyles, InputStyles } from '../Common/Styles';
+import { BorderStyles, ButtonStyles, InputStyles, ImageStyles } from '../Common/Styles';
 
-export default class Judgement extends Component {
-    state = {
-        star: 4,
+import {
+    post_judgement,
+} from '../Redux/Actions/OrderAction';
+
+class Judgement extends Component {
+    constructor(props) {
+        super(props);
+        
+        this.state = {
+            star: 4,
+            avatar: null,
+            content: '',
+        }
+    }
+    
+    componentDidMount() {
+        let avatar;
+        if (this.props.cur == 0)
+            avatar = avatar_process(this.props.order.user.avatar, this.props.app.cdn_config);
+        else
+            avatar = avatar_process(this.props.order.creator.avatar, this.props.app.cdn_config);
+            
+        this.setState({avatar,});
     }
     
     render() {
@@ -31,10 +52,14 @@ export default class Judgement extends Component {
             <View style={{flex: 1, backgroundColor: '#F6F6F6'}}>
                 <NavigatorBar title='评价' {...this.props} />
                 <View style={{flex: 1}}>
-                    <View style={[BorderStyles.topAndBottom,  styles.rqInfoArea]}>
-                        <Image style={{width: 45, height: 45}} source={require('../Resources/Images/avatar.png')}/>
-                        <Text style={styles.rqInfoTitle}>帮忙写代码</Text>
-                    </View>
+                    <TouchableOpacity onPress={()=> Actions.requirement_detail({id: this.props.order.requirement.id})}>
+                        <View style={[BorderStyles.topAndBottom,  styles.rqInfoArea]}>
+                            <View style={[ImageStyles.avatarRound(45), {width: 45}]}>
+                                <Image style={ImageStyles.avatarRound(45)} source={this.state.avatar}/>
+                            </View>
+                            <Text style={styles.rqInfoTitle}>{this.props.order.requirement.title}</Text>
+                        </View>
+                    </TouchableOpacity>
                     <View style={[BorderStyles.topAndBottom, styles.judgementArea]}>
                         <View style={styles.ratingStar}>
                             <Text style={{fontSize: 16, marginRight: 10}}>总体评价</Text>
@@ -50,6 +75,7 @@ export default class Judgement extends Component {
                             <Text style={styles.ratingText}>{ratingText }</Text>
                         </View>
                         <TextInput multiline={true} placeholder={commentPlace} 
+                            value={this.state.content} onChangeText={(content)=> this.setState({content,})}
                             style={styles.judgementComment} />
                     </View>
                     
@@ -59,7 +85,19 @@ export default class Judgement extends Component {
                             <Text style={{color: '#B1B1B1', fontSize: 12}}>积分说明</Text>
                         </View>
                         <View style={[ButtonStyles.itemBtnArea, {marginTop: 0}]} >
-                            <TouchableOpacity style={[ButtonStyles.primaryBtn, {width: 70, paddingVertical: 8}]}>
+                            <TouchableOpacity style={[ButtonStyles.primaryBtn, {width: 70, paddingVertical: 8}]}
+                                onPress={()=> {
+                                    if (this.state.content.length < 2) {
+                                        AlertIOS.alert('错误', '评价至少2字！');
+                                        return;
+                                    }
+                                    
+                                    this.props.dispatch(
+                                        post_judgement(this.props.order.id, 
+                                                       this.state.content, 
+                                                       this.state.star,
+                                                       this.props.currentUser.user));
+                                }}>
                                 <Text style={ButtonStyles.primaryBtnText}>评价</Text>
                             </TouchableOpacity>
                         </View>
@@ -121,3 +159,4 @@ const styles = StyleSheet.create({
     },
 });
 
+export default connect(({app, currentUser})=>({app, currentUser}))(Judgement);

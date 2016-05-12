@@ -12,11 +12,16 @@ import {
     cancel_order,
     check_order,
     finished_order,
+    judge_order,
 } from '../../Services/OrderService'
 
 import {
     load_req_detail
 } from './RequirementAction';
+
+import {
+    request_post_judgement,
+} from './UserAction';
 
 import { getErrorsMessage } from '../../Constants/Errors';
 
@@ -154,5 +159,25 @@ export function do_finished_order(oid, current_user) {
 export function clr_order_detail() {
     return {
         type: Types.CLR_ORDER_DETAIL,
+    }
+}
+
+export function post_judgement(oid, content, score, current_user) {
+    return (dispatch)=> {
+        dispatch(request_post_judgement());
+        return judge_order(oid, content, score, current_user.token)
+            .then((response)=> response.json())
+            .then((json)=> {
+                if (json.error === 0) {
+                    dispatch(request_post_judgement(false));
+                    AlertIOS.alert('提示', '评价成功！', [
+                        {text: '确定', onPress: () => {
+                            Actions.pop();
+                            dispatch(load_order_detail(oid, current_user));
+                        }},
+                    ])
+                } else 
+                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+            })
     }
 }
