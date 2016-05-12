@@ -7,6 +7,7 @@ import currentUser from './currentUser';
 import requirement from './requirement';
 import comments from './comments';
 import orders from './orders';
+import user from './user';
 
 export default combineReducers({
     app,
@@ -14,4 +15,5 @@ export default combineReducers({
     requirement,
     comments,
     orders,
+    user,
 });

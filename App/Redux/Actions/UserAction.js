@@ -19,6 +19,8 @@ import {
     getUser,
     set_profile,
     reset_password,
+    getRequirements,
+    getJudgements,
 } from '../../Services/UserService';
 
 import { getErrorsMessage } from '../../Constants/Errors';
@@ -54,6 +56,45 @@ function recv_register(data) {
         type: Types.RECV_SIGNUP,
         data,
     };
+}
+
+function request_other_user() {
+    return {
+        type: Types.REQUEST_OTHER_USER,
+    }
+}
+
+function request_user_req() {
+    return {
+        type: Types.REQUEST_USER_REQ,
+    }
+}
+
+function request_user_judge() {
+    return {
+        type: Types.REQUEST_USER_JUDGE,
+    }
+}
+
+function recv_user_req(items) {
+    return {
+        type: Types.RECV_USER_REQ,
+        items,
+    }
+}
+
+function recv_user_judge(items) {
+    return {
+        type: Types.RECV_USER_JUDGE,
+        items,
+    }
+}
+
+function recv_other_user(content) {
+    return {
+        type: Types.RECV_OTHER_USER,
+        content,
+    }
 }
 
 function set_authorization(user) {
@@ -189,3 +230,48 @@ export function modify_password(current_user, new_password) {
     }
 }
 
+export function load_judgements(uid, current_user) {
+    return (dispatch)=> {
+        dispatch(request_user_judge());
+        return getJudgements(uid, current_user.token)
+            .then((response)=> response.json())
+            .then((json)=> {
+                if (json.error === 0) {
+                    dispatch(recv_user_judge(json.retData.judgements));
+                } else 
+                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+            }).catch((e)=>{
+                console.log(e)
+            })
+    }
+}
+
+export function load_requirements(uid, current_user) {
+    return (dispatch)=> {
+        dispatch(request_user_req());
+        return getRequirements(uid, current_user.token)
+            .then((response)=> response.json())
+            .then((json)=> {
+                if (json.error === 0) {
+                    dispatch(recv_user_req(json.retData.requirements));
+                } else 
+                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+            })
+    }
+}
+
+export function load_user(uid, current_user) {
+    return (dispatch)=> {
+        dispatch(request_other_user());
+        return getUser(current_user.token, uid)
+            .then((response)=> response.json())
+            .then((json)=> {
+                if (json.error === 0) {
+                    dispatch(recv_other_user(json.retData.user));
+                    dispatch(load_requirements(uid, current_user));
+                    dispatch(load_judgements(uid, current_user));
+                } else 
+                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+            })
+    }
+}

@@ -9,6 +9,8 @@ export default {
     LOGIN: `${API_FREFIX}/user/authorization`,
     PASSWORD: `${API_FREFIX}/user/password`,
     REQUIREMENT: `${API_FREFIX}/requirement`,
+    USER_REQUIREMENTS: `${API_FREFIX}/user/requirements`,
+    USER_JUDGEMENTS:  `${API_FREFIX}/user/judgements`,
     LATEST_REQUIEMENT: `${API_FREFIX}/requirement/latest`,
     UPLOAD:  `${API_FREFIX}/file/upload`,
     RACE_UP: `${API_FREFIX}/requirement/nice`,

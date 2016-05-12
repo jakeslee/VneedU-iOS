@@ -21,6 +21,49 @@ let initialState = {
 
 export default function reducer(state = initialState, action = {}) {
     switch(action.type) {
+        case Types.REQUEST_OTHER_USER:
+            return {
+                ...state,
+                isFetching: true,
+            }
+        case Types.RECV_OTHER_USER: 
+            return {
+                ...state,
+                isFetching: false,
+                content: action.content,
+            }
+        case Types.REQUEST_USER_REQ:
+            return {
+                ...state,
+                requirements: Object.assign({}, state.requirements, {
+                    isFetching: true,
+                })
+            }
+        case Types.RECV_USER_REQ:
+            return {
+                ...state,
+                requirements: Object.assign({}, state.requirements, {
+                    isFetching: false,
+                    items: action.items,
+                    dataSource: state.requirements.dataSource.cloneWithRows(action.items),
+                })
+            }
+        case Types.REQUEST_USER_JUDGE:
+            return {
+                ...state,
+                judgements: Object.assign({}, state.judgements, {
+                    isFetching: true,
+                })
+            }
+        case Types.RECV_USER_JUDGE:
+            return {
+                ...state,
+                judgements: Object.assign({}, state.judgements, {
+                    isFetching: false,
+                    items: action.items,
+                    dataSource: state.judgements.dataSource.cloneWithRows(action.items),
+                })
+            }
         case Types.REQUEST_POST_JUDGEMENT:
             return {
                 ...state,
@@ -28,7 +71,6 @@ export default function reducer(state = initialState, action = {}) {
                     isPosting: action.isPosting,
                 })
             }
-        
         default: 
             return state;
     }

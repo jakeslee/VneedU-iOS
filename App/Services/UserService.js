@@ -33,3 +33,15 @@ export function reset_password(password, token = '') {
         Authorization: 'token ' + token,
     })
 }
+
+export function getRequirements(uid, token = '') {
+    return get(`${API.API_ROOT}${API.USER_REQUIREMENTS}/${uid}`, {}, {
+        Authorization: 'token ' + token,
+    })
+}
+
+export function getJudgements(uid, token = '') {
+    return get(`${API.API_ROOT}${API.USER_JUDGEMENTS}/${uid}`, {}, {
+        Authorization: 'token ' + token,
+    })
+}
