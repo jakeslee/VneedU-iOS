@@ -28,7 +28,7 @@ class CategoryFilter extends Component {
     
     _renderRow(rowData) {
         return (
-            <RequirementItem {...rowData} app={this.props.app}/>
+            <RequirementItem {...rowData}/>
         )
     }
     

@@ -80,8 +80,6 @@ class OrderDetail extends Component {
         // 需求发起者为0， 订单创建者为1
         let cur = cur_uid == this.props.detail.content.userId ? 0:1;
         
-        console.log(cur, cur_uid, this.props.detail.content.userId, this.props.detail.content.creatorId);
-        
         return (
             <View style={NavigatorStyles.navigatorContainer}>
                 <NavigatorBar title='订单详情' {...this.props}/>

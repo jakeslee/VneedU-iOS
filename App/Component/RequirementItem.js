@@ -11,13 +11,16 @@ import moment from 'moment';
 import localeZh from 'moment/locale/zh-cn';moment.locale('zh-cn', localeZh);
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/FontAwesome';
-
+import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import { Base, avatar_process } from '../Common/Base';
 import { ImageStyles } from '../Common/Styles';
 
+import {
+    load_user
+} from '../Redux/Actions/UserAction';
 
-export default class RequirementItem extends Component {
+class RequirementItem extends Component {
     render() {
         let avatar = avatar_process(this.props.publisher.avatar, this.props.app.cdn_config);
 
@@ -29,7 +32,10 @@ export default class RequirementItem extends Component {
                     </View>
                     <View style={styles.rqItemHeaderUser}>
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                            <TouchableOpacity onPress={()=> Actions.user_info({app: this.props.app})}>
+                            <TouchableOpacity onPress={()=> {
+                                this.props.dispatch(load_user(this.props.publisher.id, this.props.currentUser.user));
+                                Actions.user_info({app: this.props.app})
+                            }}>
                                 <Text style={{color: '#3584F0',}}>{this.props.publisher.name}</Text>
                             </TouchableOpacity>
                             <Text style={{fontSize: 13,}}>
@@ -135,3 +141,8 @@ const styles = StyleSheet.create({
         fontSize: 12
     },
 });
+
+export default connect(({app, currentUser})=> ({
+    app, 
+    currentUser,
+}))(RequirementItem);

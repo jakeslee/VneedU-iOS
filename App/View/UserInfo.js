@@ -9,67 +9,22 @@ import {
     View,
     Text,
 } from 'react-native';
+import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Base } from '../Common/Base';
+import { Base, avatar_process } from '../Common/Base';
 import CommentItem from '../Component/CommentItem';
 import RequirementItem from '../Component/RequirementItem';
 import NavigatorBar from '../Component/NavigatorBar';
 import { BorderStyles, ImageStyles } from '../Common/Styles';
 import { navigatorColor } from '../Common/Color';
 
-export default class UserInfo extends Component {
+class UserInfo extends Component {
     constructor(props) {
         super(props);
         
-        var dataSource = new ListView.DataSource({
-            rowHasChanged: (r1, r2)=> r1 !== r2,
-        });
-        
-        var commentsDs = new ListView.DataSource({
-            rowHasChanged: (r1, r2)=> r1 !== r2,
-        });
-        
-        var test = [];
-        for (var i = 0; i < 2 ; ++i)
-            test.push({
-                title: '帮忙搬家具',
-                description: '最近新购入了一些家具，但是厂家不提供搬家服务，得自己搬。家具有点多，希望请些人来帮忙。',
-                publisher: {
-                    id: '[UUID]',
-                    name: 'Jakes Lee',
-                    avatar: require('../Resources/Images/avatar.png'),
-                },
-                category: {
-                    id: '[UUID]',
-                    name: '施工',
-                    type: 'build',
-                },
-                area: '贵阳',
-                price: '10000',
-                payMethod: 2,
-                image: null,
-                nice: 9,
-                datetime: '2016-4-21 9:00',
-                images: [],
-                comments: 0,
-            });
-        
-        var test_comments = [];
-        for (var i = 0;i < 2;++i) {
-            test_comments.push({
-                id: "456tygf56",
-                content: "好",
-                area: "贵阳",
-                score: 5,
-                avatar: require('../Resources/Images/avatar.png'),
-                datetime: '2016-4-11 20:11',
-            });
-        }
-        
-        this.state = {
-            dataSource: dataSource.cloneWithRows(test),
-            commentsDs: commentsDs.cloneWithRows(test_comments),
-        }
+        this._renderRow = this._renderRow.bind(this);
+        this._renderComment = this._renderComment.bind(this);
     }
     
     _renderRow(rowData) {
@@ -82,6 +37,18 @@ export default class UserInfo extends Component {
         return <CommentItem rowData={rowData} />;
     }
     
+    _renderFooter(isReq = true) {
+        let c = this.props.user[isReq? 'requirements' : 'judgements'].items.length == 0;
+        if (c)
+            return (
+                <View style={styles.withOutComment}>
+                    <Text style={{color: '#bbb'}}>
+                        此项暂无数据~
+                    </Text>
+                </View>
+            )
+    }
+    
     render() {
         return (
             <View style={{flex: 1, backgroundColor: '#F6F6F6'}}>
@@ -92,11 +59,12 @@ export default class UserInfo extends Component {
                         <View style={styles.headStyle}>
                             <View style={[ImageStyles.avatarRound(56), {marginBottom: 10}]}>
                                 <View style={ImageStyles.avatarRound(54)}>
-                                    <Image style={{width: 54, height: 54}} source={require('../Resources/Images/avatar.png')}/>
+                                    <Image style={{width: 54, height: 54}} 
+                                        source={avatar_process(this.props.user.content.avatar, this.props.app.cdn_config)}/>
                                 </View>
                             </View>
                             <Text style={{color: '#FFF', fontSize: 16}}>
-                                Jakes Lee
+                                {this.props.user.content.name}
                             </Text>
                         </View>
                         {/* head end */}
@@ -105,7 +73,7 @@ export default class UserInfo extends Component {
                             <View style={{paddingVertical: 15, flex: 1}}>
                                 <View style={{flexDirection: 'row', justifyContent: 'center',}}>
                                     <Image style={{width: 18}} source={require('../Resources/Images/Lv.png')}/>
-                                    <Text style={{color: '#F5A623'}}>14</Text>
+                                    <Text style={{color: '#F5A623'}}>{this.props.user.content.level || 0}</Text>
                                 </View>
                                 <Text style={styles.userInfoLevelText}>
                                     等级
@@ -113,7 +81,7 @@ export default class UserInfo extends Component {
                             </View>
                             <View style={{paddingVertical: 15, flex: 1,borderLeftColor: '#BDBDBD', borderLeftWidth: 0.5, }}>
                                 <Text style={{textAlign: 'center', color: '#F17C30', fontSize: 16}}>
-                                    1200<Text style={{fontSize: 13}}>分</Text>
+                                    {this.props.user.content.score || 0}<Text style={{fontSize: 13}}>分</Text>
                                 </Text>
                                 <Text style={styles.userInfoLevelText}>
                                     积分
@@ -126,7 +94,7 @@ export default class UserInfo extends Component {
                             <Text style={styles.areaTitle}>用户简介</Text>
                             <View style={[{flexDirection: 'row', padding: 12}, BorderStyles.top]}>
                                 <Text style={{color: '#313131', flex: 1}}>
-                                    用户未补充
+                                    {this.props.user.content.profile || '用户未补充'}
                                 </Text>
                             </View>
                         </View>
@@ -135,16 +103,20 @@ export default class UserInfo extends Component {
                         <View style={[BorderStyles.top, styles.userArea]}>
                             <Text style={[styles.areaTitle, ]}>用户发布</Text>
                             <ListView 
-                                dataSource={this.state.dataSource}
-                                renderRow={this._renderRow}/>
+                                enableEmptySections={true}
+                                dataSource={this.props.user.requirements.dataSource}
+                                renderRow={this._renderRow}
+                                renderFooter={this._renderFooter.bind(this)}/>
                         </View>
                         {/* 用户发布 end */}
                         {/* 用户评价 start */}
                         <View style={[BorderStyles.topAndBottom, styles.userArea, {marginBottom: 10}]}>
                             <Text style={[styles.areaTitle,]}>用户评价</Text>
                             <ListView 
-                                dataSource={this.state.commentsDs}
-                                renderRow={this._renderComment}/>
+                                enableEmptySections={true}
+                                dataSource={this.props.user.judgements.dataSource}
+                                renderRow={this._renderComment}
+                                renderFooter={this._renderFooter.bind(this, false)}/>
                         </View>
                         {/* 用户评价 end */}
                     </ScrollView>
@@ -177,4 +149,16 @@ const styles = StyleSheet.create({
         fontSize: 14, 
         color: '#5D5D5D'
     },
+    withOutComment: {
+        height: 100, 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        backgroundColor: '#FFF'
+    },
 });
+
+export default connect(({app, currentUser, user})=>({
+    app,
+    user,
+    currentUser,
+}))(UserInfo);
