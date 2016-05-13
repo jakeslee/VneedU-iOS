@@ -43,7 +43,8 @@ class Login extends Component {
                         placeholder='手机号' placeholderTextColor='#4D4D4D'/>
                     <View style={BorderStyles.top}>
                         <TextInput style={styles.input} value={this.state.password} onChangeText={(v)=> this.setState({password:v})}
-                            placeholder='密码' placeholderTextColor='#4D4D4D' secureTextEntry={true}/>
+                            placeholder='密码' placeholderTextColor='#4D4D4D' secureTextEntry={true}
+                            onSubmitEditing={()=> this.props.dispatch(user_login(this.state.username, this.state.password))}/>
                     </View>
                     <View style={[ButtonStyles.itemBtnArea, {marginBottom: 15}]}>
                         <TouchableOpacity style={[ButtonStyles.primaryBtn, {width: Base.width * 0.9, }]}

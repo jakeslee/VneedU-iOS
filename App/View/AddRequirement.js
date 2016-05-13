@@ -225,10 +225,13 @@ export default class AddRequirement extends Component {
                         {/* 需求内容 start */}
                         <View style={[BorderStyles.topAndBottom, {backgroundColor: '#FFF', flexDirection: 'column', padding: 10}]}>
                             <TextInput style={{height: 32}} placeholder='标题' placeholderTextColor='#989898'
-                                value={this.state.title} onChangeText={(v)=> this.setState({title: v})}/>
+                                value={this.state.title} onChangeText={(v)=> this.setState({title: v})}
+                                returnKeyType = {"next"} onSubmitEditing={(event) => { 
+                                    this.refs.desc.focus(); 
+                                }}/>
                             <View style={[BorderStyles.top, {flex: 1}]}>
                                 <TextInput multiline={true} placeholder='描述一下你的需求' style={{height: 90, fontSize: 16,}}
-                                    value={this.state.desc} onChangeText={(v)=> this.setState({desc: v})}/>
+                                    value={this.state.desc} onChangeText={(v)=> this.setState({desc: v})} ref='desc'/>
                             </View>
                             <ListView 
                                 enableEmptySections={true}
@@ -239,11 +242,14 @@ export default class AddRequirement extends Component {
                                 contentContainerStyle={styles.imageContainer}/>
                             <View style={{flexDirection: 'row', marginTop: 4, alignItems: 'center'}}>
                                 <Icon name="location" color='#9489E2' size={22}/>
-                                <TextInput ref={this.REF_CONST.address} 
+                                <TextInput ref={this.REF_CONST.address}
                                     value={this.state.address} onChangeText={(v)=> this.setState({address: v})}
                                     style={{height: 20, flex: 1, marginLeft: 8, marginTop: 3}} placeholder='输入交易地址'
                                     onFocus={scrollTools.scrollToInput.bind(this, this.REF_CONST.address, this.REF_CONST.scroll)}
-                                    onBlur={scrollTools.scrollBack.bind(this, this.REF_CONST.address, this.REF_CONST.scroll)}/>
+                                    onBlur={scrollTools.scrollBack.bind(this, this.REF_CONST.address, this.REF_CONST.scroll)}
+                                    returnKeyType = {"next"} onSubmitEditing={(event) => { 
+                                        this.refs[this.REF_CONST.price].focus(); 
+                                    }}/>
                             </View>
                         </View>
                         {/* 需求内容 end */}
@@ -259,7 +265,10 @@ export default class AddRequirement extends Component {
                                         keyboardType='decimal-pad' ref={this.REF_CONST.price}
                                         value={this.state.price} onChangeText={(v)=> this.setState({price: v})}
                                         onFocus={scrollTools.scrollToInput.bind(this, this.REF_CONST.price, this.REF_CONST.scroll)}
-                                        onBlur={scrollTools.scrollBack.bind(this, this.REF_CONST.price, this.REF_CONST.scroll)}/>
+                                        onBlur={scrollTools.scrollBack.bind(this, this.REF_CONST.price, this.REF_CONST.scroll)}
+                                        returnKeyType = {"next"} onSubmitEditing={(event) => { 
+                                            this.refs[this.REF_CONST.keywords].focus(); 
+                                        }}/>
                                 </View>
                             </View>
                             <View style={styles.textArea}>

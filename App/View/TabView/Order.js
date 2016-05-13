@@ -57,7 +57,7 @@ class Order extends Component {
         let os = this._orderStatus(rowData);
         
         return (
-            <View style={styles.itemArea}>
+            <View style={[styles.itemArea, BorderStyles.topAndBottom]}>
                 <View style={{flexDirection: 'row'}}>
                     <Text style={{fontSize: 12, color: '#454545', flex: 1}} >{os} - {rowData.datetime}</Text>
                     <Icon name='trash' size={20} color='#454545' />
@@ -135,11 +135,7 @@ const styles = StyleSheet.create({
     itemArea: {
         backgroundColor: '#FFF', 
         padding: 10, 
-        borderTopColor: '#d8d8d8', 
-        borderTopWidth: 0.5, 
         marginBottom: 4, 
-        borderBottomColor: '#d8d8d8', 
-        borderBottomWidth: 0.5,
     },
     rqUserTitle: {
         fontSize: 15, 

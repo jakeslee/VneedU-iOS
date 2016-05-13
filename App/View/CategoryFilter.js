@@ -37,7 +37,7 @@ class CategoryFilter extends Component {
             <View style={{flex: 1, backgroundColor: '#F6F6F6'}}>
                 <NavigatorBar title='施工需求' {...this.props} />
                 {/* Requirements area start */}
-                <View style={styles.requirementArea}>
+                <View style={[styles.requirementArea, BorderStyles.top]}>
                     <ScrollView style={styles.contentContainer} 
                         refreshControl={
                             <RefreshControl
@@ -72,8 +72,6 @@ const styles = StyleSheet.create({
     // Requirements area
     requirementArea: {
         flex: 1,
-        borderTopColor: '#d8d8d8', 
-        borderTopWidth: 0.5, 
     },
 });
 

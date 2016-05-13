@@ -14,7 +14,7 @@ import Icon2 from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import { Base, avatar_process } from '../Common/Base';
-import { ImageStyles } from '../Common/Styles';
+import { ImageStyles, BorderStyles } from '../Common/Styles';
 
 import {
     load_user
@@ -25,7 +25,7 @@ class RequirementItem extends Component {
         let avatar = avatar_process(this.props.publisher.avatar, this.props.app.cdn_config);
 
         return (
-            <View style={[styles.rqItemArea, this.props.style && this.props.style]}>
+            <View style={[styles.rqItemArea, BorderStyles.topAndBottom, this.props.style && this.props.style]}>
                 <View style={styles.rqItemHeader}>
                     <View style={[ImageStyles.avatarRound(37), {width: 37}]}>
                         <Image style={ImageStyles.avatarRound(37)} source={avatar} />
@@ -56,7 +56,7 @@ class RequirementItem extends Component {
                         </Text>
                     </TouchableOpacity>
                 </View>
-                <View style={styles.rqItemFooter}>
+                <View style={[styles.rqItemFooter, BorderStyles.top]}>
                     <Icon name="location" color='#9489E2' size={20} />
                     <Text style={styles.rqItemFooterFrom}>来自{this.props.area}的用户</Text>
                     <View style={styles.rqItemFooterInteration}>
@@ -78,10 +78,6 @@ class RequirementItem extends Component {
 const styles = StyleSheet.create({
     rqItemArea: {
         backgroundColor: '#FFF', 
-        borderBottomColor: '#d8d8d8', 
-        borderBottomWidth: 0.5, 
-        borderTopColor: '#d8d8d8', 
-        borderTopWidth: 0.5, 
         marginBottom: 4,
     },
     rqItemHeader: {
@@ -114,8 +110,6 @@ const styles = StyleSheet.create({
     },
     rqItemFooter: {
         flexDirection: 'row', 
-        borderTopColor: '#d8d8d8', 
-        borderTopWidth: 0.5, 
         paddingLeft: 10,
         height: 30,
         alignItems: 'center',

@@ -1,4 +1,7 @@
+import {
+    PixelRatio,
+} from 'react-native';
 
 export const border = {
-    width: 0.5,
+    width: 1 / PixelRatio.get(),
 };

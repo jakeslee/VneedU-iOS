@@ -26,8 +26,8 @@ export default class InfoModify extends Component {
                         </View>
                         <View style={BorderStyles.top}>
                             <TextInput style={{fontSize: 16, backgroundColor: '#FFF', paddingHorizontal: 20, paddingVertical: 10, height: 100}}
-                                multiline={true} onChangeText={(v)=> this.setState({description: v})} ref='desc'
-                                placeholder='用户描述' placeholderTextColor='#4D4D4D' value={this.state.description}
+                                multiline={true} onChangeText={(v)=> this.setState({profile: v})} ref='desc'
+                                placeholder='用户描述' placeholderTextColor='#4D4D4D' value={this.state.profile}
                                 onFocus={scrollTools.scrollToInput.bind(this, 'desc', 'scroll')}
                                 onBlur={scrollTools.scrollBack.bind(this, 'desc', 'scroll')}/>
                         </View>

@@ -18,6 +18,10 @@ import {
     set_tabbar,
     load_config,
 } from '../Redux/Actions/AppAction';
+import {
+    load_user_orders,
+} from '../Redux/Actions/OrderAction';
+import { load_new_requirements } from '../Redux/Actions/RequirementAction';
 
 import {
     loadUserFromStorage,
@@ -80,8 +84,12 @@ class Main extends Component {
                         selectedIconName="ios-home"
                         selected={this.props.app.selectedTab === 'home'}
                         onPress={()=> {
-                            this.props.dispatch(set_tabbar('home', true));
-                            this.setState({statusBar: 'default'});
+                            if (this.props.app.selectedTab === 'home') {
+                                this.props.dispatch(load_new_requirements('latest', 1));
+                            } else {
+                                this.props.dispatch(set_tabbar('home', true));
+                                this.setState({statusBar: 'default'});
+                            }
                         }} >
                         {this._renderContent()}
                     </Icon.TabBarItem>
@@ -93,9 +101,13 @@ class Main extends Component {
                         selected={this.props.app.selectedTab === 'order'}
                         onPress={()=> {
                             if (logined) {
-                                this.props.dispatch(set_tabbar('order', true));
-                                this.props.dispatch(refresh_user(this.props.entity.currentUser.user));
-                                this.setState({statusBar: 'default'});
+                                if (this.props.app.selectedTab === 'order') {
+                                    this.props.dispatch(load_user_orders(this.props.entity.currentUser.user, 1));
+                                } else {
+                                    this.props.dispatch(set_tabbar('order', true));
+                                    this.props.dispatch(refresh_user(this.props.entity.currentUser.user));
+                                    this.setState({statusBar: 'default'});
+                                }
                             } else {
                                 Actions.login();
                             }

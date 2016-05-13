@@ -4,6 +4,7 @@ import {
     StatusBar,
     StyleSheet,
     ScrollView,
+    PixelRatio,
     TouchableOpacity,
     View,
     Text,
@@ -141,7 +142,7 @@ export default class Me extends Component {
                                 我的等级
                             </Text>
                         </View>
-                        <View style={{paddingVertical: 15, flex: 1,borderLeftColor: '#BDBDBD', borderLeftWidth: 0.5, }}>
+                        <View style={{paddingVertical: 15, flex: 1,borderLeftColor: '#BDBDBD', borderLeftWidth: 1 / PixelRatio.get(), }}>
                             <Text style={{textAlign: 'center', color: '#F17C30', fontSize: 16}}>
                                 {this.props.entity.currentUser.user.score || 0}<Text style={{fontSize: 13}}>分</Text>
                             </Text>

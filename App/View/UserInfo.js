@@ -3,6 +3,7 @@ import {
     StyleSheet,
     TextInput,
     ListView,
+    PixelRatio,
     ScrollView,
     TouchableOpacity,
     Image,
@@ -87,7 +88,7 @@ class UserInfo extends Component {
                                     等级
                                 </Text>
                             </View>
-                            <View style={{paddingVertical: 15, flex: 1,borderLeftColor: '#BDBDBD', borderLeftWidth: 0.5, }}>
+                            <View style={{paddingVertical: 15, flex: 1,borderLeftColor: '#BDBDBD', borderLeftWidth: 1/PixelRatio.get(), }}>
                                 <Text style={{textAlign: 'center', color: '#F17C30', fontSize: 16}}>
                                     {this.props.user.content.score || 0}<Text style={{fontSize: 13}}>分</Text>
                                 </Text>

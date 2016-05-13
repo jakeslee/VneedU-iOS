@@ -4,6 +4,7 @@ import {
     TextInput,
     StatusBar,
     ScrollView,
+    PixelRatio,
     TouchableOpacity,
     Image,
     View,
@@ -20,8 +21,9 @@ export default class About extends Component {
                 <NavigatorBar title='关于威尼优' {...this.props} />
                 <ScrollView bounces={false}>
                     <Image source={require('../Resources/Images/bgImg/about.png')} 
-                        style={{alignItems: 'center', justifyContent: 'flex-end', width: Base.width}}>
-                        <Text style={{borderColor: '#979797', borderRadius: 5, borderWidth: 0.5, textAlign: 'center', color: '#979797', width: 65}}>
+                        style={{alignItems: 'center', justifyContent: 'flex-end', width: Base.width, height: Base.height,
+                        resizeMode: 'stretch'}}>
+                        <Text style={{borderColor: '#979797', borderRadius: 5, borderWidth: 1 / PixelRatio.get(), textAlign: 'center', color: '#979797', width: 65}}>
                             v1.0.0
                         </Text>
                         <TouchableOpacity style={{marginTop: 150, marginBottom: 170}}>

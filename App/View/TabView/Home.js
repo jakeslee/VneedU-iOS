@@ -4,6 +4,7 @@ import {
     ScrollView,
     StatusBar,
     ListView,
+    PixelRatio,
     RefreshControl,
     TouchableOpacity,
     InteractionManager,
@@ -14,6 +15,7 @@ import {
 import { Actions } from 'react-native-router-flux';
 import Loading from '../../Component/Loading';
 import RequirementItem from '../../Component/RequirementItem';
+import { BorderStyles } from '../../Common/Styles';
 import { load_new_requirements } from '../../Redux/Actions/RequirementAction';
 
 export default class Home extends Component {
@@ -34,7 +36,7 @@ export default class Home extends Component {
         return (
             <View>
                 {/* Category area start */}
-                <View style={styles.contentArea}>
+                <View style={[styles.contentArea, BorderStyles.topAndBottom]}>
                     <View style={{flexDirection: 'row'}}>
                         <TouchableOpacity style={styles.typeBtn} 
                             onPress={()=> Actions.category_filter({category: 'build'})}>
@@ -96,19 +98,19 @@ export default class Home extends Component {
                             <Text style={styles.adsItemTitle}>注册奖励</Text>
                             <Text style={styles.adsItemSubtitle}>新用户注册即送积分</Text>
                         </View>
-                        <Image style={{flex: 1, width: 47, height: 47}} source={require('../../Resources/Images/ads/ads-2.png')} />
+                        <Image source={require('../../Resources/Images/ads/ads-2.png')} />
                     </View>
                     <View style={styles.adsItem}>
                         <View style={styles.adsItemDetail}>
                             <Text style={styles.adsItemTitle}>邀请福利</Text>
                             <Text style={styles.adsItemSubtitle}>邀请帮手提升排名</Text>
                         </View>
-                        <Image style={{flex: 1, width: 47, height: 47}} source={require('../../Resources/Images/ads/ads-1.png')} />
+                        <Image source={require('../../Resources/Images/ads/ads-1.png')} />
                     </View>
                 </View>
                 {/* Ads area end */}
                 {/* Requirements area start */}
-                <View style={styles.requirementArea}>
+                <View style={[styles.requirementArea, BorderStyles.top]}>
                     <Text style={styles.rqAreaTitle}>
                         最新需求
                     </Text>
@@ -181,10 +183,6 @@ const styles = StyleSheet.create({
     },
     contentArea: {
         backgroundColor: '#FFF',
-        borderTopColor: '#d8d8d8',
-        borderBottomColor: '#d8d8d8',
-        borderTopWidth: 0.5,
-        borderBottomWidth: 0.5,
         padding: 10,
     },
     
@@ -221,7 +219,7 @@ const styles = StyleSheet.create({
     },
     adsItemDetail: {
         flexDirection: 'column', 
-        flex: 2,
+        flex: 1,
     },
     adsItemTitle: {
         color: '#037AFF', 
@@ -234,8 +232,6 @@ const styles = StyleSheet.create({
     },
     // Requirements area
     requirementArea: {
-        borderTopColor: '#d8d8d8', 
-        borderTopWidth: 0.5, 
         marginTop: 4,
     },
     rqAreaTitle: {
