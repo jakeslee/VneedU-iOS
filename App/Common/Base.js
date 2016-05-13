@@ -23,10 +23,12 @@ export function cdn_process(cdn_config, url = '') {
     
     let proto = matches[0],
         bucket = matches[1];
-    let baseUrl = `http://${cdn_config[bucket]}`;
+    let baseUrl = cdn_config[bucket];
 
-    if (typeof baseUrl === 'array') {
-        baseUrl = baseUrl[parseInt((Math.random() * 10) % baseUrl.length)];
+    if (baseUrl instanceof Array) {
+        baseUrl = 'http://' + baseUrl[parseInt((Math.random() * 10) % baseUrl.length)];
+    } else {
+        baseUrl = 'http://' + baseUrl;
     }
     return url.replace(proto, baseUrl);
 }

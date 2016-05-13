@@ -153,7 +153,10 @@ export default class Home extends Component {
                         enableEmptySections={true}
                         renderHeader={this._renderHeader.bind(this)}
                         renderRow={this._renderRow.bind(this)}
-                        onEndReached={this._onEndReached}
+                        onEndReached={()=> {
+                            if (this.props.entity.requirement.latest.items.length >= 9)
+                                this._onEndReached();
+                        }}
                         onEndReachedThreshold={-60}
                         contentContainerStyle={{paddingVertical: 8}} 
                         automaticallyAdjustContentInsets={false} 
