@@ -16,7 +16,7 @@ export default function reducer(state = initialState, action = {}) {
         case Types.REQUEST_REQ_DISCUSSIONS:
             return {
                 ...state,
-                isFetching: true,
+                isFetching: action.isFetching,
             }
         case Types.RECV_DISCUSSIONS:
             let items = action.data;
@@ -35,7 +35,7 @@ export default function reducer(state = initialState, action = {}) {
         case Types.REQUEST_POST_DISCUSSION:
             return {
                 ...state,
-                isPosting: true,
+                isPosting: action.isPosting,
             }
         case Types.CLR_DISCUSSIONS:
             return Object.assign({}, initialState);

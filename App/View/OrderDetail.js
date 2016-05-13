@@ -13,6 +13,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
+import Spinner from 'react-native-loading-spinner-overlay';
 import Loading from '../Component/Loading';
 import { Base, avatar_process } from '../Common/Base';
 import NavigatorBar from '../Component/NavigatorBar';
@@ -83,6 +84,7 @@ class OrderDetail extends Component {
         return (
             <View style={NavigatorStyles.navigatorContainer}>
                 <NavigatorBar title='订单详情' {...this.props}/>
+                <Spinner visible={this.props.orders.isPosting}/>
                 <View style={{flex: 1}}>
                     {!this.props.detail.content.hasOwnProperty('id') ? <Loading />:
                     <ScrollView bounces={false} automaticallyAdjustContentInsets={false} style={{paddingTop: 5}}>
@@ -291,6 +293,7 @@ const styles = StyleSheet.create({
 });
 
 export default connect(({orders, app, currentUser})=> ({
+    order,
     detail: orders.detail,
     currentUser,
     app,

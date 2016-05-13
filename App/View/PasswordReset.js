@@ -1,11 +1,13 @@
 import React, {Component} from "react";
 import {StyleSheet, TextInput, StatusBar, TouchableOpacity, AlertIOS, Image, View, Text} from "react-native";
 import { Base } from '../Common/Base';
+import Spinner from 'react-native-loading-spinner-overlay';
+import { connect } from 'react-redux';
 import NavigatorBar from '../Component/NavigatorBar';
 import { BorderStyles, ButtonStyles, InputStyles } from '../Common/Styles';
 import { modify_password } from '../Redux/Actions/UserAction';
 
-export default class PasswordReset extends Component {
+class PasswordReset extends Component {
     constructor(props) {
         super(props);
         
@@ -19,6 +21,7 @@ export default class PasswordReset extends Component {
         return (
             <View style={{flex: 1, backgroundColor: '#F6F6F6'}}>
                 <NavigatorBar title='修改密码' {...this.props} />
+                <Spinner visible={this.props.currentUser.uploading}/>
                 <View style={{marginTop: 10}}>
                     <TextInput style={InputStyles.input} value={this.state.password} onChangeText={(v)=> this.setState({password: v})}
                         placeholder='新密码' placeholderTextColor='#4D4D4D' secureTextEntry={true}/>
@@ -47,3 +50,5 @@ export default class PasswordReset extends Component {
         )
     }
 }
+
+export default connect(({currentUser})=>({currentUser}))(PasswordReset);

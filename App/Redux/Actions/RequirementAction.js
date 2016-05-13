@@ -30,17 +30,17 @@ export function request_requirement(category, append = false, value = true) {
     }
 }
 
-export function request_post(isPosting) {
+export function request_post(isPosting = true) {
     return {
         type: Types.REQUEST_REQ_ADDING,
         isPosting,
     }
 }
 
-function request_req_detail() {
+function request_req_detail(isFetching = true) {
     return {
         type: Types.REQUEST_REQ_DETAIL,
-        isFetching: true,
+        isFetching,
     }
 }
 
@@ -71,6 +71,7 @@ function recv_req_detail(content) {
 
 export function post_requirement(data = {}, category, current_user) {
     return (dispatch)=> {
+        dispatch(request_post());
         return add_requirement(data, current_user.token).then((response)=> response.json())
             .then((json)=> {
                 dispatch(request_post(false));
@@ -86,6 +87,7 @@ export function post_requirement(data = {}, category, current_user) {
                     AlertIOS.alert('错误', getErrorsMessage(json.error));
             }).catch(function(reason) {
                 AlertIOS.alert('错误', '添加失败！');
+                dispatch(request_post(false));
                 console.warn(reason);
             });
     }
@@ -99,6 +101,7 @@ export function load_new_requirements(category, page = 1, append = false) {
             exclude: 'address'
         }).then((response)=> response.json())
             .then((json)=> {
+                dispatch(request_requirement(category, append, false));
                 if (json.error === 0) {
                     dispatch(load_req(json.retData.requirements, category, page, json.retData.page.max_pages, append));
                     
@@ -108,7 +111,7 @@ export function load_new_requirements(category, page = 1, append = false) {
             })
             .catch((reason)=> {
                 console.log(reason);
-                 //dispatch(request_requirement(category, append, false)); 
+                dispatch(request_requirement(category, append, false));
                 AlertIOS.alert('错误', '获取信息失败');
             });
     }
@@ -121,13 +124,18 @@ export function load_req_detail(id) {
             expand: 'publisher, category, keywords, images'
         }).then((response)=> response.json())
             .then((json)=> {
+                dispatch(request_req_detail(false));
                 if (json.error === 0) {
                     dispatch(recv_req_detail(json.retData.requirement));
                     dispatch(load_discussions(id));
                 } else {
                     AlertIOS.alert('错误', getErrorsMessage(json.error));
                 }
-            })
+            }).catch((reason)=> {
+                console.log(reason);
+                dispatch(request_req_detail(false));
+                AlertIOS.alert('错误', '操作失败');
+            });
     }
 }
 

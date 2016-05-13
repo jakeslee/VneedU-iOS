@@ -3,6 +3,7 @@ import {StyleSheet, TextInput, TouchableOpacity, Image, View, Text, AlertIOS} fr
 import StarRating from 'react-native-star-rating';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
+import Spinner from 'react-native-loading-spinner-overlay';
 import { Base, avatar_process } from '../Common/Base';
 import NavigatorBar from '../Component/NavigatorBar';
 import { BorderStyles, ButtonStyles, InputStyles, ImageStyles } from '../Common/Styles';
@@ -51,6 +52,7 @@ class Judgement extends Component {
         return (
             <View style={{flex: 1, backgroundColor: '#F6F6F6'}}>
                 <NavigatorBar title='评价' {...this.props} />
+                <Spinner visible={this.props.user.judgements.isPosting}/>
                 <View style={{flex: 1}}>
                     <TouchableOpacity onPress={()=> Actions.requirement_detail({id: this.props.order.requirement.id})}>
                         <View style={[BorderStyles.topAndBottom,  styles.rqInfoArea]}>
@@ -159,4 +161,8 @@ const styles = StyleSheet.create({
     },
 });
 
-export default connect(({app, currentUser})=>({app, currentUser}))(Judgement);
+export default connect(({app, currentUser, user})=>({
+    user,
+    app, 
+    currentUser
+}))(Judgement);

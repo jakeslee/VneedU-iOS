@@ -22,12 +22,12 @@ export default function reducer(state = initialState, action = {}) {
         case Types.REQUEST_ORDERS:
             return {
                 ...state,
-                isFetching: true,
+                isFetching: action.value,
             }
         case Types.REQUEST_ORDERS_APPEND:
             return {
                 ...state,
-                isLoadingTail: true,
+                isLoadingTail: action.value,
             }
         case Types.RECV_ORDERS:
             return load_orders(state, action)
@@ -37,7 +37,7 @@ export default function reducer(state = initialState, action = {}) {
             return {
                 ...state,
                 detail: Object.assign({}, state.detail, {
-                    isFetching: true,
+                    isFetching: action.isFetching,
                 })
             }
         case Types.RECV_ORDER_DETAIL:

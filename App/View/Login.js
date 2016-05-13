@@ -3,7 +3,7 @@ import {StyleSheet, TextInput, StatusBar, TouchableOpacity, Image, View, Text} f
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import Spinner from 'react-native-loading-spinner-overlay';
 import { Base } from '../Common/Base';
 import { BorderStyles, ButtonStyles } from '../Common/Styles';
 
@@ -37,7 +37,7 @@ class Login extends Component {
                         <Icon name='chevron-left' color='#FFF' size={20} />
                     </TouchableOpacity>
                 </Image>
-                
+                <Spinner visible={this.props.currentUser.isFetching}/>
                 <View style={{backgroundColor: '#F6F6F6', flex: 1, paddingTop: 10}}>
                     <TextInput style={styles.input} value={this.state.username} onChangeText={(v)=> this.setState({username:v})}
                         placeholder='手机号' placeholderTextColor='#4D4D4D'/>

@@ -26,15 +26,17 @@ import {
 
 import { getErrorsMessage } from '../../Constants/Errors';
 
-function request_login() {
+function request_login(isFetching = true) {
     return {
         type: Types.REQUEST_LOGIN,
+        isFetching,
     };
 }
 
-function request_register() {
+function request_register(isFetching = true) {
     return {
         type: Types.REQUEST_SIGNUP,
+        isFetching,
     }
 }
 
@@ -59,15 +61,17 @@ function recv_register(data) {
     };
 }
 
-function request_other_user() {
+function request_other_user(isFetching = true) {
     return {
         type: Types.REQUEST_OTHER_USER,
+        isFetching,
     }
 }
 
-function request_user_req() {
+function request_user_req(isFetching = true) {
     return {
         type: Types.REQUEST_USER_REQ,
+        isFetching,
     }
 }
 
@@ -78,9 +82,10 @@ export function request_upload_avatar(uploading = true) {
     }
 }
 
-function request_user_judge() {
+function request_user_judge(isFetching = true) {
     return {
         type: Types.REQUEST_USER_JUDGE,
+        isFetching,
     }
 }
 
@@ -147,7 +152,9 @@ export function refresh_user(old_user) {
                     AlertIOS.alert('错误', getErrorsMessage(json.error));
                     dispatch(user_logout());
                 }
-            })
+            }).catch((reason)=> {
+                console.log(reason);
+            });
     }
 }
 
@@ -157,6 +164,7 @@ export function user_login(username, password) {
         return login(username, password)
             .then((response) => response.json())
             .then((json) => {
+                dispatch(request_login(false));
                 if (json.error === 0) {
                     dispatch(recv_login(json));
                     saveToStorage('user', JSON.stringify(json.retData.user)).then(()=> {
@@ -166,6 +174,8 @@ export function user_login(username, password) {
                 } else {
                     AlertIOS.alert('错误', getErrorsMessage(json.error));
                 }
+            }).catch((e)=>{
+                dispatch(set_logout());
             });
     }
 }
@@ -183,12 +193,13 @@ export function user_logout() {
 
 export function user_register(username, password) {
     return (dispatch) => {
-        dispatch(request_register);
+        dispatch(request_register());
         return signup({
             phone: username,
             password,
         }).then((response) => response.json())
         .then((json) => {
+            dispatch(request_register(false));
             if (json.error === 0) {
                 dispatch(recv_register(json));
                 saveToStorage('user', JSON.stringify(json.retData.user)).then(()=> {
@@ -198,15 +209,17 @@ export function user_register(username, password) {
             } else {
                 AlertIOS.alert('错误', getErrorsMessage(json.error));
             }
-        })
+        }).catch((e)=> dispatch(set_logout()));
     }
 }
 
 export function modify_user(current_user, params = {}) {
     return (dispatch) => {
+        dispatch(request_upload_avatar());
         return set_profile(current_user.token, params)
             .then((response)=> response.json())
             .then((json) => {
+                dispatch(request_upload_avatar(false));
                 if (json.error === 0) {
                     let new_user = Object.assign({}, current_user, params);
                     dispatch(set_authorization(new_user));
@@ -218,15 +231,21 @@ export function modify_user(current_user, params = {}) {
                     ]);
                     
                 }
+            }).catch((reason)=> {
+                console.log(reason);
+                dispatch(request_upload_avatar(false));
+                AlertIOS.alert('错误', '操作失败');
             });
     }
 }
 
 export function modify_password(current_user, new_password) {
     return (dispatch) => {
+        dispatch(request_upload_avatar());
         return reset_password(new_password, current_user.token)
             .then((response) => response.json())
             .then((json) => {
+                dispatch(request_upload_avatar(false));
                 if (json.error === 0) {
                     // 如果修改成功则需要重新登录
                     dispatch(user_logout());
@@ -234,7 +253,11 @@ export function modify_password(current_user, new_password) {
                 } else {
                     AlertIOS.alert('错误', getErrorsMessage(json.error));
                 }
-            })
+            }).catch((reason)=> {
+                console.log(reason);
+                dispatch(request_upload_avatar(false));
+                AlertIOS.alert('错误', '操作失败');
+            });
     }
 }
 
@@ -244,13 +267,16 @@ export function load_judgements(uid, current_user) {
         return getJudgements(uid, current_user.token)
             .then((response)=> response.json())
             .then((json)=> {
+                dispatch(request_user_judge(false));
                 if (json.error === 0) {
                     dispatch(recv_user_judge(json.retData.judgements));
                 } else 
                     AlertIOS.alert('错误', getErrorsMessage(json.error));
-            }).catch((e)=>{
-                console.log(e)
-            })
+            }).catch((reason)=> {
+                console.log(reason);
+                dispatch(request_user_judge(false));
+                AlertIOS.alert('错误', '操作失败');
+            });
     }
 }
 
@@ -260,11 +286,16 @@ export function load_requirements(uid, current_user) {
         return getRequirements(uid, current_user.token)
             .then((response)=> response.json())
             .then((json)=> {
+                dispatch(request_user_req(false));
                 if (json.error === 0) {
                     dispatch(recv_user_req(json.retData.requirements));
                 } else 
                     AlertIOS.alert('错误', getErrorsMessage(json.error));
-            })
+            }).catch((reason)=> {
+                console.log(reason);
+                dispatch(request_user_req(false));
+                AlertIOS.alert('错误', '操作失败');
+            });
     }
 }
 
@@ -274,13 +305,18 @@ export function load_user(uid, current_user) {
         return getUser(current_user.token, uid)
             .then((response)=> response.json())
             .then((json)=> {
+                dispatch(request_other_user(false));
                 if (json.error === 0) {
                     dispatch(recv_other_user(json.retData.user));
                     dispatch(load_requirements(uid, current_user));
                     dispatch(load_judgements(uid, current_user));
                 } else 
                     AlertIOS.alert('错误', getErrorsMessage(json.error));
-            })
+            }).catch((reason)=> {
+                console.log(reason);
+                dispatch(request_other_user(false));
+                AlertIOS.alert('错误', '操作失败');
+            });
     }
 }
 
@@ -289,11 +325,15 @@ export function do_change_avatar(userFileId, current_user) {
         return changeAvatar(userFileId, current_user.token)
             .then((response)=> response.json())
             .then((json)=> {
+                dispatch(request_upload_avatar(false));
                 if (json.error === 0) {
-                    dispatch(request_upload_avatar(false));
                     dispatch(refresh_user(current_user));
                 } else 
                     AlertIOS.alert('错误', getErrorsMessage(json.error));
+            }).catch((reason)=> {
+                console.log(reason);
+                dispatch(request_upload_avatar(false));
+                AlertIOS.alert('错误', '操作失败');
             });
     }
 }

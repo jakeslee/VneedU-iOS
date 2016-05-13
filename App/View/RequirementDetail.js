@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/FontAwesome';
-
+import Spinner from 'react-native-loading-spinner-overlay';
 import { Base, cdn_process, avatar_process } from '../Common/Base';
 import CommentItem from '../Component/CommentItem';
 import NavigatorBar from '../Component/NavigatorBar';
@@ -226,6 +226,7 @@ class RequirementDetail extends Component {
         return (
             <View style={NavigatorStyles.navigatorContainer}>
                 <NavigatorBar title='需求详情' {...this.props}/>
+                <Spinner visible={this.props.comments.isPosting || this.props.orders.isPosting}/>
                 <View style={{flex: 1}}>
                     { this.props.requirement.content.hasOwnProperty('id') ?
                     <ListView 
@@ -285,8 +286,10 @@ const styles = StyleSheet.create({
     },
 });
 
-export default connect(({requirement, currentUser, app, comments})=> 
+export default connect(({requirement, currentUser, app, comments, orders})=> 
     ({requirement: requirement.requirementDetail, 
         currentUser, 
         app,
-        comments}))(RequirementDetail);
+        comments,
+        orders,
+    }))(RequirementDetail);

@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { ImagePickerManager } from 'NativeModules';
 import { Actions } from 'react-native-router-flux';
+import Spinner from 'react-native-loading-spinner-overlay';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { uploadFileAsync } from '../../Services/FileService';
 import { BorderStyles, ButtonStyles, ImageStyles } from '../../Common/Styles';
@@ -94,6 +95,7 @@ export default class Me extends Component {
         let avatar = avatar_process(this.props.entity.currentUser.user.avatar, this.props.app.cdn_config);
         return (
             <View style={{flex: 1}}>
+                <Spinner visible={this.props.currentUser.uploading}/>
                 <View style={{backgroundColor: '#36D17D', paddingTop: 20,}}>
                     <View style={{flexDirection: 'row', paddingHorizontal: 15, paddingVertical: 8}}>
                         <View style={{flex: 1, justifyContent: 'center'}}>
@@ -159,7 +161,7 @@ export default class Me extends Component {
                             <Text style={{color: '#313131', flex: 1}}>
                                 {this.props.entity.currentUser.user.profile || '用户未补充'}
                             </Text>
-                            <TouchableOpacity onPress={()=> Actions.info_modify({ currentUser: this.props.entity.currentUser})} >
+                            <TouchableOpacity onPress={()=> Actions.info_modify()} >
                                 <Text style={{color: '#7C69E0'}}>修改</Text>
                             </TouchableOpacity>
                         </View>

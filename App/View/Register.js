@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {StyleSheet, TextInput, StatusBar, TouchableOpacity, Image, View, Text} from "react-native";
-
+import { connect } from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
 import { Base } from '../Common/Base';
 import NavigatorBar from '../Component/NavigatorBar';
 import { BorderStyles, ButtonStyles, InputStyles } from '../Common/Styles';
@@ -9,7 +10,7 @@ import {
     user_register
 } from '../Redux/Actions/UserAction';
 
-export default class Register extends Component {
+class Register extends Component {
     constructor(props) {
         super(props);
         
@@ -23,6 +24,7 @@ export default class Register extends Component {
         return (
             <View style={{flex: 1}}>
                 <NavigatorBar title='注册' {...this.props} />
+                <Spinner visible={this.props.currentUser.isFetching}/>
                 <View style={{flex: 1, backgroundColor: '#F6F6F6', paddingTop: 10}}>
                     <TextInput style={InputStyles.input} value={this.state.username} onChangeText={(v)=> this.setState({username:v})}
                         placeholder='手机号' placeholderTextColor='#4D4D4D'/>
@@ -43,3 +45,5 @@ export default class Register extends Component {
         )
     }
 }
+
+export default connect(({currentUser})=>({currentUser}))(Register);

@@ -26,9 +26,10 @@ import {
 import { getErrorsMessage } from '../../Constants/Errors';
 
 
-function request_orders(append = false) {
+function request_orders(append = false, value = true) {
     return {
         type: append ? Types.REQUEST_ORDERS : Types.REQUEST_ORDERS_APPEND,
+        value,
     }
 }
 
@@ -39,9 +40,10 @@ function request_order_add(isPosting = true) {
     }
 }
 
-function request_order_detail() {
+function request_order_detail(isFetching = true) {
     return {
         type: Types.REQUEST_ORDER_DETAIL,
+        isFetching,
     }
 }
 
@@ -68,26 +70,36 @@ export function load_user_orders(current_user, page = 1) {
             expand: 'creator',
         }).then((response)=> response.json())
             .then((json)=> {
+                dispatch(request_orders(page != 1, false));
                 if (json.error === 0) {
                     dispatch(recv_orders(
                         json.retData.orders, json.retData.page.page, json.retData.page.max_pages, page != 1));
                 } else 
                     AlertIOS.alert('错误', getErrorsMessage(json.error));
-            })
+            }).catch(function(reason) {
+                AlertIOS.alert('错误', '操作失败！');
+                dispatch(request_orders(page != 1, false));
+                console.warn(reason);
+            });
     }
 }
 
 export function load_order_detail(oid, current_user) {
     return (dispatch)=> {
-        dispatch(request_order_detail())
+        dispatch(request_order_detail());
         return get_order(oid, current_user.token, {
             expand: 'creator, user, requirement',
         }).then((response)=> response.json())
             .then((json)=> {
+                dispatch(request_order_detail(false));
                 if (json.error === 0) {
                     dispatch(recv_order(json.retData.order));
                 } else 
                     AlertIOS.alert('错误', getErrorsMessage(json.error));
+            }).catch(function(reason) {
+                AlertIOS.alert('错误', '操作失败！');
+                dispatch(request_order_detail(false));
+                console.warn(reason);
             });
     }
 }
@@ -98,14 +110,17 @@ export function add_new_order(rid, current_user) {
         return create_order(rid, current_user.token)
             .then((response)=> response.json())
             .then((json)=> {
+                dispatch(request_order_add(false));
                 if (json.error === 0) {
-                    dispatch(request_order_add(false));
                     AlertIOS.alert('提示', '添加成功',[
                         {text: '确定', onPress: () => dispatch(load_req_detail(rid))},
                     ])
-                    
                 } else 
                     AlertIOS.alert('错误', getErrorsMessage(json.error));
+            }).catch(function(reason) {
+                AlertIOS.alert('错误', '操作失败！');
+                dispatch(request_order_add(false));
+                console.warn(reason);
             });
     }
 }
@@ -116,12 +131,16 @@ export function do_cancel_order(oid, current_user) {
         return cancel_order(oid, current_user.token)
             .then((response)=> response.json())
             .then((json)=> {
+                dispatch(request_order_add(false));
                 if (json.error === 0) {
-                    dispatch(request_order_add(false));
                     Actions.pop();
                     dispatch(load_user_orders(current_user, 1));
                 } else
                     AlertIOS.alert('错误', getErrorsMessage(json.error));
+            }).catch(function(reason) {
+                dispatch(request_order_add(false));
+                AlertIOS.alert('错误', '操作失败！');
+                console.warn(reason);
             });
     }
 }
@@ -132,11 +151,15 @@ export function do_check_order(oid, current_user) {
         return check_order(oid, current_user.token)
             .then((response)=> response.json())
             .then((json)=> {
+                dispatch(request_order_add(false));
                 if (json.error === 0) {
-                    dispatch(request_order_add(false));
                     dispatch(load_order_detail(oid, current_user));
                 } else
                     AlertIOS.alert('错误', getErrorsMessage(json.error));
+            }).catch(function(reason) {
+                dispatch(request_order_add(false));
+                AlertIOS.alert('错误', '操作失败！');
+                console.warn(reason);
             });
     }
 }
@@ -147,11 +170,15 @@ export function do_finished_order(oid, current_user) {
         return finished_order(oid, current_user.token)
             .then((response)=> response.json())
             .then((json)=> {
+                dispatch(request_order_add(false));
                 if (json.error === 0) {
-                    dispatch(request_order_add(false));
                     dispatch(load_order_detail(oid, current_user));
                 } else
                     AlertIOS.alert('错误', getErrorsMessage(json.error));
+            }).catch(function(reason) {
+                AlertIOS.alert('错误', '操作失败！');
+                dispatch(request_order_add(false));
+                console.warn(reason);
             });
     }
 }
@@ -168,8 +195,8 @@ export function post_judgement(oid, content, score, current_user) {
         return judge_order(oid, content, score, current_user.token)
             .then((response)=> response.json())
             .then((json)=> {
+                dispatch(request_post_judgement(false));
                 if (json.error === 0) {
-                    dispatch(request_post_judgement(false));
                     AlertIOS.alert('提示', '评价成功！', [
                         {text: '确定', onPress: () => {
                             Actions.pop();
@@ -178,6 +205,10 @@ export function post_judgement(oid, content, score, current_user) {
                     ])
                 } else 
                     AlertIOS.alert('错误', getErrorsMessage(json.error));
-            })
+            }).catch(function(reason) {
+                AlertIOS.alert('错误', '操作失败！');
+                dispatch(request_post_judgement(false));
+                console.warn(reason);
+            });
     }
 }

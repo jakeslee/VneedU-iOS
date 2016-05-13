@@ -21,12 +21,10 @@ export default function reducer(state = initialState, action = {}) {
                 user: Object.assign({}, state.user, action.user),
             };
         case Types.REQUEST_LOGIN:
+        case Types.REQUEST_SIGNUP:
             return {
                 ...state,
-                isFetching: true,
-                user: {},
-                hasError: null, 
-                result: null,
+                isFetching: action.isFetching,
             }
         case Types.RECV_LOGIN:
         case Types.RECV_SIGNUP:

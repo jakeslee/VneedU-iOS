@@ -24,7 +24,7 @@ export default function reducer(state = initialState, action = {}) {
         case Types.REQUEST_OTHER_USER:
             return {
                 ...state,
-                isFetching: true,
+                isFetching: action.isFetching,
             }
         case Types.RECV_OTHER_USER: 
             return {
@@ -36,7 +36,7 @@ export default function reducer(state = initialState, action = {}) {
             return {
                 ...state,
                 requirements: Object.assign({}, state.requirements, {
-                    isFetching: true,
+                    isFetching: action.isFetching,
                 })
             }
         case Types.RECV_USER_REQ:
@@ -52,7 +52,7 @@ export default function reducer(state = initialState, action = {}) {
             return {
                 ...state,
                 judgements: Object.assign({}, state.judgements, {
-                    isFetching: true,
+                    isFetching: action.isFetching,
                 })
             }
         case Types.RECV_USER_JUDGE:

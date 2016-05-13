@@ -14,9 +14,10 @@ import {
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { ImagePickerManager } from 'NativeModules';
+import Spinner from 'react-native-loading-spinner-overlay';
 import ModalBox from 'react-native-modalbox';
 import AlphabetListView from 'react-native-alphabetlistview';
-
+import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Base, scrollTools } from '../Common/Base';
 import CommentItem from '../Component/CommentItem';
@@ -27,13 +28,10 @@ import { post_requirement, request_post } from '../Redux/Actions/RequirementActi
 import { Area } from '../Constants/AreaData';
 import { getErrorsMessage } from '../Constants/Errors';
 
-export default class AddRequirement extends Component {
+class AddRequirement extends Component {
     constructor(props) {
         super(props);
-        var dataSource = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 !== r2,
-        });
-        
+
         this.state = {
             categrory: 'part-time',
             currentCate: null,
@@ -220,6 +218,7 @@ export default class AddRequirement extends Component {
         return (
             <View style={NavigatorStyles.navigatorContainer}>
                 <NavigatorBar title='添加需求' {...this.props}/>
+                <Spinner visible={this.props.requirement.isPosting}/>
                 <View style={{flex: 1}}>
                     <KeyboardAwareScrollView ref={this.REF_CONST.scroll} bounces={false} automaticallyAdjustContentInsets={false}>
                         {/* 需求内容 start */}
@@ -462,3 +461,5 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
     }
 });
+
+export default connect(({currentUser, requirement})=> ({currentUser, requirement}))(AddRequirement);
