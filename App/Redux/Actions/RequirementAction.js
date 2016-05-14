@@ -3,12 +3,15 @@ import {
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import Types from '../../Constants/ActionTypes';
+import { delay } from '../../Common/Base';
 
 import {
     loadFromStorage,
     saveToStorage,
     removeFromStorage, 
 } from '../../Services/StorageService';
+
+import { save_cache_to_local, set_cdn } from './AppAction';
 
 import {
     add_requirement,
@@ -75,16 +78,19 @@ export function post_requirement(data = {}, category, current_user) {
         return add_requirement(data, current_user.token).then((response)=> response.json())
             .then((json)=> {
                 dispatch(request_post(false));
-                if (json.error === 0) {
-                    AlertIOS.alert('提示', '添加成功', [{
-                        text: '确定', 
-                        onPress: () => {
-                            Actions.pop();
-                            dispatch(load_new_requirements('latest', 1));
-                        }},
-                    ]);
-                } else 
-                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+                delay().then(()=> {
+                    if (json.error === 0) {
+                        AlertIOS.alert('提示', '添加成功', [{
+                            text: '确定', 
+                            onPress: () => {
+                                Actions.pop();
+                                console.log('save success');
+                                dispatch(load_new_requirements('latest', 1));
+                            }},
+                        ]);
+                    } else 
+                        AlertIOS.alert('错误', getErrorsMessage(json.error));
+                })
             }).catch(function(reason) {
                 AlertIOS.alert('错误', '添加失败！');
                 dispatch(request_post(false));
@@ -103,8 +109,9 @@ export function load_new_requirements(category, page = 1, append = false) {
             .then((json)=> {
                 dispatch(request_requirement(category, append, false));
                 if (json.error === 0) {
+                    dispatch(set_cdn(json.retData.cdn));
                     dispatch(load_req(json.retData.requirements, category, page, json.retData.page.max_pages, append));
-                    
+                    dispatch(save_cache_to_local());
                     console.log(`loading ${category} of requirement at page ${page}`);
                 } else 
                     AlertIOS.alert('错误', getErrorsMessage(json.error));

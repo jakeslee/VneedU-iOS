@@ -4,8 +4,9 @@ import {
 import { compose } from 'redux';
 import { Actions } from 'react-native-router-flux';
 import Types from '../../Constants/ActionTypes';
+import { delay } from '../../Common/Base';
 
-import { set_tabbar, set_cdn } from './AppAction';
+import { set_tabbar, save_cache_to_local, set_cdn } from './AppAction';
 
 import {
     loadFromStorage,
@@ -142,14 +143,11 @@ export function refresh_user(old_user) {
             .then((response) => response.json())
             .then((json) => {
                 if (json.error === 0) {
-                    compose(
-                        saveToStorage('user', JSON.stringify(Object.assign({}, old_user, json.retData.user)))
-                            .then(()=> dispatch(set_authorization(json.retData.user))).done(),
-                        saveToStorage('cdn_config', JSON.stringify(json.retData.cdn))
-                            .then(()=> dispatch(set_cdn(json.retData.cdn)))
-                    );
+                    dispatch(set_cdn(json.retData.cdn));
+                    dispatch(set_authorization(json.retData.user));
+                    dispatch(save_cache_to_local());
                 } else {
-                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+                    delay().then(()=> AlertIOS.alert('错误', getErrorsMessage(json.error)));
                     dispatch(user_logout());
                 }
             }).catch((reason)=> {
@@ -167,12 +165,10 @@ export function user_login(username, password) {
                 dispatch(request_login(false));
                 if (json.error === 0) {
                     dispatch(recv_login(json));
-                    saveToStorage('user', JSON.stringify(json.retData.user)).then(()=> {
-                        Actions.pop();
-                        Actions.refresh();
-                    }).done();
+                    Actions.pop();
+                    Actions.refresh();
                 } else {
-                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+                    delay().then(()=> AlertIOS.alert('错误', getErrorsMessage(json.error)));
                 }
             }).catch((e)=>{
                 dispatch(set_logout());
@@ -202,12 +198,10 @@ export function user_register(username, password) {
             dispatch(request_register(false));
             if (json.error === 0) {
                 dispatch(recv_register(json));
-                saveToStorage('user', JSON.stringify(json.retData.user)).then(()=> {
-                    Actions.callback({key: 'main', type: 'reset'})
-                    Actions.refresh();
-                }).done();
+                Actions.callback({key: 'main', type: 'reset'})
+                Actions.refresh();
             } else {
-                AlertIOS.alert('错误', getErrorsMessage(json.error));
+                delay().then(()=> AlertIOS.alert('错误', getErrorsMessage(json.error)));
             }
         }).catch((e)=> dispatch(set_logout()));
     }
@@ -223,18 +217,17 @@ export function modify_user(current_user, params = {}) {
                 if (json.error === 0) {
                     let new_user = Object.assign({}, current_user, params);
                     dispatch(set_authorization(new_user));
-                    AlertIOS.alert('提示', '帐号更新成功保存', [{
+                    delay().then(()=> AlertIOS.alert('提示', '帐号更新成功保存', [{
                         text: '确定', 
                         onPress: () => saveToStorage('user', JSON.stringify(new_user)).then(()=> {
                             Actions.pop();
                         }).done()},
-                    ]);
-                    
+                    ]));
                 }
             }).catch((reason)=> {
                 console.log(reason);
                 dispatch(request_upload_avatar(false));
-                AlertIOS.alert('错误', '操作失败');
+                delay().then(()=> AlertIOS.alert('错误', '操作失败'));
             });
     }
 }
@@ -246,17 +239,19 @@ export function modify_password(current_user, new_password) {
             .then((response) => response.json())
             .then((json) => {
                 dispatch(request_upload_avatar(false));
-                if (json.error === 0) {
-                    // 如果修改成功则需要重新登录
-                    dispatch(user_logout());
-                    AlertIOS.alert('提示', '帐号密码已经修改，请重新登录！');
-                } else {
-                    AlertIOS.alert('错误', getErrorsMessage(json.error));
-                }
+                delay().then(()=> {
+                        if (json.error === 0) {
+                        // 如果修改成功则需要重新登录
+                        dispatch(user_logout());
+                        AlertIOS.alert('提示', '帐号密码已经修改，请重新登录！');
+                    } else {
+                        AlertIOS.alert('错误', getErrorsMessage(json.error));
+                    }
+                })
             }).catch((reason)=> {
                 console.log(reason);
                 dispatch(request_upload_avatar(false));
-                AlertIOS.alert('错误', '操作失败');
+                delay().then(()=> AlertIOS.alert('错误', '操作失败'));
             });
     }
 }
@@ -271,11 +266,11 @@ export function load_judgements(uid, current_user) {
                 if (json.error === 0) {
                     dispatch(recv_user_judge(json.retData.judgements));
                 } else 
-                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+                    delay().then(()=> AlertIOS.alert('错误', getErrorsMessage(json.error)));
             }).catch((reason)=> {
                 console.log(reason);
                 dispatch(request_user_judge(false));
-                AlertIOS.alert('错误', '操作失败');
+                delay().then(()=> AlertIOS.alert('错误', '操作失败'));
             });
     }
 }
@@ -290,11 +285,11 @@ export function load_requirements(uid, current_user) {
                 if (json.error === 0) {
                     dispatch(recv_user_req(json.retData.requirements));
                 } else 
-                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+                    delay().then(()=> AlertIOS.alert('错误', getErrorsMessage(json.error)));
             }).catch((reason)=> {
                 console.log(reason);
                 dispatch(request_user_req(false));
-                AlertIOS.alert('错误', '操作失败');
+                delay().then(()=> AlertIOS.alert('错误', '操作失败'));
             });
     }
 }
@@ -311,11 +306,11 @@ export function load_user(uid, current_user) {
                     dispatch(load_requirements(uid, current_user));
                     dispatch(load_judgements(uid, current_user));
                 } else 
-                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+                    delay().then(()=> AlertIOS.alert('错误', getErrorsMessage(json.error)));
             }).catch((reason)=> {
                 console.log(reason);
                 dispatch(request_other_user(false));
-                AlertIOS.alert('错误', '操作失败');
+                delay().then(()=> AlertIOS.alert('错误', '操作失败'));
             });
     }
 }
@@ -329,11 +324,11 @@ export function do_change_avatar(userFileId, current_user) {
                 if (json.error === 0) {
                     dispatch(refresh_user(current_user));
                 } else 
-                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+                    delay().then(()=> AlertIOS.alert('错误', getErrorsMessage(json.error)));
             }).catch((reason)=> {
                 console.log(reason);
                 dispatch(request_upload_avatar(false));
-                AlertIOS.alert('错误', '操作失败');
+                delay().then(()=> AlertIOS.alert('错误', '操作失败'));
             });
     }
 }

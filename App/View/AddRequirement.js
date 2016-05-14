@@ -31,6 +31,10 @@ import { getErrorsMessage } from '../Constants/Errors';
 class AddRequirement extends Component {
     constructor(props) {
         super(props);
+        
+        var dataSource = new ListView.DataSource({
+            rowHasChanged: (r1, r2) => r1 !== r2,
+        });
 
         this.state = {
             categrory: 'part-time',
@@ -148,7 +152,7 @@ class AddRequirement extends Component {
         if (this.state.title.length < 4) {
             AlertIOS.alert('错误', '标题必须至少4个字符!');
             return;
-        } else if (this.state.address.length < 3) {
+        } else if (this.state.address.length < 2) {
             AlertIOS.alert('错误', '地址必须提供!');
             return;
         } else if (!this.state.currentArea || this.state.currentArea.length < 2) {
@@ -215,6 +219,7 @@ class AddRequirement extends Component {
     }
     
     render() {
+        console.log(this.props.requirement.isPosting)
         return (
             <View style={NavigatorStyles.navigatorContainer}>
                 <NavigatorBar title='添加需求' {...this.props}/>

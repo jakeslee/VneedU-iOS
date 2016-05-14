@@ -7,6 +7,7 @@ import {
 } from '../../Services/RequirementService';
 import Types from '../../Constants/ActionTypes';
 import { getErrorsMessage } from '../../Constants/Errors';
+import { delay } from '../../Common/Base';
 
 function request_discussions(isFetching = true) {
     return {
@@ -45,15 +46,17 @@ export function load_discussions(rid) {
         }).then((response)=> response.json())
             .then((json)=> {
                 dispatch(request_discussions(false));
-                if (json.error === 0) {
-                    dispatch(recv_discussions(
-                        json.retData.discussions, json.retData.page.page, json.retData.page.max_pages));
-                } else
-                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+                delay().then(()=> {
+                    if (json.error === 0) {
+                        dispatch(recv_discussions(
+                            json.retData.discussions, json.retData.page.page, json.retData.page.max_pages));
+                    } else
+                        AlertIOS.alert('错误', getErrorsMessage(json.error));
+                });
             }).catch((reason)=> {
                 console.log(reason);
                 dispatch(request_discussions(false));
-                AlertIOS.alert('错误', '操作失败');
+                delay().then(()=> AlertIOS.alert('错误', '操作失败'));
             });
     }
 }
@@ -65,18 +68,20 @@ export function post_comment(rid, value, current_user) {
             .then((response)=> response.json())
             .then((json)=> {
                 dispatch(request_post_discussion(false));
-                if (json.error === 0) {
-                    AlertIOS.alert('提示', '添加成功！', [
-                        {text: '确定', onPress: () => {
-                            dispatch(load_discussions(rid));
-                        }}
-                    ])
-                } else
-                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+                delay().then(()=> {
+                    if (json.error === 0) {
+                        AlertIOS.alert('提示', '添加成功！', [
+                            {text: '确定', onPress: () => {
+                                dispatch(load_discussions(rid));
+                            }}
+                        ])
+                    } else
+                        AlertIOS.alert('错误', getErrorsMessage(json.error));
+                });
             }).catch((reason)=> {
                 console.log(reason);
                 dispatch(request_post_discussion(false));
-                AlertIOS.alert('错误', '操作失败');
+                delay().then(()=> AlertIOS.alert('错误', '操作失败'));
             });
     }
 }

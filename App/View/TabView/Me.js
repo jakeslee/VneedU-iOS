@@ -95,7 +95,7 @@ export default class Me extends Component {
         let avatar = avatar_process(this.props.entity.currentUser.user.avatar, this.props.app.cdn_config);
         return (
             <View style={{flex: 1}}>
-                <Spinner visible={this.props.currentUser.uploading}/>
+                <Spinner visible={this.props.entity.currentUser.uploading}/>
                 <View style={{backgroundColor: '#36D17D', paddingTop: 20,}}>
                     <View style={{flexDirection: 'row', paddingHorizontal: 15, paddingVertical: 8}}>
                         <View style={{flex: 1, justifyContent: 'center'}}>

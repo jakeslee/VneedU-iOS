@@ -53,3 +53,28 @@ export function save_settings({ pushIsOn } = { pushIsOn: false }) {
         );
     }
 }
+
+function set_state(state) {
+    return {
+        type: Types.GLOBAL_SET_STATE,
+        state,
+    }
+}
+
+export function load_cache_from_local() {
+    return (dispatch)=> {
+        return loadFromStorage('app').then((v)=> {
+            if (v) {
+                let value = JSON.parse(v);
+                dispatch(set_state(value));
+            }
+        })
+    }
+}
+
+export function save_cache_to_local() {
+    return (dispatch, getState)=> {
+        console.info('save cache to local');
+        return saveToStorage('app', JSON.stringify(getState()));
+    }
+}

@@ -42,7 +42,7 @@ export default function reducer(state = initialState, action = {}) {
             return {
                 ...state,
                 requirementDetail: Object.assign({}, state.requirementDetail, {
-                    isFetching: true,
+                    isFetching: action.isFetching,
                 })
             }
         case Types.REQUEST_REQ_ADDING:

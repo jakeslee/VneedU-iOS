@@ -1,4 +1,5 @@
 export default {
+    GLOBAL_SET_STATE: 'GLOBAL_SET_STATE',
     // App
     SET_CDN: 'SET_CDN',
     SET_PUSHSTATUS: 'SET_PUSHSTATUS',

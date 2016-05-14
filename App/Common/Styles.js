@@ -46,6 +46,7 @@ export const ButtonStyles = StyleSheet.create({
     primaryBtnText: {
         textAlign: 'center', 
         color: '#FFF',
+        fontSize: 16,
     },
 });
 

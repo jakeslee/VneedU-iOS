@@ -3,6 +3,7 @@ import {
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import Types from '../../Constants/ActionTypes';
+import { delay } from '../../Common/Base';
 
 import {
     add_order,
@@ -75,10 +76,10 @@ export function load_user_orders(current_user, page = 1) {
                     dispatch(recv_orders(
                         json.retData.orders, json.retData.page.page, json.retData.page.max_pages, page != 1));
                 } else 
-                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+                    delay().then(()=> AlertIOS.alert('错误', getErrorsMessage(json.error)));
             }).catch(function(reason) {
-                AlertIOS.alert('错误', '操作失败！');
                 dispatch(request_orders(page != 1, false));
+                delay().then(()=> AlertIOS.alert('错误', '操作失败！'));
                 console.warn(reason);
             });
     }
@@ -95,10 +96,10 @@ export function load_order_detail(oid, current_user) {
                 if (json.error === 0) {
                     dispatch(recv_order(json.retData.order));
                 } else 
-                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+                    delay().then(()=> AlertIOS.alert('错误', getErrorsMessage(json.error)));
             }).catch(function(reason) {
-                AlertIOS.alert('错误', '操作失败！');
                 dispatch(request_order_detail(false));
+                delay().then(()=> AlertIOS.alert('错误', '操作失败！'));
                 console.warn(reason);
             });
     }
@@ -111,15 +112,17 @@ export function add_new_order(rid, current_user) {
             .then((response)=> response.json())
             .then((json)=> {
                 dispatch(request_order_add(false));
-                if (json.error === 0) {
-                    AlertIOS.alert('提示', '添加成功',[
-                        {text: '确定', onPress: () => dispatch(load_req_detail(rid))},
-                    ])
-                } else 
-                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+                delay().then(()=> {
+                    if (json.error === 0) {
+                        AlertIOS.alert('提示', '添加成功',[
+                            {text: '确定', onPress: () => dispatch(load_req_detail(rid))},
+                        ])
+                    } else 
+                        AlertIOS.alert('错误', getErrorsMessage(json.error));
+                });
             }).catch(function(reason) {
-                AlertIOS.alert('错误', '操作失败！');
                 dispatch(request_order_add(false));
+                delay().then(()=> AlertIOS.alert('错误', '操作失败！'));
                 console.warn(reason);
             });
     }
@@ -136,10 +139,10 @@ export function do_cancel_order(oid, current_user) {
                     Actions.pop();
                     dispatch(load_user_orders(current_user, 1));
                 } else
-                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+                    delay().then(()=> AlertIOS.alert('错误', getErrorsMessage(json.error)));
             }).catch(function(reason) {
                 dispatch(request_order_add(false));
-                AlertIOS.alert('错误', '操作失败！');
+                delay().then(()=> AlertIOS.alert('错误', '操作失败！'));
                 console.warn(reason);
             });
     }
@@ -155,10 +158,10 @@ export function do_check_order(oid, current_user) {
                 if (json.error === 0) {
                     dispatch(load_order_detail(oid, current_user));
                 } else
-                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+                    delay().then(()=> AlertIOS.alert('错误', getErrorsMessage(json.error)));
             }).catch(function(reason) {
                 dispatch(request_order_add(false));
-                AlertIOS.alert('错误', '操作失败！');
+                delay().then(()=> AlertIOS.alert('错误', '操作失败！'));
                 console.warn(reason);
             });
     }
@@ -174,10 +177,10 @@ export function do_finished_order(oid, current_user) {
                 if (json.error === 0) {
                     dispatch(load_order_detail(oid, current_user));
                 } else
-                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+                    delay().then(()=> AlertIOS.alert('错误', getErrorsMessage(json.error)));
             }).catch(function(reason) {
-                AlertIOS.alert('错误', '操作失败！');
                 dispatch(request_order_add(false));
+                delay().then(()=> AlertIOS.alert('错误', '操作失败！'));
                 console.warn(reason);
             });
     }
@@ -196,18 +199,20 @@ export function post_judgement(oid, content, score, current_user) {
             .then((response)=> response.json())
             .then((json)=> {
                 dispatch(request_post_judgement(false));
-                if (json.error === 0) {
-                    AlertIOS.alert('提示', '评价成功！', [
-                        {text: '确定', onPress: () => {
-                            Actions.pop();
-                            dispatch(load_order_detail(oid, current_user));
-                        }},
-                    ])
-                } else 
-                    AlertIOS.alert('错误', getErrorsMessage(json.error));
+                delay().then(()=> {
+                    if (json.error === 0) {
+                        AlertIOS.alert('提示', '评价成功！', [
+                            {text: '确定', onPress: () => {
+                                Actions.pop();
+                                dispatch(load_order_detail(oid, current_user));
+                            }},
+                        ])
+                    } else 
+                        AlertIOS.alert('错误', getErrorsMessage(json.error));
+                });
             }).catch(function(reason) {
-                AlertIOS.alert('错误', '操作失败！');
                 dispatch(request_post_judgement(false));
+                delay().then(()=> AlertIOS.alert('错误', '操作失败！'));
                 console.warn(reason);
             });
     }

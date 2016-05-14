@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {StyleSheet, TextInput, StatusBar, TouchableOpacity, Image, View, Text} from "react-native";
+import {StyleSheet, TextInput, StatusBar, TouchableOpacity, Image, View, Text, PixelRatio} from "react-native";
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -69,6 +69,7 @@ class Login extends Component {
 const styles = StyleSheet.create({
     logoImg: {
         width: Base.width, 
+        height: 180,
         paddingTop: 30, 
         paddingLeft: 20
     },

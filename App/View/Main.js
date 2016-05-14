@@ -15,8 +15,9 @@ import Order from './TabView/Order';
 import Me from './TabView/Me';
 
 import {
+    load_cache_from_local,
+    save_cache_to_local,
     set_tabbar,
-    load_config,
 } from '../Redux/Actions/AppAction';
 import {
     load_user_orders,
@@ -35,11 +36,17 @@ class Main extends Component {
         this.state = {
             statusBar: 'default',
         }
+        this.timer = setInterval(()=> {
+            this.props.dispatch(save_cache_to_local());
+        }, 10000);
     }
 
     componentDidMount() {
-        this.props.dispatch(load_config());
-        this.props.dispatch(loadUserFromStorage());
+        this.props.dispatch(load_cache_from_local());
+    }
+    
+    componentWillUnmount() {
+        this.props.dispatch(save_cache_to_local());
     }
     
     turnToMe(logined = false) {
