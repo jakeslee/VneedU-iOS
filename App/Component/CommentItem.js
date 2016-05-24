@@ -29,16 +29,17 @@ export default class CommentItem extends Component {
         let datetime = this.props.relatedTime ? 
                         moment(this.props.rowData.datetime, 'YYYY-MM-DD HH:mm:ss').fromNow()
                         : this.props.rowData.datetime;
+        let ifJudge = this.props.rowData.hasOwnProperty('isReqCreator');
         return (
             <View style={[BorderStyles.bottom, {flexDirection: 'row', padding: 10, alignItems: 'center', backgroundColor: '#FFF'}]}>
                 <View style={ImageStyles.avatarRound(31)}>
                     <Image style={{width: 31, height: 31}} 
-                        source={avatar_process(this.props.rowData.sender.avatar, this.props.app.cdn_config)}/>
+                        source={avatar_process(ifJudge?this.props.rowData.avatar:this.props.rowData.sender.avatar, this.props.app.cdn_config)}/>
                 </View>
                 <View style={{marginLeft: 10, flex: 1}}>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                         <Text style={{flex: 1, color: '#323231'}}>
-                            {this.props.rowData.sender.name}
+                            {ifJudge?this.props.rowData.mask_name:this.props.rowData.sender.name}
                         </Text>
                         <Text style={{color: '#6F6F6F', fontSize: 12}}>
                             {datetime}

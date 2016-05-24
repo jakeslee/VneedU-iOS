@@ -36,7 +36,7 @@ class UserInfo extends Component {
     }
     
     _renderComment(rowData) {
-        return <CommentItem rowData={rowData} />;
+        return <CommentItem rowData={rowData} app={this.props.app}/>;
     }
     
     _renderFooter(isReq = true) {
@@ -63,6 +63,7 @@ class UserInfo extends Component {
             <View style={{flex: 1, backgroundColor: '#F6F6F6'}}>
                 <NavigatorBar {...this.props}/>
                 <View style={{flex: 1, }}>
+                    {this.props.user.isFetching ? <Loading /> :
                     <ScrollView bounces={false} automaticallyAdjustContentInsets={false} style={{flex: 1}}>
                         {/* head start */}
                         <View style={styles.headStyle}>
@@ -128,7 +129,7 @@ class UserInfo extends Component {
                                 renderFooter={this._renderFooter.bind(this, false)}/>
                         </View>
                         {/* 用户评价 end */}
-                    </ScrollView>
+                    </ScrollView>}
                 </View>
             </View>
         )
