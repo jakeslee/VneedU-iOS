@@ -45,7 +45,7 @@ class RequirementItem extends Component {
                         <Text style={{fontSize: 12, color: '#929292'}}>{moment(this.props.datetime, 'YYYY-MM-DD HH:mm:ss').fromNow()}</Text>
                     </View>
                     <View style={{justifyContent: 'center'}}>
-                        <Text style={styles.rqItemHeaderPrice}>￥{this.props.price}</Text>
+                        <Text style={styles.rqItemHeaderPrice}>￥{this.props.price/100}</Text>
                     </View>
                 </View>
                 <View style={styles.rqItemContent}>

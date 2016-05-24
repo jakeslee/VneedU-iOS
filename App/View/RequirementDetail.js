@@ -149,7 +149,7 @@ class RequirementDetail extends Component {
                         <View style={[{padding: 12}, BorderStyles.top]}>
                             <View style={{height: 22, justifyContent: 'center'}}>
                                 <Text style={{color: '#313131'}}>
-                                    价格：<Text style={{color: '#FA1818', fontSize: 18}}>￥ {this.props.requirement.content.price}</Text>
+                                    价格：<Text style={{color: '#FA1818', fontSize: 18}}>￥ {this.props.requirement.content.price/100}</Text>
                                 </Text>
                             </View>
                         </View>
