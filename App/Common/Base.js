@@ -73,3 +73,10 @@ export function delay(ms = 200) {
         }, ms);
     })
 }
+
+export function filter(obj, props = ['uploading', 'isFetching', 'isPosting']) {
+    for (let prop in props) {
+        delete obj[prop];
+    }
+    return obj;
+}

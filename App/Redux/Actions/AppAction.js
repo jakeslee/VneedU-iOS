@@ -1,5 +1,6 @@
 import { compose } from 'redux';
 import Types from '../../Constants/ActionTypes';
+import { filter } from '../../Common/Base';
 
 import {
     loadFromStorage,
@@ -62,11 +63,12 @@ function set_state(state) {
 }
 
 export function load_cache_from_local() {
-    return (dispatch)=> {
+    return (dispatch, getState)=> {
         return loadFromStorage('app').then((v)=> {
             if (v) {
                 let value = JSON.parse(v);
                 dispatch(set_state(value));
+                console.log('load cache from local');
             }
         })
     }
@@ -74,7 +76,9 @@ export function load_cache_from_local() {
 
 export function save_cache_to_local() {
     return (dispatch, getState)=> {
-        console.info('save cache to local');
-        return saveToStorage('app', JSON.stringify(getState()));
+        return saveToStorage('app', JSON.stringify(getState()))
+            .then(()=> {
+                console.info('save cache to local');
+            });
     }
 }

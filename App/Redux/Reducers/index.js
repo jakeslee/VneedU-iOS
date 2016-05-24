@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import reduceReducers from 'reduce-reducers';
 
+import { filter } from '../../Common/Base';
 import Types from '../../Constants/ActionTypes';
 import app from './app';
 import currentUser from './currentUser';
@@ -22,9 +23,21 @@ export default reduceReducers(
         switch(action.type) {
             case Types.GLOBAL_SET_STATE:
                 let {app, currentUser, comments, requirement, orders, user} = action.state;
+                
+                let requirements = {};
+                for (let prop in requirement) {
+                    requirements[prop] = filter(requirement[prop], ['isFetching', 'isLoadingTail']);
+                }
+                
                 return {
-                    app,
-                    currentUser,
+                    app: {
+                        ...state.currentUser,
+                        ...filter(app, ['scene']),
+                    },
+                    currentUser: {
+                        ...state.currentUser,
+                        ...filter(currentUser),
+                    },
                     orders: typeof orders.items === 'undefined' ? state.orders : {
                         ...state.orders,
                         items: orders.items,
@@ -32,8 +45,7 @@ export default reduceReducers(
                     },
                     requirement: typeof requirement.items === 'undefined' ? state.requirement : {
                         ...state.requirement,
-                        items: requirement.items,
-                        dataSource: state.requirement.dataSource.cloneWithRows(requirement.items),
+                        ...requirements,
                     },
                 };
             default:

@@ -55,10 +55,11 @@ function recv_login(data) {
     };
 }
 
-function recv_register(data) {
+function recv_register(data, isFetching = false) {
     return {
         type: Types.RECV_SIGNUP,
         data,
+        isFetching,
     };
 }
 
@@ -165,6 +166,7 @@ export function user_login(username, password) {
                 dispatch(request_login(false));
                 if (json.error === 0) {
                     dispatch(recv_login(json));
+                    dispatch(save_cache_to_local());
                     Actions.pop();
                     Actions.refresh();
                 } else {

@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
 });
 
 export default connect(({orders, app, currentUser})=> ({
-    order,
+    orders,
     detail: orders.detail,
     currentUser,
     app,

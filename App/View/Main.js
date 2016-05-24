@@ -38,7 +38,7 @@ class Main extends Component {
         }
         this.timer = setInterval(()=> {
             this.props.dispatch(save_cache_to_local());
-        }, 10000);
+        }, 30000);
     }
 
     componentDidMount() {

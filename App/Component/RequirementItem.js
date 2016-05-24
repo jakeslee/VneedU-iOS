@@ -33,8 +33,8 @@ class RequirementItem extends Component {
                     <View style={styles.rqItemHeaderUser}>
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
                             <TouchableOpacity onPress={()=> {
+                                Actions.user_info();
                                 this.props.dispatch(load_user(this.props.publisher.id, this.props.currentUser.user));
-                                Actions.user_info({app: this.props.app})
                             }}>
                                 <Text style={{color: '#3584F0',}}>{this.props.publisher.name}</Text>
                             </TouchableOpacity>
