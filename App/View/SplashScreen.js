@@ -1,15 +1,13 @@
-'use strict';
-
-import React, {
+import React, { Component } from 'react';
+import {
     StyleSheet,
     Text,
     View,
     Image,
     Dimensions,
-    Component,
 } from 'react-native';
 
-import Base from '../Common/Base';
+import { Base } from '../Common/Base';
 
 export default class SplashScreen extends Component {
     constructor(props) {
