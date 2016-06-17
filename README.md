@@ -24,7 +24,7 @@ Here is a list of features:
 
 # Screenshots
 
-![](screenshots/home-page.png)
+![](screenshots/home_page.png)
 
 # TODOs
 
